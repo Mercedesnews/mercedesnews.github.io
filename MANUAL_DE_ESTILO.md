@@ -59,12 +59,12 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
 ### B. Titulares y Subtítulos: `Poppins`
 - **Título Principal (Línea 1):** `Poppins Bold` (peso `700`).
   - Interletraje compacto y gran impacto visual.
-- **Subtítulo / Bajada Integrada (Línea 2 en adelante):** `Poppins Thin` (peso `100`).
-  - Contraste tipográfico moderno y refinado con el título en negrita.
+- **Subtítulo / Bajada Integrada (Línea 2 en adelante):** `Poppins Light` (peso `300`).
+  - Proporciona un contraste tipográfico refinado con el título en negrita, optimizado para garantizar una lectura cómoda y nítida en pantallas.
 - **Regla Editorial y CMS:**
   - En el panel de redacción, el campo de título es un área de texto plano sin botones de formato:
     - **Renglón 1:** Título principal (automáticamente en Poppins Bold).
-    - **Renglón 2:** Subtítulo (automáticamente en Poppins Thin).
+    - **Renglón 2:** Subtítulo (automáticamente en Poppins Light).
   - Esto garantiza 100% de consistencia en todo el sitio sin necesidad de que el redactor aplique negritas o cursivas manuales.
 
 ### C. Cuerpo de Lectura: `Open Sans`
@@ -93,18 +93,18 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
    - Etiqueta "Edición Digital".
    - Localidad: "Mercedes, Buenos Aires".
 2. **Cabecera del Diario (Masthead):**
-   - Marca principal: **MERCEDES NEWS** en `Archivo Expanded Black Italic` (4.5rem en desktop).
+   - Marca principal: **MERCEDES NEWS** en `Archivo Expanded Black Italic` (4.5rem en desktop) en color azul institucional (`#0252c5`).
    - Lema institucional formal: *«El portal de noticias hecho para vos»*.
    - Doble pleca azul divisoria (`#0252c5`).
 3. **Noticia de Tapa (Lead):**
    - Fotografía de apertura con relación de aspecto panorámica y badge flotante en `#1e2126` con texto blanco: **TAPA**.
-   - Titular en `Poppins Bold` y subtítulo en `Poppins Thin`.
+   - Titular en `Poppins Bold` y subtítulo en `Poppins Light`.
    - Extracto informativo alineado a la izquierda.
    - Enlace de lectura con flecha dinámica: `Leer nota completa →`.
 4. **Archivo y Noticias Secundarias:**
    - Título de sección "Otras Publicaciones" con línea continua azul hacia el margen derecho.
    - Grilla a **2 columnas balanceadas** en escritorio con divisor vertical sutil.
-   - Tarjetas con imagen (efecto zoom sutil al cursor `scale(1.03)`), fecha, titular (`Poppins Bold` + `Poppins Thin`) y extracto.
+   - Tarjetas con imagen (efecto zoom sutil al cursor `scale(1.03)`), fecha, titular (`Poppins Bold` + `Poppins Light`) y extracto.
 5. **Pie de Página:**
    - Doble pleca azul simétrica con la cabecera.
    - Mención de derechos reservados en `#1e2126`.
