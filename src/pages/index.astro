@@ -17,17 +17,26 @@ function formatDate(dateString) {
   return `${d.getDate()} ${d.toLocaleString('es-AR', { month: 'long' })}, ${d.getFullYear()}`;
 }
 
-// Función para parsear títulos con negrita y cursiva Markdown
+// Función para parsear títulos: Línea 1 = Título (Poppins Bold), Líneas siguientes = Subtítulo (Poppins Thin)
 function formatTitle(rawTitle) {
   if (!rawTitle) return '';
-  return rawTitle
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/_(.*?)_/g, '<em>$1</em>')
-    .replace(/\r?\n+/g, '<br/>');
+  const lines = rawTitle
+    .replace(/(\*\*|\*|_|`)/g, '')
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+
+  if (lines.length === 0) return '';
+  const title = lines[0];
+  const subtitle = lines.slice(1).join('<br/>');
+
+  if (!subtitle) {
+    return `<span class="titulo-principal">${title}</span>`;
+  }
+  return `<span class="titulo-principal">${title}</span><span class="subtitulo-nota">${subtitle}</span>`;
 }
 
-// Función para obtener sólo el primer renglón limpio sin formato
+// Función para obtener sólo el primer renglón limpio sin formato para <title> y alt
 function cleanTitle(rawTitle) {
   if (!rawTitle) return '';
   const firstLine = rawTitle.split(/\r?\n/)[0] || '';
@@ -68,7 +77,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     <title>Mercedes News — Diario Digital</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,700;0,900;1,300;1,900&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@1,125,900&family=Montserrat:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:ital,wght@0,100;0,700;1,100;1,700&display=swap" rel="stylesheet">
   </head>
   <body>
     <div class="background-patron"></div>
@@ -204,7 +213,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     margin: 0;
     padding: 0;
     position: relative;
-    color: #222;
+    color: #1e2126;
     background-color: #ffffff;
   }
 
@@ -231,7 +240,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(0, 77, 191, 0.35);
+    border-bottom: 1px solid rgba(2, 82, 197, 0.35);
     padding-bottom: 6px;
     font-family: 'Montserrat', sans-serif;
     font-size: 0.75rem;
@@ -251,12 +260,15 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     color: inherit;
   }
 
+  /* Logotipo oficial: Archivo Expanded Black Italic */
   .diario-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 2.8rem;
+    font-family: 'Archivo', sans-serif;
+    font-style: italic;
     font-weight: 900;
+    font-stretch: expanded;
+    font-size: 2.8rem;
     letter-spacing: -1.5px;
-    color: #1a1a1a;
+    color: #1e2126;
     margin: 0;
     line-height: 1;
     text-transform: uppercase;
@@ -271,8 +283,8 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   }
 
   .header-divider {
-    border-top: 3px solid #004dbf;
-    border-bottom: 1px solid rgba(0, 77, 191, 0.4);
+    border-top: 3px solid #0252c5;
+    border-bottom: 1px solid rgba(2, 82, 197, 0.4);
     height: 3px;
     margin-top: 15px;
   }
@@ -280,7 +292,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   /* Noticia Destacada / Tapa */
   .nota-destacada {
     margin-bottom: 35px;
-    border-bottom: 1px solid rgba(0, 77, 191, 0.2);
+    border-bottom: 1px solid rgba(2, 82, 197, 0.2);
     padding-bottom: 30px;
   }
 
@@ -315,7 +327,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: #1a1a1a;
+    background: #1e2126;
     color: #fff;
     font-family: 'Montserrat', sans-serif;
     font-size: 0.7rem;
@@ -334,27 +346,34 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     text-transform: capitalize;
   }
 
+  /* Título y Subtítulo Destacada (Poppins) */
   .destacada-titulo {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: 2.3rem;
-    line-height: 1;
-    letter-spacing: -1.5px;
-    color: #1a1a1a;
     margin: 5px 0 15px 0;
     transition: color 0.2s ease;
   }
 
-  .destacada-link:hover .destacada-titulo {
-    color: #444;
+  .destacada-titulo .titulo-principal {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700; /* Poppins Bold */
+    font-size: 2.2rem;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    color: #1e2126;
   }
 
-  .destacada-titulo strong {
-    font-weight: 900;
+  .destacada-titulo .subtitulo-nota {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 100; /* Poppins Thin */
+    font-size: 1.25rem;
+    line-height: 1.25;
+    color: #1e2126;
+    margin-top: 8px;
   }
 
-  .destacada-titulo em {
-    font-style: italic;
+  .destacada-link:hover .destacada-titulo .titulo-principal {
+    color: #0252c5;
   }
 
   .destacada-bajada {
@@ -375,10 +394,10 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     font-family: 'Montserrat', sans-serif;
     font-size: 0.88rem;
     font-weight: 700;
-    color: #1a1a1a;
+    color: #1e2126;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 2px solid #004dbf;
+    border-bottom: 2px solid #0252c5;
     padding-bottom: 2px;
     transition: transform 0.2s ease, border-color 0.2s ease;
   }
@@ -409,7 +428,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #1a1a1a;
+    color: #1e2126;
     margin: 0;
     white-space: nowrap;
   }
@@ -417,7 +436,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   .seccion-line {
     flex: 1;
     height: 1px;
-    background: rgba(0, 77, 191, 0.35);
+    background: rgba(2, 82, 197, 0.35);
   }
 
   .grilla-secundarias {
@@ -427,7 +446,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   }
 
   .tarjeta-secundaria {
-    border-bottom: 1px solid rgba(0, 77, 191, 0.15);
+    border-bottom: 1px solid rgba(2, 82, 197, 0.15);
     padding-bottom: 20px;
   }
 
@@ -458,22 +477,34 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     transform: scale(1.03);
   }
 
+  /* Título y Subtítulo Secundarias (Poppins) */
   .secundaria-titulo {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: 1.4rem;
-    line-height: 1.2;
-    letter-spacing: -0.8px;
-    color: #1a1a1a;
     margin: 4px 0 8px 0;
   }
 
-  .secundaria-titulo strong {
-    font-weight: 900;
+  .secundaria-titulo .titulo-principal {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700; /* Poppins Bold */
+    font-size: 1.35rem;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    color: #1e2126;
+    transition: color 0.2s ease;
   }
 
-  .secundaria-titulo em {
-    font-style: italic;
+  .secundaria-titulo .subtitulo-nota {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 100; /* Poppins Thin */
+    font-size: 0.98rem;
+    line-height: 1.25;
+    color: #1e2126;
+    margin-top: 5px;
+  }
+
+  .secundaria-link:hover .secundaria-titulo .titulo-principal {
+    color: #0252c5;
   }
 
   .secundaria-bajada {
@@ -498,7 +529,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   }
 
   .secundaria-link:hover .leer-mas-secundaria {
-    color: #000;
+    color: #0252c5;
   }
 
   /* Footer */
@@ -508,8 +539,8 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   }
 
   .footer-divider {
-    border-top: 1px solid rgba(0, 77, 191, 0.4);
-    border-bottom: 3px solid #004dbf;
+    border-top: 1px solid rgba(2, 82, 197, 0.4);
+    border-bottom: 3px solid #0252c5;
     height: 3px;
     margin-bottom: 15px;
   }
@@ -531,14 +562,14 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     font-size: 0.75rem;
     font-weight: 600;
     padding: 4px 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #d5d9da;
     border-radius: 4px;
     transition: all 0.2s ease;
   }
 
   .footer-admin-link:hover {
-    color: #000;
-    border-color: #999;
+    color: #1e2126;
+    border-color: #0252c5;
     background: #f9f9f9;
   }
 
@@ -554,13 +585,19 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
 
     .diario-title {
       font-size: 4.5rem;
-      letter-spacing: -3px;
+      letter-spacing: -2px;
     }
 
-    .destacada-titulo {
-      font-size: 3.4rem;
-      line-height: 0.95;
-      letter-spacing: -2px;
+    .destacada-titulo .titulo-principal {
+      font-size: 3.2rem;
+      line-height: 0.98;
+      letter-spacing: -1.5px;
+    }
+
+    .destacada-titulo .subtitulo-nota {
+      font-size: 1.8rem;
+      line-height: 1.15;
+      margin-top: 10px;
     }
 
     .grilla-secundarias {
@@ -571,7 +608,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     .tarjeta-secundaria {
       border-bottom: none;
       padding-bottom: 0;
-      border-right: 1px solid rgba(0, 77, 191, 0.18);
+      border-right: 1px solid rgba(2, 82, 197, 0.18);
       padding-right: 25px;
     }
 

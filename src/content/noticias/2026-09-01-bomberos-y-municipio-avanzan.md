@@ -1,7 +1,6 @@
 ---
 title: |-
-  **_Bomberos y municipio avanzan_** 
-
+  Bomberos y municipio avanzan
   Ustarroz firma decreto por nueva entrega de fondos
 date: 2026-09-01T16:01:00
 thumbnail: /assets/img/B2-1024x682.webp
