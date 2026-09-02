@@ -1,0 +1,22 @@
+backend:
+  name: github
+  repo: mercedesnews/mercedesnews.github.io
+  branch: main
+
+# Dónde guarda Sveltia los archivos en el repositorio
+media_folder: "public/assets/img"
+# Qué ruta escribe en el Markdown para que el navegador la encuentre
+public_folder: "/assets/img"
+
+# Colecciones de contenido
+collections:
+  - name: "noticias"
+    label: "Noticias"
+    folder: "src/content/noticias"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Título", name: "title", widget: "markdown", buttons: ["bold", "italic"] }
+      - { label: "Fecha", name: "date", widget: "datetime" }
+      - { label: "Imagen Destacada", name: "thumbnail", widget: "image", required: false }
+      - { label: "Cuerpo de la Noticia", name: "body", widget: "markdown" }

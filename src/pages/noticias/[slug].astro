@@ -1,0 +1,332 @@
+---
+export async function getStaticPaths() {
+  const notas = Object.values(import.meta.glob('../../content/noticias/*.md', { eager: true }));
+  
+  return notas.map((nota) => {
+    const slug = nota.file.split('/').pop().replace('.md', '');
+    return {
+      params: { slug },
+      props: { nota },
+    };
+  });
+}
+
+const { nota } = Astro.props;
+const { Content } = nota;
+
+const d = new Date(nota.frontmatter.date);
+const formattedDate = `${d.getDate()} ${d.toLocaleString('es-AR', {month: 'long'})}, ${d.getFullYear()}`;
+
+const rawTitle = nota.frontmatter.title || '';
+const titleHtml = rawTitle
+  .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  .replace(/\*(.*?)\*/g, '<em>$1</em>')
+  .replace(/_(.*?)_/g, '<em>$1</em>')
+  .replace(/\r?\n+/g, '<br/>');
+
+// Limpieza para la pestaña del navegador: solo el primer renglón y sin Markdown
+const firstLine = rawTitle.split(/\r?\n/)[0] || '';
+const tabTitle = firstLine
+  .replace(/(\*\*|\*|_|`)/g, '')
+  .trim();
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{tabTitle}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,900;1,300;1,900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="background-patron"></div>
+    
+    <article class="nota-container">
+      
+      <div class="header-section">
+        {nota.frontmatter.thumbnail && (
+          <img src={nota.frontmatter.thumbnail} alt="Portada" class="imagen-portada" />
+        )}
+      </div>
+
+      <div class="content-section">
+        <h1 class="titulo" set:html={titleHtml}></h1>
+
+        <div class="cuerpo-texto">
+          <p class="fecha">{formattedDate}</p>
+          <Content />
+        </div>
+      </div>
+      
+    </article>
+
+    <!-- Script automático para transformar enlaces de YouTube y archivos de video en reproductores -->
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const cuerpo = document.querySelector('.cuerpo-texto');
+        if (!cuerpo) return;
+
+        const isVideo = (url) => /\.(mp4|webm|mov|ogg)(\?.*)?$/i.test(url || '');
+
+        // 1. Imágenes insertadas por el editor que en realidad son videos (.mp4, .webm, .mov)
+        cuerpo.querySelectorAll('img').forEach((img) => {
+          const src = img.getAttribute('src') || img.src || '';
+          if (isVideo(src)) {
+            const video = document.createElement('video');
+            video.src = img.src || src;
+            video.controls = true;
+            video.playsInline = true;
+            video.className = 'video-reproductor';
+            img.parentNode.replaceChild(video, img);
+          }
+        });
+
+        // 2. Enlaces que apuntan a archivos de video (.mp4, .webm, .mov)
+        cuerpo.querySelectorAll('a').forEach((link) => {
+          const href = link.getAttribute('href') || '';
+          if (isVideo(href)) {
+            const video = document.createElement('video');
+            video.src = href;
+            video.controls = true;
+            video.playsInline = true;
+            video.className = 'video-reproductor';
+            
+            const parentP = link.closest('p');
+            if (parentP && parentP.textContent.trim() === link.textContent.trim()) {
+              parentP.parentNode.replaceChild(video, parentP);
+            } else {
+              link.parentNode.replaceChild(video, link);
+            }
+          }
+        });
+
+        // 3. Enlaces a videos de YouTube (convierte URLs sueltas en reproductores integrados)
+        const allLinks = cuerpo.querySelectorAll('a');
+        allLinks.forEach((link) => {
+          const href = link.getAttribute('href') || '';
+          const ytMatch = href.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+          
+          if (ytMatch && ytMatch[1]) {
+            const videoId = ytMatch[1];
+            const parentP = link.closest('p');
+            if (parentP && (parentP.textContent.trim() === link.textContent.trim() || parentP.textContent.trim().startsWith('http'))) {
+              const wrapper = document.createElement('div');
+              wrapper.className = 'video-embed-wrapper';
+              wrapper.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" title="Reproductor de Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+              parentP.parentNode.replaceChild(wrapper, parentP);
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #222;
+  }
+
+  .background-patron {
+    display: none;
+  }
+
+  .nota-container {
+    width: 100%;
+    margin: 0 auto;
+    background: #ffffff;
+    box-shadow: none;
+  }
+
+  .imagen-portada {
+    width: 100%;
+    max-height: 520px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .content-section {
+    padding: 20px;
+  }
+
+  .titulo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 3.5rem;
+    line-height: 1;
+    letter-spacing: -2px;
+    color: #1a1a1a;
+    margin: 10px 0 30px 0;
+  }
+
+  .titulo strong {
+    font-weight: 900;
+  }
+
+  .titulo em {
+    font-style: italic;
+  }
+
+  .fecha {
+    font-family: 'Montserrat', sans-serif;
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
+  .cuerpo-texto {
+    line-height: 1.6;
+    font-size: 1.05rem;
+    color: #222;
+    column-count: 1;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+
+  /* Párrafos generales justificados por defecto */
+  .cuerpo-texto p {
+    text-align: justify;
+    text-align-last: left;
+    text-justify: inter-word;
+    text-wrap: pretty;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Excepción para alinear a la izquierda si se necesita */
+  .cuerpo-texto p.left {
+    text-align: left;
+    hyphens: manual;
+  }
+
+  .cuerpo-texto img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px 0;
+  }
+
+  .cuerpo-texto p:has(img) {
+    break-inside: avoid;
+    margin: 0;
+  }
+
+  /* Reproductores de video locales y embebidos */
+  .cuerpo-texto video,
+  .video-reproductor {
+    width: 100%;
+    max-height: 480px;
+    border-radius: 8px;
+    background: #000;
+    margin: 20px 0;
+    display: block;
+    break-inside: avoid;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  }
+
+  .video-embed-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin: 20px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    break-inside: avoid;
+    background: #000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  }
+
+  .video-embed-wrapper iframe,
+  .cuerpo-texto iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    break-inside: avoid;
+  }
+
+  .cuerpo-texto p:has(video),
+  .cuerpo-texto p:has(iframe) {
+    break-inside: avoid;
+    margin: 0;
+  }
+
+  /* Para las palabras comunes: usa las reglas del idioma español para cortar por sílabas */
+  .cuerpo-texto {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+
+  /* Para las URLs: permite que empiecen a llenarse en la misma línea sin saltar prematuramente */
+  .cuerpo-texto a {
+    overflow-wrap: anywhere;
+    word-break: break-all;
+  }
+
+  .cuerpo-texto blockquote {
+    margin: 25px 0;
+    padding: 0;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.65rem;
+    font-style: italic;
+    color: #444;
+    break-inside: avoid;
+    line-height: 1.3;
+  }
+
+  .cuerpo-texto blockquote p {
+    margin: 0;
+    text-align: inherit;
+  }
+
+  .cuerpo-texto blockquote::before {
+    content: '“';
+    display: block;
+    font-size: 3.2rem;
+    color: #888;
+    line-height: 0.6;
+    margin-bottom: 2px;
+  }
+
+  .cuerpo-texto blockquote::after {
+    content: '”';
+    display: block;
+    font-size: 3.2rem;
+    color: #888;
+    line-height: 0.6;
+    text-align: right;
+    margin-top: 6px;
+  }
+
+  .cuerpo-texto mark {
+    background-color: rgba(173, 216, 230, 0.4);
+    color: inherit;
+    padding: 0 4px;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      padding: 0;
+    }
+    .content-section {
+      padding: 40px 60px 80px 60px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .titulo {
+      font-size: 5rem;
+      line-height: 0.95;
+    }
+    .cuerpo-texto {
+      column-count: 2;
+      column-gap: 50px;
+      column-rule: 1px solid rgba(0, 77, 191, 0.15);
+    }
+  }
+</style>
