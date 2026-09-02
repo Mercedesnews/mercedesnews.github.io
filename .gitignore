@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local agent guides
+GEMINI.md
+AGENTS.md
+CLAUDE.md
