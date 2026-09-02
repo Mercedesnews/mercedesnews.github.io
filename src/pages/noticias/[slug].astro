@@ -45,6 +45,16 @@ const firstLine = rawTitle.split(/\r?\n/)[0] || '';
 const tabTitle = firstLine
   .replace(/(\*\*|\*|_|`)/g, '')
   .trim();
+
+const CATEGORIAS: Record<string, string> = {
+  'actualidad-local': 'Actualidad Local',
+  'cronicas': 'Crónicas & Particularidades',
+  'entrevistas': 'Mano a Mano',
+  'opinion': 'Opinión & Ensayos'
+};
+
+const categoriaKey = nota.frontmatter.categoria || 'actualidad-local';
+const categoriaLabel = CATEGORIAS[categoriaKey] || 'Actualidad';
 ---
 
 <html lang="es">
@@ -71,7 +81,13 @@ const tabTitle = firstLine
         <h1 class="titulo" set:html={titleHtml}></h1>
 
         <div class="cuerpo-texto">
-          <p class="fecha">{formattedDate}</p>
+          <p class="fecha-categoria-row">
+            <span class="fecha">{formattedDate}</span>
+            <span class="meta-dot">•</span>
+            <a href={`/?cat=${categoriaKey}`} class="categoria-link" title={`Ver publicaciones en ${categoriaLabel}`}>
+              {categoriaLabel}
+            </a>
+          </p>
           <Content />
         </div>
       </div>
@@ -196,11 +212,41 @@ const tabTitle = firstLine
     margin-top: 12px;
   }
 
-  .fecha {
+  .fecha-categoria-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .fecha-categoria-row .fecha {
     font-family: 'Montserrat', sans-serif;
     color: #888;
-    font-size: 0.9rem;
-    margin-bottom: 20px;
+    font-size: 0.88rem;
+    margin-bottom: 0;
+  }
+
+  .fecha-categoria-row .meta-dot {
+    color: #bbb;
+    font-size: 0.85rem;
+  }
+
+  .fecha-categoria-row .categoria-link {
+    font-family: 'Montserrat', sans-serif;
+    color: #0252c5;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: color 0.15s ease, text-decoration 0.15s ease;
+  }
+
+  .fecha-categoria-row .categoria-link:hover {
+    color: #013788;
+    text-decoration: underline;
   }
 
   .cuerpo-texto {

@@ -117,8 +117,8 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
 1. **Cabecera de Nota:**
    - Imagen de portada a ancho completo (hasta 520px de altura).
 2. **Titular y Fecha:**
-   - Título en `Poppins Bold` (hasta 4.5rem en desktop) y subtítulo en `Poppins Thin` (hasta 2.2rem).
-   - Fecha de publicación en español formal.
+   - Título en `Poppins Bold` (hasta 4.5rem en desktop) y subtítulo en `Poppins Light` (hasta 2.2rem).
+   - Fecha de publicación en español formal y enlace directo a su categoría temáticia (`fecha • categoría`).
 3. **Lectura a Dos Columnas (Desktop):**
    - A partir de pantallas medianas (`min-width: 768px`), el texto se organiza automáticamente en **2 columnas de lectura paralela** (`column-count: 2; column-gap: 50px;`), simulando la diagramación física de un periódico.
    - Divisor vertical suave entre ambas columnas (`column-rule: 1px solid rgba(2, 82, 197, 0.15)`).
@@ -144,11 +144,24 @@ Todos los elementos multimedia respetan la regla `break-inside: avoid;` para nun
 
 ---
 
-## 🗂️ 7. Organización Temática y Navegación Futura
+## 🗂️ 7. Organización Temática y Navegación Interactiva
 
-Para el crecimiento del portal hacia secciones temáticas (Locales, Sociedad, Cultura, Deportes, etc.):
+### A. Categorías Oficiales
+El portal organiza sus notas en 4 secciones fijas:
+1. **Actualidad Local** (`actualidad-local`)
+2. **Crónicas & Particularidades** (`cronicas`)
+3. **Mano a Mano** (`entrevistas`)
+4. **Opinión & Ensayos** (`opinion`)
 
-- **Categorización:** Cada noticia contará con un tag o metadato de sección para su clasificación en portada y archivo.
-- **Barra de Navegación / Menúes:**
-  - Se ubicará debajo del lema y antes de la doble pleca divisoria, o integrada como barra de secciones adhesiva (*sticky*).
-  - Menúes desplegables con diseño plano, fondo blanco, bordes finos azules (`#0252c5`) y tipografía `Montserrat` en mayúsculas pequeñas.
+### B. Header Interactivo (Sticky-Shrink)
+- **Modo Superior:** El encabezado se muestra en su escala completa, con la fecha/edición arriba, el logo `MERCEDES NEWS` de gran tamaño (4.5rem) en azul `#0252c5`, el lema oficial y el selector desplegable de secciones.
+- **Modo Scrolled (Reducido):** Mediante un `IntersectionObserver` de alto rendimiento, al hacer scroll el header pasa a `position: sticky; top: 0;`, ocultando la fecha y el lema y compactando el logo hacia la izquierda para convivir en una sola fila con el menú de categorías sobre la derecha.
+
+### C. Menú Desplegable y Filtrado Reactivo
+- En la cabecera se ubica un selector desplegable visible (`SECCIÓN: Todas ▾`).
+- Al desplegar y elegir una sección:
+  - El selector se actualiza dinámicamente con el nombre de la sección activa.
+  - Se activa una barra de estado informativa con opción de limpiar el filtro.
+  - La nota más reciente de la categoría elegida pasa a liderar la página en el espacio de Tapa, y las demás notas de esa categoría se muestran en la grilla secundaria.
+  - Si una categoría aún no contiene artículos, se presenta una pantalla limpia con aviso editorial y botón para regresar a la portada general.
+- Cada tarjeta en la portada y cada nota individual cuenta con un enlace directo a su categoría al lado de la fecha (`fecha • categoría`), el cual activa el filtro al hacer clic.

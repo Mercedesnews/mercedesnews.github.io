@@ -3,6 +3,7 @@ title: |-
   Fin de una era
   Messi se retira de la Selección Argentina
 date: 2026-09-01T16:01:00
+categoria: opinion
 thumbnail: /assets/img/messi-seleccion.webp
 ---
 

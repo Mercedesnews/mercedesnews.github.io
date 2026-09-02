@@ -2,11 +2,20 @@
 // Cargamos todas las noticias de la carpeta content/noticias
 const rawNotas = Object.values(import.meta.glob('../content/noticias/*.md', { eager: true }));
 
+// Mapa de categorías oficiales
+const CATEGORIAS: Record<string, string> = {
+  'actualidad-local': 'Actualidad Local',
+  'cronicas': 'Crónicas & Particularidades',
+  'entrevistas': 'Mano a Mano',
+  'opinion': 'Opinión & Ensayos'
+};
+
 // Ordenamos las notas por fecha de forma descendente (la más reciente primero)
 const notas = rawNotas
   .map((nota) => {
     const slug = nota.file.split('/').pop().replace('.md', '');
-    return { ...nota, slug };
+    const cat = nota.frontmatter.categoria || 'actualidad-local';
+    return { ...nota, slug, cat };
   })
   .sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime());
 
@@ -17,7 +26,7 @@ function formatDate(dateString) {
   return `${d.getDate()} ${d.toLocaleString('es-AR', { month: 'long' })}, ${d.getFullYear()}`;
 }
 
-// Función para parsear títulos: Línea 1 = Título (Poppins Bold), Líneas siguientes = Subtítulo (Poppins Thin)
+// Función para parsear títulos: Línea 1 = Título (Poppins Bold), Líneas siguientes = Subtítulo (Poppins Light)
 function formatTitle(rawTitle) {
   if (!rawTitle) return '';
   const lines = rawTitle
@@ -36,7 +45,7 @@ function formatTitle(rawTitle) {
   return `<span class="titulo-principal">${title}</span><span class="subtitulo-nota">${subtitle}</span>`;
 }
 
-// Función para obtener sólo el primer renglón limpio sin formato para <title> y alt
+// Función para obtener sólo el primer renglón limpio sin formato para alt y meta
 function cleanTitle(rawTitle) {
   if (!rawTitle) return '';
   const firstLine = rawTitle.split(/\r?\n/)[0] || '';
@@ -47,19 +56,16 @@ function cleanTitle(rawTitle) {
 function getExcerpt(nota, maxLength = 160) {
   const raw = typeof nota.rawContent === 'function' ? nota.rawContent() : '';
   const clean = raw
-    .replace(/!\[.*?\]\(.*?\)/g, '') // Quita imágenes
-    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Deja sólo el texto del enlace
-    .replace(/#{1,6}\s+/g, '') // Quita encabezados
-    .replace(/(\*\*|\*|_|`)/g, '') // Quita formato markdown básico
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/(\*\*|\*|_|`)/g, '')
     .replace(/\n+/g, ' ')
     .trim();
   
   if (clean.length <= maxLength) return clean;
   return clean.slice(0, maxLength).trim() + '…';
 }
-
-const notaPrincipal = notas[0];
-const notasSecundarias = notas.slice(1);
 
 const today = new Date();
 const fechaHoy = today.toLocaleDateString('es-AR', {
@@ -80,112 +86,195 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@1,125,900&family=Montserrat:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:ital,wght@0,100;0,200;0,300;0,700;1,100;1,200;1,300;1,700&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div class="background-patron"></div>
+
+    <!-- Contenedor exterior del header para evitar saltos o rebotes de layout en scroll -->
+    <div class="header-outer" id="header-outer">
+      <header class="periodico-header" id="main-header">
+        <div class="header-container">
+          
+          <!-- Barra superior: fecha y localidad (se oculta al scrollear) -->
+          <div class="top-bar">
+            <span class="top-date">{fechaHoy}</span>
+            <span class="top-edition">Edición Digital</span>
+            <span class="top-location">Mercedes, Buenos Aires</span>
+          </div>
+
+          <!-- Área principal de Cabecera -->
+          <div class="masthead-area">
+            <div class="brand-box">
+              <a href="/" class="brand-link">
+                <h1 class="diario-title">MERCEDES NEWS</h1>
+              </a>
+              <p class="diario-lema">«El portal de noticias hecho para vos»</p>
+            </div>
+
+            <!-- Selector desplegable de Categorías -->
+            <div class="category-filter-box">
+              <div class="dropdown-wrapper" id="cat-dropdown-wrapper">
+                <button 
+                  type="button" 
+                  class="dropdown-trigger-btn" 
+                  id="cat-dropdown-btn" 
+                  aria-expanded="false"
+                >
+                  <span class="trigger-label">SECCIÓN:</span>
+                  <span class="trigger-value" id="current-cat-name">Todas</span>
+                  <span class="trigger-arrow">▾</span>
+                </button>
+                
+                <ul class="dropdown-list" id="cat-dropdown-list">
+                  <li data-cat="todas" class="dropdown-item is-selected">Todas las secciones</li>
+                  <li data-cat="actualidad-local" class="dropdown-item">Actualidad Local</li>
+                  <li data-cat="cronicas" class="dropdown-item">Crónicas &amp; Particularidades</li>
+                  <li data-cat="entrevistas" class="dropdown-item">Mano a Mano</li>
+                  <li data-cat="opinion" class="dropdown-item">Opinión &amp; Ensayos</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Doble pleca azul divisoria -->
+          <div class="header-divider"></div>
+        </div>
+      </header>
+    </div>
 
     <main class="index-container">
-      
-      <!-- Cabecera estilo periódico -->
-      <header class="periodico-header">
-        <div class="top-meta-bar">
-          <span class="meta-item fecha-hoy">{fechaHoy}</span>
-          <span class="meta-item edicion-tag">Edición Digital</span>
-          <span class="meta-item l-gastronomica">Mercedes, Buenos Aires</span>
-        </div>
-
-        <div class="masthead">
-          <a href="/" class="masthead-link">
-            <h1 class="diario-title">MERCEDES NEWS</h1>
-          </a>
-          <p class="diario-lema">
-            «El portal de noticias hecho para vos»
-          </p>
-        </div>
-
-        <div class="header-divider"></div>
-      </header>
 
       {notas.length === 0 ? (
         <div class="sin-noticias">
           <p>No hay noticias publicadas en este momento.</p>
         </div>
       ) : (
-        <section class="noticias-layout">
-          
-          <!-- Noticia Principal (Tapa) -->
-          {notaPrincipal && (
-            <article class="nota-destacada">
-              <a href={`/noticias/${notaPrincipal.slug}`} class="destacada-link">
-                {notaPrincipal.frontmatter.thumbnail && (
-                  <div class="destacada-img-wrapper">
-                    <img 
-                      src={notaPrincipal.frontmatter.thumbnail} 
-                      alt={cleanTitle(notaPrincipal.frontmatter.title)} 
-                      class="destacada-img" 
-                    />
-                    <span class="tag-tapa">Tapa</span>
+        <section class="noticias-section" id="noticias-section">
+
+          <!-- Contenedor único de noticias -->
+          <div class="articulos-wrapper" id="articulos-wrapper">
+            
+            {/* Nota de Tapa Inicial (Primera nota) */}
+            {notas[0] && (
+              <article 
+                class="noticia-card is-lead" 
+                id={`card-${notas[0].slug}`}
+                data-cat={notas[0].cat}
+              >
+                {notas[0].frontmatter.thumbnail && (
+                  <div class="card-media">
+                    <a href={`/noticias/${notas[0].slug}`} class="media-link">
+                      <img 
+                        src={notas[0].frontmatter.thumbnail} 
+                        alt={cleanTitle(notas[0].frontmatter.title)} 
+                        class="card-img" 
+                      />
+                      <span class="badge-tapa">Tapa</span>
+                      <span class="badge-cat">{CATEGORIAS[notas[0].cat] || 'Actualidad'}</span>
+                    </a>
                   </div>
                 )}
 
-                <div class="destacada-info">
-                  <span class="fecha">{formatDate(notaPrincipal.frontmatter.date)}</span>
-                  <h2 class="destacada-titulo" set:html={formatTitle(notaPrincipal.frontmatter.title)}></h2>
-                  
-                  {getExcerpt(notaPrincipal) && (
-                    <p class="destacada-bajada">
-                      {getExcerpt(notaPrincipal, 220)}
+                <div class="card-content">
+                  <div class="meta-row">
+                    <span class="fecha">{formatDate(notas[0].frontmatter.date)}</span>
+                    <span class="meta-dot">•</span>
+                    <button 
+                      type="button" 
+                      class="cat-pill-btn" 
+                      data-filter-cat={notas[0].cat}
+                      title={`Filtrar por ${CATEGORIAS[notas[0].cat]}`}
+                    >
+                      {CATEGORIAS[notas[0].cat] || 'Actualidad'}
+                    </button>
+                  </div>
+
+                  <h2 class="card-title">
+                    <a href={`/noticias/${notas[0].slug}`} class="title-link" set:html={formatTitle(notas[0].frontmatter.title)}></a>
+                  </h2>
+
+                  {getExcerpt(notas[0]) && (
+                    <p class="card-bajada">
+                      {getExcerpt(notas[0], 220)}
                     </p>
                   )}
 
-                  <span class="leer-mas">
-                    Leer nota completa <span class="flecha">→</span>
-                  </span>
+                  <a href={`/noticias/${notas[0].slug}`} class="read-more-link">
+                    Leer nota completa <span class="arrow">→</span>
+                  </a>
                 </div>
-              </a>
-            </article>
-          )}
+              </article>
+            )}
 
-          <!-- Grilla de Noticias Secundarias -->
-          {notasSecundarias.length > 0 && (
-            <div class="archivo-seccion">
-              <div class="seccion-titulo-wrapper">
-                <h3 class="seccion-titulo">Otras Publicaciones</h3>
-                <div class="seccion-line"></div>
+            {/* Separador de Sección (Otras Publicaciones) */}
+            {notas.length > 1 && (
+              <div class="section-divider-bar" id="section-divider-bar">
+                <h3 class="section-heading" id="section-heading-text">Otras Publicaciones</h3>
+                <div class="section-heading-line"></div>
               </div>
+            )}
 
-              <div class="grilla-secundarias">
-                {notasSecundarias.map((nota) => (
-                  <article class="tarjeta-secundaria">
-                    <a href={`/noticias/${nota.slug}`} class="secundaria-link">
-                      {nota.frontmatter.thumbnail && (
-                        <div class="secundaria-img-wrapper">
-                          <img 
-                            src={nota.frontmatter.thumbnail} 
-                            alt={cleanTitle(nota.frontmatter.title)} 
-                            class="secundaria-img" 
-                          />
-                        </div>
-                      )}
+            {/* Grilla de Notas Secundarias */}
+            <div class="grilla-secundarias" id="grilla-secundarias">
+              {notas.slice(1).map((nota) => (
+                <article 
+                  class="noticia-card is-secondary" 
+                  id={`card-${nota.slug}`}
+                  data-cat={nota.cat}
+                >
+                  {nota.frontmatter.thumbnail && (
+                    <div class="card-media">
+                      <a href={`/noticias/${nota.slug}`} class="media-link">
+                        <img 
+                          src={nota.frontmatter.thumbnail} 
+                          alt={cleanTitle(nota.frontmatter.title)} 
+                          class="card-img" 
+                        />
+                        <span class="badge-cat">{CATEGORIAS[nota.cat] || 'Actualidad'}</span>
+                      </a>
+                    </div>
+                  )}
 
-                      <div class="secundaria-cuerpo">
-                        <span class="fecha">{formatDate(nota.frontmatter.date)}</span>
-                        <h4 class="secundaria-titulo" set:html={formatTitle(nota.frontmatter.title)}></h4>
-                        
-                        {getExcerpt(nota) && (
-                          <p class="secundaria-bajada">
-                            {getExcerpt(nota, 130)}
-                          </p>
-                        )}
+                  <div class="card-content">
+                    <div class="meta-row">
+                      <span class="fecha">{formatDate(nota.frontmatter.date)}</span>
+                      <span class="meta-dot">•</span>
+                      <button 
+                        type="button" 
+                        class="cat-pill-btn" 
+                        data-filter-cat={nota.cat}
+                        title={`Filtrar por ${CATEGORIAS[nota.cat]}`}
+                      >
+                        {CATEGORIAS[nota.cat] || 'Actualidad'}
+                      </button>
+                    </div>
 
-                        <span class="leer-mas-secundaria">
-                          Leer artículo <span class="flecha">→</span>
-                        </span>
-                      </div>
+                    <h4 class="card-title">
+                      <a href={`/noticias/${nota.slug}`} class="title-link" set:html={formatTitle(nota.frontmatter.title)}></a>
+                    </h4>
+
+                    {getExcerpt(nota) && (
+                      <p class="card-bajada">
+                        {getExcerpt(nota, 130)}
+                      </p>
+                    )}
+
+                    <a href={`/noticias/${nota.slug}`} class="read-more-link">
+                      Leer artículo <span class="arrow">→</span>
                     </a>
-                  </article>
-                ))}
-              </div>
+                  </div>
+                </article>
+              ))}
             </div>
-          )}
+
+          </div>
+
+          <!-- Mensaje para categoría sin publicaciones -->
+          <div class="empty-state-box" id="empty-state-box" hidden>
+            <span class="empty-icon">📰</span>
+            <h4 class="empty-title">Aún no hay publicaciones en esta sección</h4>
+            <p class="empty-text">El equipo de redacción de Mercedes News está preparando notas para este género.</p>
+            <button type="button" class="btn-empty-reset" id="btn-empty-reset">
+              Ver todas las noticias
+            </button>
+          </div>
 
         </section>
       )}
@@ -204,39 +293,269 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
       </footer>
 
     </main>
+
+    <!-- Script de interactividad: Header Sticky-Shrink sin rebotes y Filtrado reactivo -->
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const headerOuter = document.getElementById('header-outer');
+        const header = document.getElementById('main-header');
+        const dropdownWrapper = document.getElementById('cat-dropdown-wrapper');
+        const dropdownBtn = document.getElementById('cat-dropdown-btn');
+        const currentCatName = document.getElementById('current-cat-name');
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+        const articulosWrapper = document.getElementById('articulos-wrapper');
+        const sectionDividerBar = document.getElementById('section-divider-bar');
+        const sectionHeadingText = document.getElementById('section-heading-text');
+        const grillaSecundarias = document.getElementById('grilla-secundarias');
+        const emptyStateBox = document.getElementById('empty-state-box');
+        const btnEmptyReset = document.getElementById('btn-empty-reset');
+
+        const CATEGORIAS = {
+          'todas': 'Todas',
+          'actualidad-local': 'Actualidad Local',
+          'cronicas': 'Crónicas & Particularidades',
+          'entrevistas': 'Mano a Mano',
+          'opinion': 'Opinión & Ensayos'
+        };
+
+        // Guardamos todas las tarjetas en memoria
+        const allCards = Array.from(document.querySelectorAll('.noticia-card'));
+
+        // 1. HEADER STICKY-SHRINK: Con histéresis y reserva de altura para CERO REBOTE
+        if (headerOuter && header) {
+          const updateOuterHeight = () => {
+            if (!header.classList.contains('is-scrolled')) {
+              headerOuter.style.minHeight = `${header.offsetHeight}px`;
+            }
+          };
+          updateOuterHeight();
+          window.addEventListener('resize', updateOuterHeight);
+
+          let isScrolled = false;
+          const handleScroll = () => {
+            const scrollY = window.scrollY;
+            // Histéresis: activa pasado los 200px (al dejar el masthead), desactiva por debajo de 120px
+            if (!isScrolled && scrollY > 200) {
+              isScrolled = true;
+              header.classList.add('is-scrolled');
+            } else if (isScrolled && scrollY < 120) {
+              isScrolled = false;
+              header.classList.remove('is-scrolled');
+            }
+          };
+
+          window.addEventListener('scroll', handleScroll, { passive: true });
+          handleScroll();
+        }
+
+        // 2. Control del Desplegable (Dropdown)
+        function closeDropdown() {
+          if (dropdownWrapper) dropdownWrapper.classList.remove('is-open');
+          if (dropdownBtn) dropdownBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        function toggleDropdown(e) {
+          if (e) e.stopPropagation();
+          const isOpen = dropdownWrapper.classList.contains('is-open');
+          if (isOpen) {
+            closeDropdown();
+          } else {
+            dropdownWrapper.classList.add('is-open');
+            dropdownBtn.setAttribute('aria-expanded', 'true');
+          }
+        }
+
+        if (dropdownBtn) {
+          dropdownBtn.addEventListener('click', toggleDropdown);
+        }
+
+        document.addEventListener('click', (e) => {
+          if (dropdownWrapper && !dropdownWrapper.contains(e.target)) {
+            closeDropdown();
+          }
+        });
+
+        // 3. Filtrado por Categoría (Vanilla JS sin recargar)
+        function applyCategoryFilter(cat) {
+          const catName = CATEGORIAS[cat] || 'Todas';
+          
+          // Actualizar texto del botón del selector
+          if (currentCatName) currentCatName.textContent = catName;
+          
+          // Actualizar ítem activo en la lista
+          dropdownItems.forEach((item) => {
+            if (item.dataset.cat === cat) {
+              item.classList.add('is-selected');
+            } else {
+              item.classList.remove('is-selected');
+            }
+          });
+          closeDropdown();
+
+          if (cat === 'todas') {
+            // MODO "TODAS"
+            if (emptyStateBox) emptyStateBox.setAttribute('hidden', '');
+            if (articulosWrapper) articulosWrapper.style.display = 'block';
+
+            // Restaurar clases y posiciones originales
+            allCards.forEach((card, index) => {
+              card.style.display = '';
+              if (index === 0) {
+                card.className = 'noticia-card is-lead';
+                if (articulosWrapper && sectionDividerBar) {
+                  articulosWrapper.insertBefore(card, sectionDividerBar);
+                }
+              } else {
+                card.className = 'noticia-card is-secondary';
+                if (grillaSecundarias) grillaSecundarias.appendChild(card);
+              }
+            });
+
+            if (sectionDividerBar) sectionDividerBar.style.display = '';
+            if (sectionHeadingText) sectionHeadingText.textContent = 'Otras Publicaciones';
+            if (grillaSecundarias) grillaSecundarias.style.display = '';
+            return;
+          }
+
+          // MODO FILTRADO POR CATEGORÍA
+          const matchingCards = allCards.filter((card) => card.dataset.cat === cat);
+
+          if (matchingCards.length === 0) {
+            // Sección sin notas
+            if (articulosWrapper) articulosWrapper.style.display = 'none';
+            if (emptyStateBox) emptyStateBox.removeAttribute('hidden');
+            return;
+          }
+
+          // Hay notas de esta categoría
+          if (emptyStateBox) emptyStateBox.setAttribute('hidden', '');
+          if (articulosWrapper) articulosWrapper.style.display = 'block';
+
+          // Ocultar tarjetas que no coinciden
+          allCards.forEach((card) => {
+            if (card.dataset.cat !== cat) {
+              card.style.display = 'none';
+            } else {
+              card.style.display = '';
+            }
+          });
+
+          // La primera nota de la categoría se promueve a NOTA DE TAPA
+          const leadCard = matchingCards[0];
+          leadCard.className = 'noticia-card is-lead';
+          if (articulosWrapper && sectionDividerBar) {
+            articulosWrapper.insertBefore(leadCard, sectionDividerBar);
+          }
+
+          // Las demás van a la grilla de secundarias
+          const restCards = matchingCards.slice(1);
+          if (restCards.length > 0) {
+            restCards.forEach((card) => {
+              card.className = 'noticia-card is-secondary';
+              if (grillaSecundarias) grillaSecundarias.appendChild(card);
+            });
+            if (sectionDividerBar) sectionDividerBar.style.display = '';
+            if (sectionHeadingText) sectionHeadingText.textContent = `Más en ${catName}`;
+            if (grillaSecundarias) grillaSecundarias.style.display = '';
+          } else {
+            if (sectionDividerBar) sectionDividerBar.style.display = 'none';
+            if (grillaSecundarias) grillaSecundarias.style.display = 'none';
+          }
+        }
+
+        // Clicks en opciones del menú desplegable
+        dropdownItems.forEach((item) => {
+          item.addEventListener('click', () => {
+            const cat = item.dataset.cat || 'todas';
+            applyCategoryFilter(cat);
+          });
+        });
+
+        // Botón de reset en pantalla vacía
+        if (btnEmptyReset) {
+          btnEmptyReset.addEventListener('click', () => applyCategoryFilter('todas'));
+        }
+
+        // Clicks en las píldoras de categoría al lado de la fecha
+        document.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-filter-cat]');
+          if (btn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const cat = btn.dataset.filterCat;
+            if (cat) {
+              applyCategoryFilter(cat);
+              const layout = document.getElementById('noticias-section');
+              if (layout) {
+                layout.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }
+          }
+        });
+
+        // Soporte para URL parameter `?cat=...`
+        const urlParams = new URLSearchParams(window.location.search);
+        const catFromUrl = urlParams.get('cat');
+        if (catFromUrl && CATEGORIAS[catFromUrl]) {
+          applyCategoryFilter(catFromUrl);
+        }
+      });
+    </script>
   </body>
 </html>
 
 <style is:global>
+  /* ========================================================
+     ESTILOS GLOBALES EDITORIALES (Mercedes News)
+     ======================================================== */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
   body {
     font-family: 'Open Sans', sans-serif;
     margin: 0;
     padding: 0;
-    position: relative;
     color: #1e2126;
     background-color: #ffffff;
-  }
-
-  .background-patron {
-    display: none;
+    -webkit-font-smoothing: antialiased;
   }
 
   .index-container {
     width: 100%;
     max-width: 1280px;
     margin: 0 auto;
+    padding: 10px 20px 60px 20px;
+  }
+
+  /* Contenedor del header con altura reservada para eliminar rebotes en scroll */
+  .header-outer {
+    width: 100%;
     background: #ffffff;
-    box-shadow: none;
-    padding: 25px 20px 60px 20px;
-    box-sizing: border-box;
+    min-height: 230px;
   }
 
-  /* Cabecera Periodística */
+  /* ========================================================
+     CABECERA Y HEADER STICKY-SHRINK
+     ======================================================== */
   .periodico-header {
-    margin-bottom: 25px;
+    position: relative;
+    background: #ffffff;
+    width: 100%;
+    transition: box-shadow 0.25s ease;
   }
 
-  .top-meta-bar {
+  .header-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 15px 20px 0 20px;
+    background: #ffffff;
+    transition: padding 0.25s ease;
+  }
+
+  /* Barra Superior de Metadatos */
+  .top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -248,181 +567,465 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: #555;
+    transition: opacity 0.2s ease, max-height 0.2s ease;
   }
 
-  .masthead {
-    text-align: center;
+  /* Área Principal de Cabecera (Logo + Slogan + Selector) */
+  .masthead-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 20px 0 10px 0;
+    gap: 15px;
+    transition: padding 0.25s ease, gap 0.25s ease;
   }
 
-  .masthead-link {
+  .brand-box {
+    width: 100%;
+    text-align: center;
+  }
+
+  .brand-link {
     text-decoration: none;
     color: inherit;
+    display: block;
+    width: 100%;
   }
 
-  /* Logotipo oficial: Archivo Expanded Black Italic */
+  /* Logotipo Oficial en Archivo Expanded Black Italic (Ocupa todo el ancho) */
   .diario-title {
     font-family: 'Archivo', sans-serif;
     font-style: italic;
     font-weight: 900;
     font-stretch: expanded;
-    font-size: 2.8rem;
-    letter-spacing: -1.5px;
+    font-size: clamp(2.8rem, 8vw, 6.2rem);
+    letter-spacing: -2px;
     color: #0252c5;
     margin: 0;
-    line-height: 1;
+    line-height: 0.95;
     text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+    display: block;
+    transition: font-size 0.25s cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 0.25s ease, text-align 0.25s ease;
   }
 
   .diario-lema {
     font-family: 'Open Sans', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     font-style: italic;
     color: #666;
-    margin: 8px 0 0 0;
+    margin: 10px 0 0 0;
+    text-align: center;
+    transition: opacity 0.2s ease, max-height 0.2s ease;
   }
 
+  /* ========================================================
+     SELECTOR DESPLEGABLE DE CATEGORÍAS (DROPDOWN)
+     ======================================================== */
+  .category-filter-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-trigger-btn {
+    background: #ffffff;
+    border: 1.5px solid #0252c5;
+    border-radius: 22px;
+    padding: 7px 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #1e2126;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(2, 82, 197, 0.08);
+    transition: all 0.2s ease;
+  }
+
+  .dropdown-trigger-btn:hover {
+    background: #f0f5ff;
+    border-color: #013788;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(2, 82, 197, 0.16);
+  }
+
+  .trigger-label {
+    font-size: 0.72rem;
+    font-weight: 900;
+    color: #0252c5;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .trigger-value {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #1e2126;
+  }
+
+  .trigger-arrow {
+    font-size: 0.75rem;
+    color: #0252c5;
+    transition: transform 0.2s ease;
+  }
+
+  .dropdown-wrapper.is-open .trigger-arrow {
+    transform: rotate(180deg);
+  }
+
+  /* Menú flotante del Dropdown (Oculto por defecto) */
+  .dropdown-list {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 260px;
+    background: #ffffff;
+    border: 1px solid #d5d9da;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    z-index: 1050;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .dropdown-wrapper.is-open .dropdown-list {
+    display: flex;
+  }
+
+  .dropdown-item {
+    padding: 10px 15px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1e2126;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    text-align: left;
+  }
+
+  .dropdown-item:hover {
+    background-color: #f0f5ff;
+    color: #0252c5;
+  }
+
+  .dropdown-item.is-selected {
+    background-color: #0252c5;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  /* Doble Pleca Azul Auténtica (Línea gruesa 4px + espacio 7px + línea fina 1.5px) */
   .header-divider {
-    border-top: 3px solid #0252c5;
-    border-bottom: 1px solid rgba(2, 82, 197, 0.4);
-    height: 3px;
-    margin-top: 15px;
+    border-top: 4px solid #0252c5;
+    border-bottom: 1.5px solid rgba(2, 82, 197, 0.45);
+    height: 7px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    transition: all 0.25s ease;
   }
 
-  /* Noticia Destacada / Tapa */
-  .nota-destacada {
-    margin-bottom: 35px;
-    border-bottom: 1px solid rgba(2, 82, 197, 0.2);
-    padding-bottom: 30px;
+  /* ========================================================
+     ESTADO REDUCIDO (HEADER STICKY-SHRINK EN SCROLL)
+     ======================================================== */
+  .periodico-header.is-scrolled {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    animation: headerSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
-  .destacada-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
+  @keyframes headerSlideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 
-  .destacada-img-wrapper {
+  .periodico-header.is-scrolled .header-container {
+    padding-top: 6px;
+  }
+
+  .periodico-header.is-scrolled .top-bar {
+    display: none;
+  }
+
+  .periodico-header.is-scrolled .diario-lema {
+    display: none;
+  }
+
+  .periodico-header.is-scrolled .masthead-area {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    gap: 15px;
+  }
+
+  .periodico-header.is-scrolled .brand-box {
+    width: auto;
+    text-align: left;
+  }
+
+  .periodico-header.is-scrolled .brand-link {
+    width: auto;
+  }
+
+  .periodico-header.is-scrolled .diario-title {
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    letter-spacing: -1px;
+    text-align: left;
+    width: auto;
+  }
+
+  .periodico-header.is-scrolled .dropdown-list {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+
+  .periodico-header.is-scrolled .header-divider {
+    margin-top: 6px;
+    margin-bottom: 0;
+    border-top: 2px solid #0252c5;
+    border-bottom: none;
+    height: 2px;
+  }
+
+  /* ========================================================
+     NOTICIAS: TARJETAS Y TIPOGRAFÍAS EDITORIALES
+     ======================================================== */
+  .noticias-section {
+    width: 100%;
+  }
+
+  .noticia-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Imagen y Badges */
+  .card-media {
     position: relative;
     overflow: hidden;
-    margin-bottom: 20px;
-    background: #000;
+    background: #000000;
   }
 
-  .destacada-img {
+  .media-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+
+  .card-img {
     width: 100%;
     height: auto;
-    max-height: 480px;
     object-fit: cover;
     display: block;
-    transition: transform 0.4s ease, opacity 0.3s ease;
+    transition: transform 0.35s ease, opacity 0.25s ease;
   }
 
-  .destacada-link:hover .destacada-img {
-    transform: scale(1.02);
-    opacity: 0.95;
+  .media-link:hover .card-img {
+    transform: scale(1.025);
+    opacity: 0.96;
   }
 
-  .tag-tapa {
+  .badge-tapa {
     position: absolute;
     top: 12px;
     left: 12px;
     background: #1e2126;
-    color: #fff;
+    color: #ffffff;
     font-family: 'Montserrat', sans-serif;
     font-size: 0.7rem;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     padding: 4px 10px;
+    z-index: 2;
+  }
+
+  .badge-cat {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(30, 33, 38, 0.9);
+    color: #ffffff;
+    backdrop-filter: blur(4px);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    border-left: 3px solid #0252c5;
+    z-index: 2;
+  }
+
+  /* Metadatos (Fecha • Categoría botón) */
+  .meta-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 8px 0;
   }
 
   .fecha {
     font-family: 'Montserrat', sans-serif;
     color: #888;
-    font-size: 0.85rem;
-    display: block;
-    margin-bottom: 8px;
+    font-size: 0.82rem;
     text-transform: capitalize;
   }
 
-  /* Título y Subtítulo Destacada (Poppins) */
-  .destacada-titulo {
-    margin: 5px 0 15px 0;
+  .meta-dot {
+    color: #bbb;
+    font-size: 0.8rem;
+  }
+
+  .cat-pill-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #0252c5;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: color 0.15s ease, text-decoration 0.15s ease;
+  }
+
+  .cat-pill-btn:hover {
+    color: #013788;
+    text-decoration: underline;
+  }
+
+  /* Títulos y Enlaces */
+  .title-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
     transition: color 0.2s ease;
   }
 
-  .destacada-titulo .titulo-principal {
+  .title-link:hover .titulo-principal {
+    color: #0252c5;
+  }
+
+  /* Botón "Leer completa →" */
+  .read-more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1e2126;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border-bottom: 2px solid #0252c5;
+    padding-bottom: 2px;
+    margin-top: 6px;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  .read-more-link:hover {
+    color: #0252c5;
+    transform: translateX(4px);
+  }
+
+  .arrow {
+    transition: transform 0.2s ease;
+  }
+
+  /* ========================================================
+     MODO NOTA DE TAPA (is-lead)
+     ======================================================== */
+  .noticia-card.is-lead {
+    margin-bottom: 35px;
+    border-bottom: 1px solid rgba(2, 82, 197, 0.2);
+    padding-bottom: 30px;
+  }
+
+  .noticia-card.is-lead .card-img {
+    max-height: 480px;
+  }
+
+  .noticia-card.is-lead .card-title {
+    margin: 6px 0 15px 0;
+  }
+
+  .noticia-card.is-lead .card-title .titulo-principal {
     display: block;
     font-family: 'Poppins', sans-serif;
-    font-weight: 700; /* Poppins Bold */
+    font-weight: 700;
     font-size: 2.2rem;
     line-height: 1.05;
     letter-spacing: -1px;
     color: #1e2126;
+    transition: color 0.2s ease;
   }
 
-  .destacada-titulo .subtitulo-nota {
+  .noticia-card.is-lead .card-title .subtitulo-nota {
     display: block;
     font-family: 'Poppins', sans-serif;
-    font-weight: 300; /* Poppins Light (peso legible) */
+    font-weight: 300;
     font-size: 1.25rem;
     line-height: 1.25;
     color: #1e2126;
     margin-top: 8px;
   }
 
-  .destacada-link:hover .destacada-titulo .titulo-principal {
-    color: #0252c5;
-  }
-
-  .destacada-bajada {
+  .noticia-card.is-lead .card-bajada {
     font-size: 1.05rem;
     line-height: 1.6;
     color: #444;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
     text-align: left;
     hyphens: auto;
     -webkit-hyphens: auto;
     overflow-wrap: break-word;
   }
 
-  .leer-mas {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: #1e2126;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 2px solid #0252c5;
-    padding-bottom: 2px;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-  }
-
-  .destacada-link:hover .leer-mas {
-    transform: translateX(4px);
-  }
-
-  .flecha {
-    transition: transform 0.2s ease;
-  }
-
-  /* Sección Archivo / Otras Noticias */
-  .archivo-seccion {
-    margin-top: 20px;
-  }
-
-  .seccion-titulo-wrapper {
+  /* ========================================================
+     SEPARADOR DE SECCIÓN (Otras Publicaciones)
+     ======================================================== */
+  .section-divider-bar {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 25px;
+    margin: 25px 0 25px 0;
   }
 
-  .seccion-titulo {
+  .section-heading {
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
     font-weight: 900;
@@ -433,59 +1036,42 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     white-space: nowrap;
   }
 
-  .seccion-line {
+  .section-heading-line {
     flex: 1;
     height: 1px;
     background: rgba(2, 82, 197, 0.35);
   }
 
+  /* ========================================================
+     GRILLA SECUNDARIAS (is-secondary)
+     ======================================================== */
   .grilla-secundarias {
     display: grid;
     grid-template-columns: 1fr;
     gap: 25px;
   }
 
-  .tarjeta-secundaria {
+  .noticia-card.is-secondary {
     border-bottom: 1px solid rgba(2, 82, 197, 0.15);
     padding-bottom: 20px;
   }
 
-  .secundaria-link {
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .secundaria-img-wrapper {
-    overflow: hidden;
-    background: #f0f0f0;
+  .noticia-card.is-secondary .card-img {
     max-height: 220px;
   }
 
-  .secundaria-img {
-    width: 100%;
-    height: 100%;
-    max-height: 220px;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
+  .noticia-card.is-secondary .badge-tapa {
+    display: none;
   }
 
-  .secundaria-link:hover .secundaria-img {
-    transform: scale(1.03);
-  }
-
-  /* Título y Subtítulo Secundarias (Poppins) */
-  .secundaria-titulo {
+  .noticia-card.is-secondary .card-title {
     margin: 4px 0 8px 0;
   }
 
-  .secundaria-titulo .titulo-principal {
+  .noticia-card.is-secondary .card-title .titulo-principal {
     display: block;
     font-family: 'Poppins', sans-serif;
-    font-weight: 700; /* Poppins Bold */
+    font-weight: 700;
     font-size: 1.35rem;
     line-height: 1.15;
     letter-spacing: -0.5px;
@@ -493,21 +1079,17 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     transition: color 0.2s ease;
   }
 
-  .secundaria-titulo .subtitulo-nota {
+  .noticia-card.is-secondary .card-title .subtitulo-nota {
     display: block;
     font-family: 'Poppins', sans-serif;
-    font-weight: 300; /* Poppins Light (peso legible) */
+    font-weight: 300;
     font-size: 0.98rem;
     line-height: 1.25;
     color: #1e2126;
     margin-top: 5px;
   }
 
-  .secundaria-link:hover .secundaria-titulo .titulo-principal {
-    color: #0252c5;
-  }
-
-  .secundaria-bajada {
+  .noticia-card.is-secondary .card-bajada {
     font-size: 0.92rem;
     line-height: 1.5;
     color: #555;
@@ -518,21 +1100,59 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     overflow-wrap: break-word;
   }
 
-  .leer-mas-secundaria {
+  /* ========================================================
+     ESTADO VACÍO (Sección sin publicaciones)
+     ======================================================== */
+  .empty-state-box {
+    padding: 60px 20px;
+    text-align: center;
+    background: #fafbfc;
+    border: 1px dashed #d5d9da;
+    border-radius: 8px;
+    margin: 30px 0;
+  }
+
+  .empty-icon {
+    font-size: 2.8rem;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .empty-title {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.78rem;
+    font-size: 1.3rem;
     font-weight: 700;
+    color: #1e2126;
+    margin: 0 0 8px 0;
+  }
+
+  .empty-text {
+    font-size: 0.95rem;
     color: #666;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    display: inline-block;
+    max-width: 480px;
+    margin: 0 auto 20px auto;
   }
 
-  .secundaria-link:hover .leer-mas-secundaria {
-    color: #0252c5;
+  .btn-empty-reset {
+    background: #0252c5;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
   }
 
-  /* Footer */
+  .btn-empty-reset:hover {
+    background: #013788;
+  }
+
+  /* ========================================================
+     PIE DE PÁGINA (Footer)
+     ======================================================== */
   .periodico-footer {
     margin-top: 40px;
     padding-top: 15px;
@@ -573,28 +1193,35 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     background: #f9f9f9;
   }
 
-  /* Responsive Desktop */
+  /* ========================================================
+     RESPONSIVE DESKTOP (A partir de 768px)
+     ======================================================== */
   @media (min-width: 768px) {
-    body {
-      padding: 0;
+    .header-container {
+      padding: 15px 60px 0 60px;
     }
 
     .index-container {
-      padding: 40px 60px 80px 60px;
+      padding: 10px 60px 80px 60px;
     }
 
     .diario-title {
-      font-size: 4.5rem;
+      font-size: clamp(3.4rem, 8vw, 6.2rem);
       letter-spacing: -2px;
     }
 
-    .destacada-titulo .titulo-principal {
+    .periodico-header.is-scrolled .diario-title {
+      font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+      letter-spacing: -1.2px;
+    }
+
+    .noticia-card.is-lead .card-title .titulo-principal {
       font-size: 3.2rem;
       line-height: 0.98;
       letter-spacing: -1.5px;
     }
 
-    .destacada-titulo .subtitulo-nota {
+    .noticia-card.is-lead .card-title .subtitulo-nota {
       font-size: 1.8rem;
       line-height: 1.15;
       margin-top: 10px;
@@ -605,14 +1232,14 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
       gap: 30px;
     }
 
-    .tarjeta-secundaria {
+    .noticia-card.is-secondary {
       border-bottom: none;
       padding-bottom: 0;
       border-right: 1px solid rgba(2, 82, 197, 0.18);
       padding-right: 25px;
     }
 
-    .tarjeta-secundaria:nth-child(2n) {
+    .noticia-card.is-secondary:nth-child(2n) {
       border-right: none;
       padding-right: 0;
     }
