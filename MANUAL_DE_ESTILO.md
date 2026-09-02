@@ -154,14 +154,14 @@ El portal organiza sus notas en 4 secciones fijas:
 4. **Opinión & Ensayos** (`opinion`)
 
 ### B. Header Interactivo (Sticky-Shrink)
-- **Modo Superior:** El encabezado se muestra en su escala completa, con la fecha/edición arriba, el logo `MERCEDES NEWS` de gran tamaño (4.5rem) en azul `#0252c5`, el lema oficial y el selector desplegable de secciones.
-- **Modo Scrolled (Reducido):** Mediante un `IntersectionObserver` de alto rendimiento, al hacer scroll el header pasa a `position: sticky; top: 0;`, ocultando la fecha y el lema y compactando el logo hacia la izquierda para convivir en una sola fila con el menú de categorías sobre la derecha.
+- **Modo Superior:** El encabezado se muestra en su escala completa, con la fecha/edición arriba, el logo `MERCEDES NEWS` a ancho completo en azul `#0252c5`, el lema oficial y el selector desplegable de secciones.
+- **Modo Scrolled (Fijo Reducido):** Al hacer scroll pasando la cabecera (`scrollY > 200px`), el header pasa a `position: fixed; top: 0;` deslizándose suavemente. Oculta la fecha y el lema, y compacta el logo hacia la izquierda para convivir en una sola fila con el selector de categorías sobre la derecha. El contenedor exterior mantiene reservada la altura para evitar cualquier salto o rebote en las noticias.
 
 ### C. Menú Desplegable y Filtrado Reactivo
 - En la cabecera se ubica un selector desplegable visible (`SECCIÓN: Todas ▾`).
 - Al desplegar y elegir una sección:
   - El selector se actualiza dinámicamente con el nombre de la sección activa.
-  - Se activa una barra de estado informativa con opción de limpiar el filtro.
   - La nota más reciente de la categoría elegida pasa a liderar la página en el espacio de Tapa, y las demás notas de esa categoría se muestran en la grilla secundaria.
   - Si una categoría aún no contiene artículos, se presenta una pantalla limpia con aviso editorial y botón para regresar a la portada general.
-- Cada tarjeta en la portada y cada nota individual cuenta con un enlace directo a su categoría al lado de la fecha (`fecha • categoría`), el cual activa el filtro al hacer clic.
+- **Diseño limpio de tarjetas:** Las fotografías se mantienen limpias y despejadas (únicamente la nota de apertura lleva la etiqueta sobria `TAPA`).
+- Cada tarjeta en la portada y cada nota individual cuenta con un enlace directo y clicable a su categoría al lado de la fecha (`fecha • CATEGORÍA`), el cual activa el filtro de esa sección de inmediato.

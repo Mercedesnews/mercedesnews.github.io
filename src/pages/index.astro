@@ -167,7 +167,6 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
                         class="card-img" 
                       />
                       <span class="badge-tapa">Tapa</span>
-                      <span class="badge-cat">{CATEGORIAS[notas[0].cat] || 'Actualidad'}</span>
                     </a>
                   </div>
                 )}
@@ -227,7 +226,6 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
                           alt={cleanTitle(nota.frontmatter.title)} 
                           class="card-img" 
                         />
-                        <span class="badge-cat">{CATEGORIAS[nota.cat] || 'Actualidad'}</span>
                       </a>
                     </div>
                   )}
@@ -866,24 +864,6 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     padding: 4px 10px;
-    z-index: 2;
-  }
-
-  .badge-cat {
-    position: absolute;
-    bottom: 12px;
-    left: 12px;
-    background: rgba(30, 33, 38, 0.9);
-    color: #ffffff;
-    backdrop-filter: blur(4px);
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 3px 8px;
-    border-radius: 3px;
-    border-left: 3px solid #0252c5;
     z-index: 2;
   }
 
