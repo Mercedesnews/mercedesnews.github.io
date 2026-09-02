@@ -114,15 +114,23 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
 
 ## 📄 5. Estructura de la Nota Individual (`noticias/[slug].astro`)
 
-1. **Cabecera de Nota:**
-   - Imagen de portada a ancho completo (hasta 520px de altura).
-2. **Titular y Fecha:**
+1. **Cabecera Institucional y Retorno:**
+   - Logotipo principal **`MERCEDES NEWS`** a ancho completo en `Archivo Expanded Black Italic` y azul institucional (`#0252c5`), con enlace directo a la portada (`/`).
+   - Lema institucional formal: *«El portal de noticias hecho para vos»*.
+   - Doble pleca azul divisoria idéntica a la portada (4px superior, 7px espacio, 1.5px inferior).
+   - Se omite intencionalmente la barra superior de fecha de hoy para evitar confusión con la fecha de publicación del artículo.
+   - La cabecera permanece estática arriba de todo para no invadir ni recortar el espacio vertical de lectura.
+2. **Fotografía de Portada:**
+   - Perfectamente alineada con los márgenes del contenedor y con espacio respirable respecto a la doble pleca.
+3. **Titular y Fecha:**
    - Título en `Poppins Bold` (hasta 4.5rem en desktop) y subtítulo en `Poppins Light` (hasta 2.2rem).
-   - Fecha de publicación en español formal y enlace directo a su categoría temáticia (`fecha • categoría`).
-3. **Lectura a Dos Columnas (Desktop):**
+   - Fecha de publicación en español formal y enlace directo a su categoría temática (`fecha • CATEGORÍA`), que activa el filtro al hacer clic.
+4. **Lectura a Dos Columnas (Desktop):**
    - A partir de pantallas medianas (`min-width: 768px`), el texto se organiza automáticamente en **2 columnas de lectura paralela** (`column-count: 2; column-gap: 50px;`), simulando la diagramación física de un periódico.
    - Divisor vertical suave entre ambas columnas (`column-rule: 1px solid rgba(2, 82, 197, 0.15)`).
-4. **Pestaña del Navegador (`<title>`):**
+5. **Pie de Página (Footer):**
+   - Cierre editorial simétrico con la portada: doble pleca, derechos reservados de Mercedes News y acceso al panel de redacción.
+6. **Pestaña del Navegador (`<title>`):**
    - Limpieza automática: toma únicamente el primer renglón del titular para una pestaña limpia y profesional.
 
 ---
