@@ -293,6 +293,91 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
               ))}
             </div>
 
+            {/* SECCIÓN PUBLICITARIA / AUSPICIANTES (Opción B: Franja Intermedia) */}
+            <aside class="seccion-publicidades" id="seccion-publicidades" aria-label="Espacio publicitario">
+              <div class="publicidad-divider-bar">
+                <span class="publicidad-badge">Espacio Publicitario</span>
+                <div class="publicidad-divider-line"></div>
+              </div>
+
+              <div class="publicidades-grid">
+                <!-- Publicidad 1: Gastronomía & Tradición local -->
+                <div class="ad-card">
+                  <a href="#" class="ad-link" onclick="return false;" title="Auspiciante: Sabores de Mercedes">
+                    <div class="ad-inner ad-theme-gastronomia">
+                      <span class="ad-micro-label">Auspiciante Oficial</span>
+                      <div class="ad-content-box">
+                        <span class="ad-icon">🥖</span>
+                        <h4 class="ad-brand-name">Sabores de Mercedes</h4>
+                        <p class="ad-brand-tagline">Salame Quintero &amp; Quesos de Campo de elaboración artesanal</p>
+                      </div>
+                      <span class="ad-cta-btn">Conocé Más</span>
+                    </div>
+                  </a>
+                </div>
+
+                <!-- Publicidad 2: Café & Punto de Encuentro local -->
+                <div class="ad-card">
+                  <a href="#" class="ad-link" onclick="return false;" title="Auspiciante: Café de la Plaza">
+                    <div class="ad-inner ad-theme-servicios">
+                      <span class="ad-micro-label">Auspiciante Oficial</span>
+                      <div class="ad-content-box">
+                        <span class="ad-icon">☕</span>
+                        <h4 class="ad-brand-name">Café de la Plaza</h4>
+                        <p class="ad-brand-tagline">El tradicional punto de encuentro en el centro de nuestra ciudad</p>
+                      </div>
+                      <span class="ad-cta-btn">Visitanos</span>
+                    </div>
+                  </a>
+                </div>
+
+                <!-- Publicidad 3: Llamado Comercial para Anunciar en Mercedes News -->
+                <div class="ad-card ad-card-promo">
+                  <a href="mailto:mercedesnews2026@gmail.com" class="ad-link" title="Anunciá en Mercedes News">
+                    <div class="ad-inner ad-theme-promo">
+                      <span class="ad-micro-label">Mercedes News Comercial</span>
+                      <div class="ad-content-box">
+                        <span class="ad-icon">📢</span>
+                        <h4 class="ad-brand-name">Tu Marca Acá</h4>
+                        <p class="ad-brand-tagline">Llegá a toda la comunidad mercedina con presencia destacada</p>
+                      </div>
+                      <span class="ad-cta-btn ad-cta-highlight">Anunciá con nosotros</span>
+                    </div>
+                  </a>
+                </div>
+
+                <!-- Publicidad 4: Hotelería & Turismo -->
+                <div class="ad-card">
+                  <a href="#" class="ad-link" onclick="return false;" title="Auspiciante: Gran Hotel Mercedes">
+                    <div class="ad-inner ad-theme-turismo">
+                      <span class="ad-micro-label">Auspiciante Oficial</span>
+                      <div class="ad-content-box">
+                        <span class="ad-icon">🏨</span>
+                        <h4 class="ad-brand-name">Gran Hotel Mercedes</h4>
+                        <p class="ad-brand-tagline">Confort, descanso y calidez en pleno casco histórico</p>
+                      </div>
+                      <span class="ad-cta-btn">Reservá Ahora</span>
+                    </div>
+                  </a>
+                </div>
+
+                <!-- Publicidad 5: Agro & Campo Mercedino -->
+                <div class="ad-card">
+                  <a href="#" class="ad-link" onclick="return false;" title="Auspiciante: Agroservicios La Querencia">
+                    <div class="ad-inner ad-theme-agro">
+                      <span class="ad-micro-label">Auspiciante Oficial</span>
+                      <div class="ad-content-box">
+                        <span class="ad-icon">🌾</span>
+                        <h4 class="ad-brand-name">La Querencia</h4>
+                        <p class="ad-brand-tagline">Insumos rurales y soluciones para el productor agropecuario</p>
+                      </div>
+                      <span class="ad-cta-btn">Consultá Catálogo</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </aside>
+
             {/* 3. SECCIÓN: LO QUE TENÉS QUE SABER (Notas de más de 3 días) */}
             <section 
               class="seccion-archivo" 
@@ -1327,6 +1412,238 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
 
     .noticia-card.is-compact .meta-row {
       margin: 10px 0 6px 0;
+    }
+  }
+
+  /* ========================================================
+     SECCIÓN: FRANJA PUBLICITARIA / AUSPICIANTES (Opción B)
+     ======================================================== */
+  .seccion-publicidades {
+    margin: 45px 0 35px 0;
+    padding-top: 10px;
+  }
+
+  .publicidad-divider-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .publicidad-badge {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #888888;
+    background: #ffffff;
+    white-space: nowrap;
+  }
+
+  .publicidad-divider-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(2, 82, 197, 0.18);
+  }
+
+  .publicidades-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+
+  .ad-card {
+    flex: 0 0 calc((100% - 50px) / 3);
+    max-width: calc((100% - 50px) / 3);
+    aspect-ratio: 1 / 1;
+    background: #ffffff;
+    border: 1px solid #d5d9da;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    box-sizing: border-box;
+  }
+
+  .ad-card:hover {
+    transform: translateY(-3px);
+    border-color: #0252c5;
+    box-shadow: 0 8px 22px rgba(2, 82, 197, 0.12);
+  }
+
+  .ad-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .ad-inner {
+    width: 100%;
+    height: 100%;
+    padding: 22px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* Temas de color sobrios para cada placeholder */
+  .ad-theme-gastronomia {
+    background: linear-gradient(180deg, #ffffff 0%, #faf8f5 100%);
+  }
+
+  .ad-theme-servicios {
+    background: linear-gradient(180deg, #ffffff 0%, #f6f9fc 100%);
+  }
+
+  .ad-theme-promo {
+    background: linear-gradient(180deg, #ffffff 0%, #f0f5ff 100%);
+    border: 1.5px dashed rgba(2, 82, 197, 0.4);
+    border-radius: 6px;
+  }
+
+  .ad-theme-turismo {
+    background: linear-gradient(180deg, #ffffff 0%, #f5fbf8 100%);
+  }
+
+  .ad-theme-agro {
+    background: linear-gradient(180deg, #ffffff 0%, #fdf9f2 100%);
+  }
+
+  .ad-micro-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888888;
+  }
+
+  .ad-theme-promo .ad-micro-label {
+    color: #0252c5;
+  }
+
+  .ad-content-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: auto 0;
+  }
+
+  .ad-icon {
+    font-size: 2.2rem;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .ad-brand-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1e2126;
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+  }
+
+  .ad-brand-tagline {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.8rem;
+    color: #555555;
+    margin: 0;
+    line-height: 1.35;
+    max-width: 210px;
+  }
+
+  .ad-cta-btn {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #0252c5;
+    border: 1px solid #0252c5;
+    border-radius: 14px;
+    padding: 5px 14px;
+    transition: all 0.2s ease;
+  }
+
+  .ad-card:hover .ad-cta-btn {
+    background-color: #0252c5;
+    color: #ffffff;
+  }
+
+  .ad-cta-highlight {
+    background-color: #0252c5;
+    color: #ffffff;
+  }
+
+  .ad-card:hover .ad-cta-highlight {
+    background-color: #013788;
+    border-color: #013788;
+  }
+
+  /* Responsive de la franja publicitaria */
+  @media (max-width: 820px) {
+    .publicidades-grid {
+      gap: 16px;
+    }
+
+    .ad-card {
+      flex: 0 0 calc((100% - 32px) / 3);
+      max-width: calc((100% - 32px) / 3);
+    }
+
+    .ad-inner {
+      padding: 16px 12px;
+    }
+
+    .ad-brand-name {
+      font-size: 1rem;
+    }
+
+    .ad-brand-tagline {
+      font-size: 0.75rem;
+    }
+
+    .ad-icon {
+      font-size: 1.8rem;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .publicidades-grid {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .ad-card {
+      flex: 0 0 100%;
+      width: 100%;
+      max-width: 290px;
+    }
+
+    .ad-inner {
+      padding: 22px 18px;
+    }
+
+    .ad-brand-name {
+      font-size: 1.15rem;
+    }
+
+    .ad-brand-tagline {
+      font-size: 0.8rem;
     }
   }
 

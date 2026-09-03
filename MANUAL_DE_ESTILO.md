@@ -107,7 +107,15 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
    - Encabezado "Otras Publicaciones" con línea continua azul hacia el margen derecho.
    - Grilla a **2 columnas balanceadas** en escritorio con divisor vertical sutil.
    - Tarjetas verticales con imagen (efecto zoom sutil al cursor `scale(1.025)`), fecha, categoría temática y extracto.
-5. **Sección "Lo que tenés que saber" (Archivo Compacto):**
+5. **Franja Publicitaria y de Auspiciantes (Opción B):**
+   - Franja comercial intermedia no invasiva situada entre "Otras Publicaciones" y "Lo que tenés que saber".
+   - Encabezada por un cintillo superior sobrio: `ESPACIO PUBLICITARIO` en gris neutro (`#888888`) con línea divisoria fina.
+   - **Formato Cuadrado 1:1:** Cada anuncio tiene una relación de aspecto cuadrada inalterable (`aspect-ratio: 1 / 1`), con bordes suaves (`#d5d9da`), fondo de apoyo claro y microinteracción de elevación sutil al cursor.
+   - **Disposición en Grilla/Flex:**
+     - En computadoras: 3 columnas de tarjetas cuadradas. Si hay filas incompletas (ej: 5 anuncios), los elementos de la última fila se centran armónicamente.
+     - En pantallas menores a 680px: se apilan verticalmente en una sola columna centrada (máximo 290px de ancho).
+   - **No-invasividad:** Sin elementos flotantes, sin pop-ups, sin videos con autoplay y con tipografías alineadas al manual de marca (`Montserrat` y `Open Sans`).
+6. **Sección "Lo que tenés que saber" (Archivo Compacto):**
    - Agrupa automáticamente las notas con **más de 3 días calendario de antigüedad**.
    - Delimitada con separador horizontal azul y título formal en azul institucional: **LO QUE TENÉS QUE SABER**.
    - **Diseño compacto en fila horizontal:**
@@ -115,7 +123,7 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
      - A la derecha: Metadatos (`fecha • CATEGORÍA`) y titular (`Poppins Bold` + `Poppins Light`), sin extracto ni botón de lectura para lograr un listado limpio, conciso y ultracompacto.
    - **Comportamiento responsivo móvil:** En pantallas menores a 680px, la tarjeta conmuta automáticamente a formato apilado vertical (imagen completa arriba, contenido abajo).
    - **Integración con filtro de secciones:** Si el usuario filtra por categoría, la sección muestra únicamente las notas antiguas de esa categoría (con título *"Lo que tenés que saber en [Categoría]"*), y se oculta de forma limpia si no hay notas que coincidan.
-6. **Pie de Página:**
+7. **Pie de Página:**
    - Doble pleca azul simétrica con la cabecera.
    - Mención de derechos reservados en `#1e2126`.
    - Botón discreto de acceso a redacción y CMS (`⚙️ Redacción / CMS`).
