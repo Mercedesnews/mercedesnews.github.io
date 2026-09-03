@@ -2,7 +2,7 @@
 title: |-
   Nota de hoy
   Mañana pasa para abajo
-date: 2026-09-02T19:53:00
+date: 2026-08-31T19:53:00
 categoria: actualidad-local
 thumbnail: /assets/img/image-163-1024x576.webp
 ---
