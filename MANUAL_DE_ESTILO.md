@@ -101,11 +101,20 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
    - Titular en `Poppins Bold` y subtítulo en `Poppins Light`.
    - Extracto informativo alineado a la izquierda.
    - Enlace de lectura con flecha dinámica: `Leer nota completa →`.
-4. **Archivo y Noticias Secundarias:**
-   - Título de sección "Otras Publicaciones" con línea continua azul hacia el margen derecho.
+4. **Noticias Secundarias Recientes ("Otras Publicaciones"):**
+   - Agrupa las noticias secundarias con antigüedad **menor o igual a 3 días calendario**.
+   - Encabezado "Otras Publicaciones" con línea continua azul hacia el margen derecho.
    - Grilla a **2 columnas balanceadas** en escritorio con divisor vertical sutil.
-   - Tarjetas con imagen (efecto zoom sutil al cursor `scale(1.03)`), fecha, titular (`Poppins Bold` + `Poppins Light`) y extracto.
-5. **Pie de Página:**
+   - Tarjetas verticales con imagen (efecto zoom sutil al cursor `scale(1.025)`), fecha, categoría temática y extracto.
+5. **Sección "Lo que tenés que saber" (Archivo Compacto):**
+   - Agrupa automáticamente las notas con **más de 3 días calendario de antigüedad**.
+   - Delimitada con separador horizontal azul y título formal en azul institucional: **LO QUE TENÉS QUE SABER**.
+   - **Diseño compacto en fila horizontal:**
+     - A la izquierda: Fotografía en miniatura proporcionada (240×155px).
+     - A la derecha: Metadatos (`fecha • CATEGORÍA`) y titular (`Poppins Bold` + `Poppins Light`), sin extracto ni botón de lectura para lograr un listado limpio, conciso y ultracompacto.
+   - **Comportamiento responsivo móvil:** En pantallas menores a 680px, la tarjeta conmuta automáticamente a formato apilado vertical (imagen completa arriba, contenido abajo).
+   - **Integración con filtro de secciones:** Si el usuario filtra por categoría, la sección muestra únicamente las notas antiguas de esa categoría (con título *"Lo que tenés que saber en [Categoría]"*), y se oculta de forma limpia si no hay notas que coincidan.
+6. **Pie de Página:**
    - Doble pleca azul simétrica con la cabecera.
    - Mención de derechos reservados en `#1e2126`.
    - Botón discreto de acceso a redacción y CMS (`⚙️ Redacción / CMS`).

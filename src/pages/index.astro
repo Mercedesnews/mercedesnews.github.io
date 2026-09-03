@@ -10,14 +10,36 @@ const CATEGORIAS: Record<string, string> = {
   'opinion': 'Opinión & Ensayos'
 };
 
+// Función para calcular diferencia en días calendario
+function getCalendarDaysDiff(dateString) {
+  if (!dateString) return 0;
+  const now = new Date();
+  const target = new Date(dateString);
+  const d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const d2 = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+  const diffTime = d1.getTime() - d2.getTime();
+  return Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
+}
+
 // Ordenamos las notas por fecha de forma descendente (la más reciente primero)
 const notas = rawNotas
   .map((nota) => {
     const slug = nota.file.split('/').pop().replace('.md', '');
     const cat = nota.frontmatter.categoria || 'actualidad-local';
-    return { ...nota, slug, cat };
+    const daysAgo = getCalendarDaysDiff(nota.frontmatter.date);
+    const isOld = daysAgo > 3;
+    const timestamp = new Date(nota.frontmatter.date).getTime();
+    return { ...nota, slug, cat, daysAgo, isOld, timestamp };
   })
-  .sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime());
+  .sort((a, b) => b.timestamp - a.timestamp);
+
+// Partición de notas:
+// - La nota más reciente (notas[0]) siempre lidera la Tapa destacada
+// - Las demás se dividen en secundarias recientes (<= 3 días) y archivo (> 3 días)
+const leadNota = notas[0];
+const restNotas = notas.slice(1);
+const secundariasRecientes = restNotas.filter((n) => !n.isOld);
+const notasLoQueTenesQueSaber = restNotas.filter((n) => n.isOld);
 
 // Función para formatear fechas al estilo editorial
 function formatDate(dateString) {
@@ -151,19 +173,21 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
           <!-- Contenedor único de noticias -->
           <div class="articulos-wrapper" id="articulos-wrapper">
             
-            {/* Nota de Tapa Inicial (Primera nota) */}
-            {notas[0] && (
+            {/* 1. NOTA DE TAPA (Siempre la más reciente) */}
+            {leadNota && (
               <article 
                 class="noticia-card is-lead" 
-                id={`card-${notas[0].slug}`}
-                data-cat={notas[0].cat}
+                id={`card-${leadNota.slug}`}
+                data-cat={leadNota.cat}
+                data-is-old={leadNota.isOld ? 'true' : 'false'}
+                data-timestamp={leadNota.timestamp}
               >
-                {notas[0].frontmatter.thumbnail && (
+                {leadNota.frontmatter.thumbnail && (
                   <div class="card-media">
-                    <a href={`/noticias/${notas[0].slug}`} class="media-link">
+                    <a href={`/noticias/${leadNota.slug}`} class="media-link">
                       <img 
-                        src={notas[0].frontmatter.thumbnail} 
-                        alt={cleanTitle(notas[0].frontmatter.title)} 
+                        src={leadNota.frontmatter.thumbnail} 
+                        alt={cleanTitle(leadNota.frontmatter.title)} 
                         class="card-img" 
                       />
                       <span class="badge-tapa">Tapa</span>
@@ -173,50 +197,57 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
 
                 <div class="card-content">
                   <div class="meta-row">
-                    <span class="fecha">{formatDate(notas[0].frontmatter.date)}</span>
+                    <span class="fecha">{formatDate(leadNota.frontmatter.date)}</span>
                     <span class="meta-dot">•</span>
                     <button 
                       type="button" 
                       class="cat-pill-btn" 
-                      data-filter-cat={notas[0].cat}
-                      title={`Filtrar por ${CATEGORIAS[notas[0].cat]}`}
+                      data-filter-cat={leadNota.cat}
+                      title={`Filtrar por ${CATEGORIAS[leadNota.cat]}`}
                     >
-                      {CATEGORIAS[notas[0].cat] || 'Actualidad'}
+                      {CATEGORIAS[leadNota.cat] || 'Actualidad'}
                     </button>
                   </div>
 
                   <h2 class="card-title">
-                    <a href={`/noticias/${notas[0].slug}`} class="title-link" set:html={formatTitle(notas[0].frontmatter.title)}></a>
+                    <a href={`/noticias/${leadNota.slug}`} class="title-link" set:html={formatTitle(leadNota.frontmatter.title)}></a>
                   </h2>
 
-                  {getExcerpt(notas[0]) && (
+                  {getExcerpt(leadNota) && (
                     <p class="card-bajada">
-                      {getExcerpt(notas[0], 220)}
+                      {getExcerpt(leadNota, 220)}
                     </p>
                   )}
 
-                  <a href={`/noticias/${notas[0].slug}`} class="read-more-link">
+                  <a href={`/noticias/${leadNota.slug}`} class="read-more-link">
                     Leer nota completa <span class="arrow">→</span>
                   </a>
                 </div>
               </article>
             )}
 
-            {/* Separador de Sección (Otras Publicaciones) */}
-            {notas.length > 1 && (
-              <div class="section-divider-bar" id="section-divider-bar">
-                <h3 class="section-heading" id="section-heading-text">Otras Publicaciones</h3>
-                <div class="section-heading-line"></div>
-              </div>
-            )}
+            {/* 2. SECCIÓN: OTRAS PUBLICACIONES (Notas de hasta 3 días) */}
+            <div 
+              class="section-divider-bar" 
+              id="section-recientes-bar" 
+              style={secundariasRecientes.length === 0 ? "display: none;" : ""}
+            >
+              <h3 class="section-heading" id="section-recientes-heading">Otras Publicaciones</h3>
+              <div class="section-heading-line"></div>
+            </div>
 
-            {/* Grilla de Notas Secundarias */}
-            <div class="grilla-secundarias" id="grilla-secundarias">
-              {notas.slice(1).map((nota) => (
+            <div 
+              class="grilla-secundarias" 
+              id="grilla-secundarias" 
+              style={secundariasRecientes.length === 0 ? "display: none;" : ""}
+            >
+              {secundariasRecientes.map((nota) => (
                 <article 
                   class="noticia-card is-secondary" 
                   id={`card-${nota.slug}`}
                   data-cat={nota.cat}
+                  data-is-old="false"
+                  data-timestamp={nota.timestamp}
                 >
                   {nota.frontmatter.thumbnail && (
                     <div class="card-media">
@@ -262,6 +293,71 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
               ))}
             </div>
 
+            {/* 3. SECCIÓN: LO QUE TENÉS QUE SABER (Notas de más de 3 días) */}
+            <section 
+              class="seccion-archivo" 
+              id="seccion-archivo" 
+              style={notasLoQueTenesQueSaber.length === 0 ? "display: none;" : ""}
+            >
+              <div class="section-divider-bar divider-archivo" id="section-archivo-bar">
+                <h3 class="section-heading" id="section-archivo-heading">Lo que tenés que saber</h3>
+                <div class="section-heading-line"></div>
+              </div>
+
+              <div class="lista-archivo" id="lista-archivo">
+                {notasLoQueTenesQueSaber.map((nota) => (
+                  <article 
+                    class="noticia-card is-compact" 
+                    id={`card-${nota.slug}`}
+                    data-cat={nota.cat}
+                    data-is-old="true"
+                    data-timestamp={nota.timestamp}
+                  >
+                    {nota.frontmatter.thumbnail && (
+                      <div class="card-media">
+                        <a href={`/noticias/${nota.slug}`} class="media-link">
+                          <img 
+                            src={nota.frontmatter.thumbnail} 
+                            alt={cleanTitle(nota.frontmatter.title)} 
+                            class="card-img" 
+                          />
+                        </a>
+                      </div>
+                    )}
+
+                    <div class="card-content">
+                      <div class="meta-row">
+                        <span class="fecha">{formatDate(nota.frontmatter.date)}</span>
+                        <span class="meta-dot">•</span>
+                        <button 
+                          type="button" 
+                          class="cat-pill-btn" 
+                          data-filter-cat={nota.cat}
+                          title={`Filtrar por ${CATEGORIAS[nota.cat]}`}
+                        >
+                          {CATEGORIAS[nota.cat] || 'Actualidad'}
+                        </button>
+                      </div>
+
+                      <h4 class="card-title">
+                        <a href={`/noticias/${nota.slug}`} class="title-link" set:html={formatTitle(nota.frontmatter.title)}></a>
+                      </h4>
+
+                      {getExcerpt(nota) && (
+                        <p class="card-bajada">
+                          {getExcerpt(nota, 140)}
+                        </p>
+                      )}
+
+                      <a href={`/noticias/${nota.slug}`} class="read-more-link">
+                        Leer nota completa <span class="arrow">→</span>
+                      </a>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
           </div>
 
           <!-- Mensaje para categoría sin publicaciones -->
@@ -292,7 +388,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
 
     </main>
 
-    <!-- Script de interactividad: Header Sticky-Shrink sin rebotes y Filtrado reactivo -->
+    <!-- Script de interactividad: Header Sticky-Shrink y Filtrado reactivo en ambas secciones -->
     <script is:inline>
       document.addEventListener('DOMContentLoaded', () => {
         const headerOuter = document.getElementById('header-outer');
@@ -303,9 +399,12 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
         const dropdownItems = document.querySelectorAll('.dropdown-item');
 
         const articulosWrapper = document.getElementById('articulos-wrapper');
-        const sectionDividerBar = document.getElementById('section-divider-bar');
-        const sectionHeadingText = document.getElementById('section-heading-text');
+        const sectionRecientesBar = document.getElementById('section-recientes-bar');
+        const sectionRecientesHeading = document.getElementById('section-recientes-heading');
         const grillaSecundarias = document.getElementById('grilla-secundarias');
+        const seccionArchivo = document.getElementById('seccion-archivo');
+        const sectionArchivoHeading = document.getElementById('section-archivo-heading');
+        const listaArchivo = document.getElementById('lista-archivo');
         const emptyStateBox = document.getElementById('empty-state-box');
         const btnEmptyReset = document.getElementById('btn-empty-reset');
 
@@ -317,10 +416,24 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
           'opinion': 'Opinión & Ensayos'
         };
 
-        // Guardamos todas las tarjetas en memoria
-        const allCards = Array.from(document.querySelectorAll('.noticia-card'));
+        // Guardamos todas las tarjetas en memoria ordenadas por fecha
+        const allCards = Array.from(document.querySelectorAll('.noticia-card'))
+          .sort((a, b) => Number(b.dataset.timestamp || 0) - Number(a.dataset.timestamp || 0));
 
-        // 1. HEADER STICKY-SHRINK: Con histéresis y reserva de altura para CERO REBOTE
+        // Recalcular dinámicamente la antigüedad (> 3 días calendario) en el navegador del lector en tiempo real
+        const now = new Date();
+        allCards.forEach((card) => {
+          const timestamp = Number(card.dataset.timestamp || 0);
+          if (timestamp) {
+            const target = new Date(timestamp);
+            const d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const d2 = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+            const diffDays = Math.max(0, Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24)));
+            card.dataset.isOld = diffDays > 3 ? 'true' : 'false';
+          }
+        });
+
+        // 1. HEADER STICKY-SHRINK: Con posición fija y reserva de altura
         if (headerOuter && header) {
           const updateOuterHeight = () => {
             if (!header.classList.contains('is-scrolled')) {
@@ -333,7 +446,6 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
           let isScrolled = false;
           const handleScroll = () => {
             const scrollY = window.scrollY;
-            // Histéresis: activa pasado los 200px (al dejar el masthead), desactiva por debajo de 120px
             if (!isScrolled && scrollY > 200) {
               isScrolled = true;
               header.classList.add('is-scrolled');
@@ -374,14 +486,12 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
           }
         });
 
-        // 3. Filtrado por Categoría (Vanilla JS sin recargar)
+        // 3. Filtrado por Categoría (Impacta en portada, secundarias y archivo)
         function applyCategoryFilter(cat) {
           const catName = CATEGORIAS[cat] || 'Todas';
           
-          // Actualizar texto del botón del selector
           if (currentCatName) currentCatName.textContent = catName;
           
-          // Actualizar ítem activo en la lista
           dropdownItems.forEach((item) => {
             if (item.dataset.cat === cat) {
               item.classList.add('is-selected');
@@ -396,23 +506,33 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
             if (emptyStateBox) emptyStateBox.setAttribute('hidden', '');
             if (articulosWrapper) articulosWrapper.style.display = 'block';
 
-            // Restaurar clases y posiciones originales
+            let countSecundarias = 0;
+            let countArchivo = 0;
+
             allCards.forEach((card, index) => {
               card.style.display = '';
               if (index === 0) {
                 card.className = 'noticia-card is-lead';
-                if (articulosWrapper && sectionDividerBar) {
-                  articulosWrapper.insertBefore(card, sectionDividerBar);
+                if (articulosWrapper && sectionRecientesBar) {
+                  articulosWrapper.insertBefore(card, sectionRecientesBar);
                 }
+              } else if (card.dataset.isOld === 'true') {
+                card.className = 'noticia-card is-compact';
+                if (listaArchivo) listaArchivo.appendChild(card);
+                countArchivo++;
               } else {
                 card.className = 'noticia-card is-secondary';
                 if (grillaSecundarias) grillaSecundarias.appendChild(card);
+                countSecundarias++;
               }
             });
 
-            if (sectionDividerBar) sectionDividerBar.style.display = '';
-            if (sectionHeadingText) sectionHeadingText.textContent = 'Otras Publicaciones';
-            if (grillaSecundarias) grillaSecundarias.style.display = '';
+            if (sectionRecientesBar) sectionRecientesBar.style.display = countSecundarias > 0 ? '' : 'none';
+            if (sectionRecientesHeading) sectionRecientesHeading.textContent = 'Otras Publicaciones';
+            if (grillaSecundarias) grillaSecundarias.style.display = countSecundarias > 0 ? '' : 'none';
+
+            if (seccionArchivo) seccionArchivo.style.display = countArchivo > 0 ? '' : 'none';
+            if (sectionArchivoHeading) sectionArchivoHeading.textContent = 'Lo que tenés que saber';
             return;
           }
 
@@ -420,17 +540,15 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
           const matchingCards = allCards.filter((card) => card.dataset.cat === cat);
 
           if (matchingCards.length === 0) {
-            // Sección sin notas
             if (articulosWrapper) articulosWrapper.style.display = 'none';
             if (emptyStateBox) emptyStateBox.removeAttribute('hidden');
             return;
           }
 
-          // Hay notas de esta categoría
           if (emptyStateBox) emptyStateBox.setAttribute('hidden', '');
           if (articulosWrapper) articulosWrapper.style.display = 'block';
 
-          // Ocultar tarjetas que no coinciden
+          // Ocultar tarjetas de otras categorías
           allCards.forEach((card) => {
             if (card.dataset.cat !== cat) {
               card.style.display = 'none';
@@ -442,24 +560,33 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
           // La primera nota de la categoría se promueve a NOTA DE TAPA
           const leadCard = matchingCards[0];
           leadCard.className = 'noticia-card is-lead';
-          if (articulosWrapper && sectionDividerBar) {
-            articulosWrapper.insertBefore(leadCard, sectionDividerBar);
+          if (articulosWrapper && sectionRecientesBar) {
+            articulosWrapper.insertBefore(leadCard, sectionRecientesBar);
           }
 
-          // Las demás van a la grilla de secundarias
+          // Las demás se distribuyen según antigüedad (> 3 días)
           const restCards = matchingCards.slice(1);
-          if (restCards.length > 0) {
-            restCards.forEach((card) => {
+          let countSecundarias = 0;
+          let countArchivo = 0;
+
+          restCards.forEach((card) => {
+            if (card.dataset.isOld === 'true') {
+              card.className = 'noticia-card is-compact';
+              if (listaArchivo) listaArchivo.appendChild(card);
+              countArchivo++;
+            } else {
               card.className = 'noticia-card is-secondary';
               if (grillaSecundarias) grillaSecundarias.appendChild(card);
-            });
-            if (sectionDividerBar) sectionDividerBar.style.display = '';
-            if (sectionHeadingText) sectionHeadingText.textContent = `Más en ${catName}`;
-            if (grillaSecundarias) grillaSecundarias.style.display = '';
-          } else {
-            if (sectionDividerBar) sectionDividerBar.style.display = 'none';
-            if (grillaSecundarias) grillaSecundarias.style.display = 'none';
-          }
+              countSecundarias++;
+            }
+          });
+
+          if (sectionRecientesBar) sectionRecientesBar.style.display = countSecundarias > 0 ? '' : 'none';
+          if (sectionRecientesHeading) sectionRecientesHeading.textContent = `Más en ${catName}`;
+          if (grillaSecundarias) grillaSecundarias.style.display = countSecundarias > 0 ? '' : 'none';
+
+          if (seccionArchivo) seccionArchivo.style.display = countArchivo > 0 ? '' : 'none';
+          if (sectionArchivoHeading) sectionArchivoHeading.textContent = `Lo que tenés que saber en ${catName}`;
         }
 
         // Clicks en opciones del menú desplegable
@@ -492,11 +619,13 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
           }
         });
 
-        // Soporte para URL parameter `?cat=...`
+        // Soporte para URL parameter `?cat=...` o inicialización automática con 'todas'
         const urlParams = new URLSearchParams(window.location.search);
         const catFromUrl = urlParams.get('cat');
         if (catFromUrl && CATEGORIAS[catFromUrl]) {
           applyCategoryFilter(catFromUrl);
+        } else {
+          applyCategoryFilter('todas');
         }
       });
     </script>
@@ -837,6 +966,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     text-decoration: none;
     color: inherit;
     position: relative;
+    height: 100%;
   }
 
   .card-img {
@@ -996,7 +1126,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   }
 
   /* ========================================================
-     SEPARADOR DE SECCIÓN (Otras Publicaciones)
+     SEPARADORES DE SECCIÓN (Encabezados)
      ======================================================== */
   .section-divider-bar {
     display: flex;
@@ -1023,7 +1153,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   }
 
   /* ========================================================
-     GRILLA SECUNDARIAS (is-secondary)
+     GRILLA SECUNDARIAS RECIENTES (is-secondary)
      ======================================================== */
   .grilla-secundarias {
     display: grid;
@@ -1078,6 +1208,126 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     hyphens: auto;
     -webkit-hyphens: auto;
     overflow-wrap: break-word;
+  }
+
+  /* ========================================================
+     SECCIÓN: LO QUE TENÉS QUE SABER (is-compact)
+     ======================================================== */
+  .seccion-archivo {
+    margin-top: 45px;
+    border-top: 2px solid rgba(2, 82, 197, 0.25);
+    padding-top: 10px;
+  }
+
+  .divider-archivo {
+    margin: 15px 0 25px 0;
+  }
+
+  .divider-archivo .section-heading {
+    color: #0252c5;
+  }
+
+  .lista-archivo {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .noticia-card.is-compact {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+    border-bottom: 1px solid rgba(2, 82, 197, 0.15);
+    padding-bottom: 22px;
+  }
+
+  .noticia-card.is-compact:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .noticia-card.is-compact .badge-tapa {
+    display: none;
+  }
+
+  .noticia-card.is-compact .card-media {
+    flex: 0 0 220px;
+    width: 220px;
+    max-height: 145px;
+    aspect-ratio: 16 / 10;
+    border-radius: 4px;
+  }
+
+  .noticia-card.is-compact .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .noticia-card.is-compact .card-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .noticia-card.is-compact .meta-row {
+    margin: 0 0 6px 0;
+  }
+
+  .noticia-card.is-compact .card-title {
+    margin: 0;
+  }
+
+  .noticia-card.is-compact .card-title .titulo-principal {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.15;
+    letter-spacing: -0.4px;
+    color: #1e2126;
+    transition: color 0.2s ease;
+  }
+
+  .noticia-card.is-compact .card-title .subtitulo-nota {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    color: #1e2126;
+    margin-top: 4px;
+  }
+
+  /* En Lo que tenés que saber no se muestra bajada ni botón de lectura */
+  .noticia-card.is-compact .card-bajada {
+    display: none;
+  }
+
+  .noticia-card.is-compact .read-more-link {
+    display: none;
+  }
+
+  /* Versión Móvil para Lo que tenés que saber (formato vertical apilado) */
+  @media (max-width: 680px) {
+    .noticia-card.is-compact {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .noticia-card.is-compact .card-media {
+      flex: none;
+      width: 100%;
+      max-height: 220px;
+      aspect-ratio: 16 / 9;
+    }
+
+    .noticia-card.is-compact .meta-row {
+      margin: 10px 0 6px 0;
+    }
   }
 
   /* ========================================================
@@ -1222,6 +1472,20 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     .noticia-card.is-secondary:nth-child(2n) {
       border-right: none;
       padding-right: 0;
+    }
+
+    .noticia-card.is-compact .card-media {
+      flex: 0 0 240px;
+      width: 240px;
+      max-height: 155px;
+    }
+
+    .noticia-card.is-compact .card-title .titulo-principal {
+      font-size: 1.35rem;
+    }
+
+    .noticia-card.is-compact .card-title .subtitulo-nota {
+      font-size: 0.98rem;
     }
   }
 </style>
