@@ -85,6 +85,11 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
 - Tipografía `Poppins Thin` en cursiva (`1.65rem`).
 - Comillas tipográficas gigantes `“` y `”` en color `#888888`, compactadas con interlineado mínimo (`line-height: 0.6`) para mantenerse pegadas a la frase destacada.
 
+### E. Navegación, Badges y Micro-textos: `Montserrat`
+- **Pesos utilizados:** `700` (Bold) y `900` (Black).
+- **Aplicación:** Encabezados de secciones secundarias (`section-heading`), identificadores de sección (`cat-pill-btn`), cintillo comercial (`ESPACIO PUBLICITARIO`), selector de categorías en la cabecera y llamados a la acción (botones CTA de auspiciantes).
+- Confiere legibilidad instantánea, jerarquía y modernidad en elementos de tamaño compacto.
+
 ---
 
 ## 📰 4. Estructura de la Portada (`index.astro`)
@@ -173,14 +178,14 @@ Todos los elementos multimedia respetan la regla `break-inside: avoid;` para nun
 ## 🗂️ 7. Organización Temática y Navegación Interactiva
 
 ### A. Categorías Oficiales
-El portal organiza sus notas en 7 secciones fijas:
-1. **Actualidad Local** (`actualidad-local`)
-2. **Actualidad Provincial** (`actualidad-provincial`)
-3. **Actualidad Nacional** (`actualidad-nacional`)
-4. **Deportes** (`deportes`)
-5. **Crónicas & Particularidades** (`cronicas`)
-6. **Mano a Mano** (`entrevistas`)
-7. **Opinión & Ensayos** (`opinion`)
+El portal organiza sus notas en 7 secciones fijas con criterios editoriales definidos:
+1. **Actualidad Local (`actualidad-local`):** Noticias del partido de Mercedes y sus localidades (Gowland, Tomás Jofré, Goldney, etc.), gestión municipal, obras, servicios, seguridad comunitaria e instituciones de la ciudad.
+2. **Actualidad Provincial (`actualidad-provincial`):** Acontecimientos de relevancia de la provincia de Buenos Aires, resoluciones de la gobernación, ministerios, Suprema Corte de Justicia y la legislatura bonaerense.
+3. **Actualidad Nacional (`actualidad-nacional`):** Noticias clave del país, política macroeconómica, medidas de alcance federal y coyuntura nacional.
+4. **Deportes (`deportes`):** Cobertura deportiva integral: deportistas mercedinos en competencias locales, nacionales e internacionales, liga local, ciclismo, atletismo, automovilismo y fútbol mayor.
+5. **Crónicas & Particularidades (`cronicas`):** Historias singulares con mirada de autor, perfiles de personajes mercedinos, patrimonio cultural, relatos de época y curiosidades.
+6. **Mano a Mano (`entrevistas`):** Entrevistas en profundidad a protagonistas de la actualidad, artistas, dirigentes, emprendedores y vecinos destacados.
+7. **Opinión & Ensayos (`opinion`):** Columnas de opinión firmadas, análisis de coyuntura y reflexiones ciudadanas.
 
 ### B. Header Interactivo (Sticky-Shrink)
 - **Modo Superior:** El encabezado se muestra en su escala completa, con la fecha/edición arriba, el logo `MERCEDES NEWS` a ancho completo en azul `#0252c5`, el lema oficial y el selector desplegable de secciones.
