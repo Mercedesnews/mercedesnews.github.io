@@ -95,9 +95,10 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
 ## 📰 4. Estructura de la Portada (`index.astro`)
 
 1. **Cintillo Superior (Meta Bar):**
-   - Fecha completa en español (`miércoles, 2 de septiembre de 2026`).
+   - Fecha completa en español (`jueves, 3 de septiembre de 2026`).
    - Etiqueta "Edición Digital".
    - Localidad: "Mercedes, Buenos Aires".
+   - **Accesos a Redes Sociales Oficiales:** Íconos vectoriales SVG a Facebook e Instagram en el extremo derecho con microinteracción de elevación y color de marca al cursor (`#1877F2` para Facebook y `#E4405F` para Instagram).
 2. **Cabecera del Diario (Masthead):**
    - Marca principal: **MERCEDES NEWS** en `Archivo Expanded Black Italic` a ancho completo (`clamp(2.8rem, 8vw, 6.2rem)`) en color azul institucional (`#0252c5`).
    - Lema institucional formal: *«El portal de noticias hecho para vos»*.
@@ -131,6 +132,7 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
 7. **Pie de Página:**
    - Doble pleca azul simétrica con la cabecera.
    - Mención de derechos reservados en `#1e2126`.
+   - **Accesos a Redes Sociales:** Bloque *"Seguinos en"* con íconos vectoriales directos a Facebook e Instagram.
    - Botón discreto de acceso a redacción y CMS (`⚙️ Redacción / CMS`).
 
 ---
@@ -152,7 +154,7 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
    - A partir de pantallas medianas (`min-width: 768px`), el texto se organiza automáticamente en **2 columnas de lectura paralela** (`column-count: 2; column-gap: 50px;`), simulando la diagramación física de un periódico.
    - Divisor vertical suave entre ambas columnas (`column-rule: 1px solid rgba(2, 82, 197, 0.15)`).
 5. **Pie de Página (Footer):**
-   - Cierre editorial simétrico con la portada: doble pleca, derechos reservados de Mercedes News y acceso al panel de redacción.
+   - Cierre editorial simétrico con la portada: doble pleca, derechos reservados de Mercedes News, accesos oficiales a Facebook e Instagram, y acceso al panel de redacción.
 6. **Pestaña del Navegador (`<title>`):**
    - Limpieza automática: toma únicamente el primer renglón del titular para una pestaña limpia y profesional.
 
