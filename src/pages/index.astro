@@ -99,6 +99,24 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   month: 'long',
   day: 'numeric'
 });
+
+// Índice serializado de búsqueda para la tarea0003
+const searchIndex = notas.map((n) => {
+  const rawTitle = (n.frontmatter.title || '').replace(/(\*\*|\*|_|`)/g, '');
+  const lines = rawTitle.split(/\r?\n/).map((l) => l.trim()).filter((l) => l.length > 0);
+  const title = lines[0] || '';
+  const subtitle = lines.slice(1).join(' ') || '';
+  return {
+    slug: n.slug,
+    title,
+    subtitle,
+    date: formatDate(n.frontmatter.date),
+    cat: n.cat,
+    catName: CATEGORIAS[n.cat] || 'Actualidad',
+    thumbnail: n.frontmatter.thumbnail || '',
+    excerpt: getExcerpt(n, 140)
+  };
+});
 ---
 
 <html lang="es">
@@ -117,20 +135,43 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
       <header class="periodico-header" id="main-header">
         <div class="header-container">
           
-          <!-- Barra superior: fecha (izq), edición digital (centro) y localidad + redes (der) [Opción 1] -->
+          <!-- Barra superior: fecha (izq), edición digital (centro) y localidad + clima (der) [Opción 3] -->
           <div class="top-bar">
             <span class="top-date">{fechaHoy}</span>
             <span class="top-edition">Edición Digital</span>
-            <div class="top-location-social">
+            <div class="top-location-weather">
               <span class="top-location">Mercedes, Buenos Aires</span>
               <span class="top-meta-dot">•</span>
-              <div class="top-bar-social">
-                <a href="https://www.facebook.com/profile.php?id=61594040760082" target="_blank" rel="noopener noreferrer" class="social-btn facebook" title="Seguinos en Facebook" aria-label="Facebook de Mercedes News">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                </a>
-                <a href="https://www.instagram.com/mercedesnews2026/" target="_blank" rel="noopener noreferrer" class="social-btn instagram" title="Seguinos en Instagram" aria-label="Instagram de Mercedes News">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                </a>
+              <div class="weather-widget" id="weather-widget" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="weather-icon" id="weather-icon">⛅</span>
+                <span class="weather-temp" id="weather-temp">--°</span>
+
+                <!-- Popover del clima con datos adicionales -->
+                <div class="weather-popover" id="weather-popover" role="tooltip">
+                  <div class="weather-popover-header">
+                    <span class="weather-popover-city">Mercedes, Buenos Aires</span>
+                    <span class="weather-popover-desc" id="weather-popover-desc">Cargando clima...</span>
+                  </div>
+                  <div class="weather-popover-main">
+                    <span class="weather-popover-icon" id="weather-popover-icon">⛅</span>
+                    <span class="weather-popover-temp" id="weather-popover-temp">--°C</span>
+                  </div>
+                  <div class="weather-popover-grid">
+                    <div class="weather-popover-item">
+                      <span class="popover-label">Mín / Máx</span>
+                      <span class="popover-val" id="weather-popover-minmax">-- / --</span>
+                    </div>
+                    <div class="weather-popover-item">
+                      <span class="popover-label">Humedad</span>
+                      <span class="popover-val" id="weather-popover-humidity">--%</span>
+                    </div>
+                    <div class="weather-popover-item">
+                      <span class="popover-label">Viento</span>
+                      <span class="popover-val" id="weather-popover-wind">-- km/h</span>
+                    </div>
+                  </div>
+                  <div class="weather-popover-footer">Pronóstico oficial Open-Meteo</div>
+                </div>
               </div>
             </div>
           </div>
@@ -142,51 +183,72 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
                 <h1 class="diario-title">MERCEDES NEWS</h1>
               </a>
               <p class="diario-lema">«El portal de noticias hecho para vos»</p>
-              
-              <!-- Redes sociales bajo el lema (Opción 3B) -->
-              <div class="masthead-social-row">
-                <span class="masthead-social-label">Seguinos en redes:</span>
-                <a href="https://www.facebook.com/profile.php?id=61594040760082" target="_blank" rel="noopener noreferrer" class="social-btn facebook" title="Seguinos en Facebook" aria-label="Facebook de Mercedes News">
-                  <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                </a>
-                <a href="https://www.instagram.com/mercedesnews2026/" target="_blank" rel="noopener noreferrer" class="social-btn instagram" title="Seguinos en Instagram" aria-label="Instagram de Mercedes News">
-                  <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                </a>
-              </div>
             </div>
 
-            <!-- Selector desplegable de Categorías y redes para modo sticky -->
-            <div class="category-filter-box">
-              <div class="sticky-social-icons" id="sticky-social-icons">
+            <!-- Barra de Acciones y Navegación (Opción 3) -->
+            <div class="masthead-action-bar">
+              <!-- Botón / Buscador Interactivo -->
+              <button type="button" class="search-trigger-btn" id="search-trigger-btn" aria-label="Buscar noticias en Mercedes News">
+                <svg class="search-icon-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span class="search-trigger-text">Buscar noticias...</span>
+              </button>
+
+              <!-- Selector desplegable de Categorías y elementos sticky -->
+              <div class="category-filter-box">
+                <!-- Botón de búsqueda compacto para modo sticky (scroll) -->
+                <button type="button" class="sticky-search-btn" id="sticky-search-btn" title="Buscar noticias" aria-label="Buscar noticias">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </button>
+
+                <div class="sticky-social-icons" id="sticky-social-icons">
+                  <a href="https://www.facebook.com/profile.php?id=61594040760082" target="_blank" rel="noopener noreferrer" class="social-btn facebook" title="Seguinos en Facebook" aria-label="Facebook de Mercedes News">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  </a>
+                  <a href="https://www.instagram.com/mercedesnews2026/" target="_blank" rel="noopener noreferrer" class="social-btn instagram" title="Seguinos en Instagram" aria-label="Instagram de Mercedes News">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                  </a>
+                </div>
+
+                <div class="dropdown-wrapper" id="cat-dropdown-wrapper">
+                  <button 
+                    type="button" 
+                    class="dropdown-trigger-btn" 
+                    id="cat-dropdown-btn" 
+                    aria-expanded="false"
+                  >
+                    <span class="trigger-label">SECCIÓN:</span>
+                    <span class="trigger-value" id="current-cat-name">Todas</span>
+                    <span class="trigger-arrow">▾</span>
+                  </button>
+                  
+                  <ul class="dropdown-list" id="cat-dropdown-list">
+                    <li data-cat="todas" class="dropdown-item is-selected">Todas las secciones</li>
+                    <li data-cat="actualidad-local" class="dropdown-item">Actualidad Local</li>
+                    <li data-cat="actualidad-provincial" class="dropdown-item">Actualidad Provincial</li>
+                    <li data-cat="actualidad-nacional" class="dropdown-item">Actualidad Nacional</li>
+                    <li data-cat="deportes" class="dropdown-item">Deportes</li>
+                    <li data-cat="cronicas" class="dropdown-item">Crónicas &amp; Particularidades</li>
+                    <li data-cat="entrevistas" class="dropdown-item">Mano a Mano</li>
+                    <li data-cat="opinion" class="dropdown-item">Opinión &amp; Ensayos</li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Redes sociales a la derecha en reposo -->
+              <div class="masthead-social-bar">
+                <span class="masthead-social-label">Seguinos:</span>
                 <a href="https://www.facebook.com/profile.php?id=61594040760082" target="_blank" rel="noopener noreferrer" class="social-btn facebook" title="Seguinos en Facebook" aria-label="Facebook de Mercedes News">
                   <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </a>
                 <a href="https://www.instagram.com/mercedesnews2026/" target="_blank" rel="noopener noreferrer" class="social-btn instagram" title="Seguinos en Instagram" aria-label="Instagram de Mercedes News">
-                  <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                 </a>
-              </div>
-              <div class="dropdown-wrapper" id="cat-dropdown-wrapper">
-                <button 
-                  type="button" 
-                  class="dropdown-trigger-btn" 
-                  id="cat-dropdown-btn" 
-                  aria-expanded="false"
-                >
-                  <span class="trigger-label">SECCIÓN:</span>
-                  <span class="trigger-value" id="current-cat-name">Todas</span>
-                  <span class="trigger-arrow">▾</span>
-                </button>
-                
-                <ul class="dropdown-list" id="cat-dropdown-list">
-                  <li data-cat="todas" class="dropdown-item is-selected">Todas las secciones</li>
-                  <li data-cat="actualidad-local" class="dropdown-item">Actualidad Local</li>
-                  <li data-cat="actualidad-provincial" class="dropdown-item">Actualidad Provincial</li>
-                  <li data-cat="actualidad-nacional" class="dropdown-item">Actualidad Nacional</li>
-                  <li data-cat="deportes" class="dropdown-item">Deportes</li>
-                  <li data-cat="cronicas" class="dropdown-item">Crónicas &amp; Particularidades</li>
-                  <li data-cat="entrevistas" class="dropdown-item">Mano a Mano</li>
-                  <li data-cat="opinion" class="dropdown-item">Opinión &amp; Ensayos</li>
-                </ul>
               </div>
             </div>
           </div>
@@ -518,6 +580,39 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
         </div>
       </footer>
 
+      <!-- Modal del Buscador Interactivo (tarea0003) -->
+      <div class="search-modal-backdrop" id="search-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="search-input">
+        <div class="search-modal-card">
+          <div class="search-modal-header">
+            <svg class="search-modal-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0252c5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="search" 
+              id="search-input" 
+              class="search-modal-input" 
+              placeholder="Buscar por título, tema o palabra clave..." 
+              autocomplete="off" 
+              spellcheck="false"
+            />
+            <button type="button" class="search-modal-close" id="search-modal-close" aria-label="Cerrar búsqueda">✕</button>
+          </div>
+
+          <div class="search-modal-results" id="search-modal-results">
+            <!-- Se renderizan dinámicamente con JS -->
+          </div>
+
+          <div class="search-modal-footer">
+            <span class="search-modal-hint">Presioná <kbd>ESC</kbd> para salir</span>
+            <span class="search-modal-count" id="search-results-count"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos serializados de noticias para búsqueda instantánea -->
+      <script id="search-data" type="application/json" set:html={JSON.stringify(searchIndex)} />
+
     </main>
 
     <!-- Script de interactividad: Header Sticky-Shrink y Filtrado reactivo en ambas secciones -->
@@ -762,6 +857,245 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
         } else {
           applyCategoryFilter('todas');
         }
+
+        // ========================================================
+        // TAREA0004: CLIMA DINÁMICO (Mercedes, Buenos Aires)
+        // ========================================================
+        async function loadMercedesWeather() {
+          const iconEl = document.getElementById('weather-icon');
+          const tempEl = document.getElementById('weather-temp');
+          const descEl = document.getElementById('weather-popover-desc');
+          const popIconEl = document.getElementById('weather-popover-icon');
+          const popTempEl = document.getElementById('weather-popover-temp');
+          const minmaxEl = document.getElementById('weather-popover-minmax');
+          const humidityEl = document.getElementById('weather-popover-humidity');
+          const windEl = document.getElementById('weather-popover-wind');
+          const widget = document.getElementById('weather-widget');
+
+          if (!iconEl || !tempEl) return;
+
+          // Toggle popover en click (para dispositivos táctiles y móviles)
+          if (widget) {
+            widget.addEventListener('click', (e) => {
+              e.stopPropagation();
+              widget.classList.toggle('is-active');
+            });
+            document.addEventListener('click', (e) => {
+              if (!widget.contains(e.target)) {
+                widget.classList.remove('is-active');
+              }
+            });
+          }
+
+          const CACHE_KEY = 'mn_weather_mercedes';
+          const CACHE_TTL = 30 * 60 * 1000; // 30 minutos
+
+          let weatherData = null;
+          try {
+            const cached = sessionStorage.getItem(CACHE_KEY);
+            if (cached) {
+              const parsed = JSON.parse(cached);
+              if (Date.now() - parsed.timestamp < CACHE_TTL) {
+                weatherData = parsed.data;
+              }
+            }
+          } catch (e) {}
+
+          if (!weatherData) {
+            try {
+              const res = await fetch(
+                'https://api.open-meteo.com/v1/forecast?latitude=-34.6514&longitude=-59.4307&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=America%2FArgentina%2FBuenos_Aires'
+              );
+              if (!res.ok) throw new Error('Error al consultar Open-Meteo');
+              weatherData = await res.json();
+              try {
+                sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: weatherData, timestamp: Date.now() }));
+              } catch (e) {}
+            } catch (err) {
+              console.warn('Clima no disponible:', err);
+              tempEl.textContent = '19°';
+              return;
+            }
+          }
+
+          function parseWmo(code) {
+            if (code === 0) return { icon: '☀️', text: 'Despejado' };
+            if (code === 1 || code === 2) return { icon: '🌤️', text: 'Algo nublado' };
+            if (code === 3) return { icon: '☁️', text: 'Nublado' };
+            if (code === 45 || code === 48) return { icon: '🌫️', text: 'Niebla / Neblina' };
+            if (code >= 51 && code <= 55) return { icon: '🌦️', text: 'Llovizna' };
+            if (code >= 61 && code <= 67) return { icon: '🌧️', text: 'Lluvia' };
+            if (code >= 71 && code <= 77) return { icon: '🌨️', text: 'Nevada' };
+            if (code >= 80 && code <= 82) return { icon: '🌧️', text: 'Chubascos' };
+            if (code >= 95 && code <= 99) return { icon: '⛈️', text: 'Tormenta eléctrica' };
+            return { icon: '⛅', text: 'Parcialmente nublado' };
+          }
+
+          const current = weatherData?.current;
+          const daily = weatherData?.daily;
+          const wmo = parseWmo(current?.weather_code ?? 1);
+          const temp = Math.round(current?.temperature_2m ?? 20);
+
+          iconEl.textContent = wmo.icon;
+          tempEl.textContent = `${temp}°`;
+
+          if (popIconEl) popIconEl.textContent = wmo.icon;
+          if (popTempEl) popTempEl.textContent = `${temp}°C`;
+          if (descEl) descEl.textContent = wmo.text;
+          if (minmaxEl && daily?.temperature_2m_min && daily?.temperature_2m_max) {
+            const min = Math.round(daily.temperature_2m_min[0]);
+            const max = Math.round(daily.temperature_2m_max[0]);
+            minmaxEl.textContent = `${min}° / ${max}°`;
+          }
+          if (humidityEl && current?.relative_humidity_2m !== undefined) {
+            humidityEl.textContent = `${current.relative_humidity_2m}%`;
+          }
+          if (windEl && current?.wind_speed_10m !== undefined) {
+            windEl.textContent = `${Math.round(current.wind_speed_10m)} km/h`;
+          }
+        }
+
+        // ========================================================
+        // TAREA0003: BUSCADOR INTERACTIVO INDEXADO
+        // ========================================================
+        function initSearchModal() {
+          const modal = document.getElementById('search-modal');
+          const input = document.getElementById('search-input');
+          const closeBtn = document.getElementById('search-modal-close');
+          const resultsEl = document.getElementById('search-modal-results');
+          const countEl = document.getElementById('search-results-count');
+          const triggerBtn = document.getElementById('search-trigger-btn');
+          const stickyTriggerBtn = document.getElementById('sticky-search-btn');
+          const searchDataEl = document.getElementById('search-data');
+
+          if (!modal || !input || !searchDataEl) return;
+
+          let items = [];
+          try {
+            items = JSON.parse(searchDataEl.textContent || '[]');
+          } catch (e) {}
+
+          function openSearch() {
+            modal.removeAttribute('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            input.value = '';
+            renderResults('');
+            setTimeout(() => input.focus(), 50);
+          }
+
+          function closeSearch() {
+            modal.setAttribute('hidden', '');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          }
+
+          if (triggerBtn) triggerBtn.addEventListener('click', openSearch);
+          if (stickyTriggerBtn) stickyTriggerBtn.addEventListener('click', openSearch);
+          if (closeBtn) closeBtn.addEventListener('click', closeSearch);
+
+          modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeSearch();
+          });
+
+          document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+              e.preventDefault();
+              modal.hasAttribute('hidden') ? openSearch() : closeSearch();
+            } else if (e.key === 'Escape' && !modal.hasAttribute('hidden')) {
+              closeSearch();
+            }
+          });
+
+          function normalizeStr(str) {
+            return (str || '')
+              .toLowerCase()
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '');
+          }
+
+          function highlightMatches(text, query) {
+            if (!query || !text) return text;
+            const normText = normalizeStr(text);
+            const normQuery = normalizeStr(query);
+            const idx = normText.indexOf(normQuery);
+            if (idx === -1) return text;
+            const before = text.slice(0, idx);
+            const match = text.slice(idx, idx + query.length);
+            const after = text.slice(idx + query.length);
+            return `${before}<mark class="search-highlight">${match}</mark>${after}`;
+          }
+
+          function renderResults(queryRaw) {
+            const query = queryRaw.trim();
+            if (!query) {
+              if (countEl) countEl.textContent = `${items.length} publicaciones`;
+              resultsEl.innerHTML = `
+                <div class="search-empty-prompt">
+                  <p class="prompt-title">Escribí para buscar noticias en tiempo real</p>
+                  <p class="prompt-sub">Podés buscar por títulos, temas o palabras clave.</p>
+                </div>
+              `;
+              return;
+            }
+
+            const normQuery = normalizeStr(query);
+            const matches = items.filter((item) => {
+              return (
+                normalizeStr(item.title).includes(normQuery) ||
+                normalizeStr(item.subtitle).includes(normQuery) ||
+                normalizeStr(item.catName).includes(normQuery) ||
+                normalizeStr(item.excerpt).includes(normQuery)
+              );
+            });
+
+            if (countEl) {
+              countEl.textContent = `${matches.length} ${matches.length === 1 ? 'coincidencia' : 'coincidencias'}`;
+            }
+
+            if (matches.length === 0) {
+              resultsEl.innerHTML = `
+                <div class="search-no-results">
+                  <span class="no-results-icon">🔎</span>
+                  <p class="no-results-title">No encontramos noticias para "<strong>${query}</strong>"</p>
+                  <p class="no-results-sub">Probá buscando con otras palabras o términos más generales.</p>
+                </div>
+              `;
+              return;
+            }
+
+            resultsEl.innerHTML = matches
+              .map(
+                (item) => `
+              <a href="/noticias/${item.slug}" class="search-result-item">
+                ${
+                  item.thumbnail
+                    ? `<img src="${item.thumbnail}" alt="" class="search-result-thumb" />`
+                    : `<div class="search-result-thumb placeholder">📰</div>`
+                }
+                <div class="search-result-info">
+                  <div class="search-result-meta">
+                    <span class="search-result-cat">${item.catName}</span>
+                    <span class="search-result-dot">•</span>
+                    <span class="search-result-date">${item.date}</span>
+                  </div>
+                  <h4 class="search-result-title">${highlightMatches(item.title, query)}</h4>
+                  ${item.subtitle ? `<p class="search-result-subtitle">${highlightMatches(item.subtitle, query)}</p>` : ''}
+                </div>
+              </a>
+            `
+              )
+              .join('');
+          }
+
+          input.addEventListener('input', (e) => {
+            renderResults(e.target.value);
+          });
+        }
+
+        // Inicializamos clima y buscador
+        loadMercedesWeather();
+        initSearchModal();
       });
     </script>
   </body>
@@ -816,7 +1150,7 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     transition: padding 0.25s ease;
   }
 
-  /* Barra Superior de Metadatos (Opción 1: Grid 3 columnas con centro matemático) */
+  /* Barra Superior de Metadatos (Opción 3: Grid 3 columnas con Fecha, Edición y Clima) */
   .top-bar {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -840,11 +1174,12 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     text-align: center;
   }
 
-  .top-location-social {
+  .top-location-weather {
     justify-self: end;
     display: flex;
     align-items: center;
     gap: 8px;
+    position: relative;
   }
 
   .top-meta-dot {
@@ -852,29 +1187,146 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     font-weight: 900;
   }
 
-  .top-bar-social {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  /* Opción 3B: Redes bajo el lema */
-  .masthead-social-row {
+  /* Widget de Clima Dinámico (tarea0004) */
+  .weather-widget {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 5px;
+    cursor: pointer;
+    position: relative;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    user-select: none;
+    color: #1e2126;
   }
 
-  .masthead-social-label {
+  .weather-widget:hover,
+  .weather-widget:focus,
+  .weather-widget.is-active {
+    background-color: rgba(2, 82, 197, 0.08);
+  }
+
+  .weather-icon {
+    font-size: 0.95rem;
+    line-height: 1;
+  }
+
+  .weather-temp {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #888888;
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: #1e2126;
+    line-height: 1;
+  }
+
+  /* Popover flotante del clima con datos extendidos */
+  .weather-popover {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 230px;
+    background: #ffffff;
+    border: 1px solid #d5d9da;
+    border-radius: 8px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+    padding: 14px;
+    z-index: 1200;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(6px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .weather-widget:hover .weather-popover,
+  .weather-widget.is-active .weather-popover {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .weather-popover-header {
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+  }
+
+  .weather-popover-city {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: #0252c5;
+    font-family: 'Montserrat', sans-serif;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-right: 2px;
+    letter-spacing: 0.04em;
+  }
+
+  .weather-popover-desc {
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .weather-popover-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .weather-popover-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  .weather-popover-temp {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e2126;
+    line-height: 1;
+  }
+
+  .weather-popover-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    background: #f8fafc;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .weather-popover-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .popover-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+  }
+
+  .popover-val {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #1e2126;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .weather-popover-footer {
+    font-size: 0.62rem;
+    color: #999;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
   }
 
   /* Botones de Redes Sociales */
@@ -956,12 +1408,111 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   }
 
   /* ========================================================
+     BARRA DE ACCIONES Y NAVEGACIÓN (Opción 3)
+     ======================================================== */
+  .masthead-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 15px;
+    margin-top: 6px;
+  }
+
+  /* Botón de apertura del Buscador Interactivo (tarea0003) */
+  .search-trigger-btn {
+    background: #f8fafc;
+    border: 1.5px solid #d5d9da;
+    border-radius: 22px;
+    padding: 7px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #555555;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(2, 82, 197, 0.06);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .search-trigger-btn:hover {
+    background: #ffffff;
+    border-color: #0252c5;
+    color: #0252c5;
+    box-shadow: 0 4px 12px rgba(2, 82, 197, 0.14);
+    transform: translateY(-1px);
+  }
+
+  .search-icon-svg {
+    color: #0252c5;
+    flex-shrink: 0;
+  }
+
+  .search-trigger-text {
+    letter-spacing: 0.02em;
+  }
+
+  .search-kbd-badge {
+    font-size: 0.65rem;
+    background: #e2e8f0;
+    color: #475569;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+
+  /* Botón de búsqueda compacto para Header Scrolled */
+  .sticky-search-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid #0252c5;
+    background: #ffffff;
+    color: #0252c5;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 0;
+    box-shadow: 0 2px 6px rgba(2, 82, 197, 0.08);
+  }
+
+  .sticky-search-btn:hover {
+    background: #0252c5;
+    color: #ffffff;
+    transform: scale(1.08);
+  }
+
+  /* Redes sociales en la barra de acción (Reposo) */
+  .masthead-social-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .masthead-social-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #777777;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 2px;
+  }
+
+  /* ========================================================
      SELECTOR DESPLEGABLE DE CATEGORÍAS (DROPDOWN)
      ======================================================== */
   .category-filter-box {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 10px;
   }
 
   .sticky-social-icons {
@@ -1122,7 +1673,18 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     display: none;
   }
 
-  .periodico-header.is-scrolled .masthead-social-row {
+  .periodico-header.is-scrolled .masthead-action-bar {
+    margin-top: 0;
+    width: auto;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .periodico-header.is-scrolled .search-trigger-btn {
+    display: none;
+  }
+
+  .periodico-header.is-scrolled .masthead-social-bar {
     display: none;
   }
 
@@ -1154,7 +1716,11 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
   .periodico-header.is-scrolled .category-filter-box {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .periodico-header.is-scrolled .sticky-search-btn {
+    display: inline-flex;
   }
 
   .periodico-header.is-scrolled .sticky-social-icons {
@@ -1749,6 +2315,12 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
       display: none !important;
     }
 
+    .masthead-action-bar {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
     .publicidades-grid {
       gap: 16px;
     }
@@ -1775,17 +2347,43 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     }
   }
 
-  @media (max-width: 680px) {
+  /* Reducción progresiva de la barra superior */
+  @media (max-width: 980px) {
+    /* Paso 1: Ocultar EDICIÓN DIGITAL y repartir Fecha y Clima a los dos extremos */
     .top-bar {
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
-      gap: 6px;
+      align-items: center;
     }
 
-    .top-location-social {
+    .top-edition {
+      display: none;
+    }
+
+    .top-location-weather {
       justify-self: auto;
     }
+  }
+
+  @media (max-width: 640px) {
+    /* Paso 2: Pasar directamente a 2 renglones (Fecha completa arriba, Ciudad + Clima abajo) */
+    .top-bar {
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding-bottom: 8px;
+    }
+
+    .top-date {
+      text-align: center;
+    }
+
+    .top-location-weather {
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 680px) {
 
     .publicidades-grid {
       flex-direction: column;
@@ -1995,5 +2593,233 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
     .noticia-card.is-compact .card-title .subtitulo-nota {
       font-size: 0.98rem;
     }
+  }
+
+  /* ========================================================
+     MODAL DE BÚSQUEDA INTERACTIVA (tarea0003)
+     ======================================================== */
+  .search-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 80px 20px 20px 20px;
+    animation: modalFadeIn 0.2s ease-out;
+  }
+
+  .search-modal-backdrop[hidden] {
+    display: none;
+  }
+
+  @keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .search-modal-card {
+    width: 100%;
+    max-width: 620px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    animation: modalSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes modalSlideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .search-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1.5px solid #f0f0f0;
+    background: #ffffff;
+  }
+
+  .search-modal-icon {
+    flex-shrink: 0;
+  }
+
+  .search-modal-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.05rem;
+    color: #1e2126;
+    background: transparent;
+  }
+
+  .search-modal-input::placeholder {
+    color: #94a3b8;
+    font-size: 0.95rem;
+  }
+
+  .search-modal-close {
+    background: transparent;
+    border: none;
+    font-size: 1.15rem;
+    color: #64748b;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .search-modal-close:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+
+  .search-modal-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .search-empty-prompt,
+  .search-no-results {
+    padding: 40px 20px;
+    text-align: center;
+    color: #64748b;
+  }
+
+  .prompt-title,
+  .no-results-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e2126;
+    margin: 0 0 6px 0;
+  }
+
+  .prompt-sub,
+  .no-results-sub {
+    font-size: 0.82rem;
+    margin: 0;
+  }
+
+  .no-results-icon {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .search-result-item {
+    display: flex;
+    gap: 14px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.15s ease;
+    align-items: center;
+  }
+
+  .search-result-item:hover {
+    background-color: #f1f5f9;
+  }
+
+  .search-result-thumb {
+    width: 64px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #e2e8f0;
+  }
+
+  .search-result-thumb.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+  }
+
+  .search-result-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .search-result-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .search-result-cat {
+    color: #0252c5;
+  }
+
+  .search-result-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e2126;
+    margin: 0;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .search-result-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: #555;
+    margin: 2px 0 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .search-highlight {
+    background-color: #fef08a;
+    color: #000;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  .search-modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: #f8fafc;
+    border-top: 1px solid #f0f0f0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    color: #64748b;
+  }
+
+  .search-modal-hint kbd {
+    background: #e2e8f0;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 700;
   }
 </style>

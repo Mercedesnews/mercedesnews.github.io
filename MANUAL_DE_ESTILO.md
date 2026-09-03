@@ -96,12 +96,17 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
 
 1. **Cintillo Superior (Meta Bar):**
    - Fecha completa en español (`jueves, 3 de septiembre de 2026`).
-   - Etiqueta "Edición Digital".
-   - Localidad: "Mercedes, Buenos Aires".
-   - **Accesos a Redes Sociales Oficiales:** Íconos vectoriales SVG a Facebook e Instagram en el extremo derecho con microinteracción de elevación y color de marca al cursor (`#1877F2` para Facebook y `#E4405F` para Instagram).
-2. **Cabecera del Diario (Masthead):**
+   - Etiqueta "Edición Digital" (se oculta progresivamente en pantallas ≤ 980px).
+   - **Localidad y Clima Dinámico (`tarea0004`):** *"Mercedes, Buenos Aires • ☀️ 15°"* con datos en vivo desde la API de Open-Meteo. Al hacer clic o posar el cursor sobre la temperatura se despliega una tarjeta flotante (*popover*) con el estado del cielo, temperatura actual, mín/máx del día, humedad y viento.
+   - **Adaptación móvil:** En pantallas menores a 640px, pasa automáticamente a dos renglones centrados (fecha completa arriba, localidad y clima abajo).
+2. **Cabecera del Diario (Masthead) y Barra de Acciones:**
    - Marca principal: **MERCEDES NEWS** en `Archivo Expanded Black Italic` a ancho completo (`clamp(2.8rem, 8vw, 6.2rem)`) en color azul institucional (`#0252c5`).
    - Lema institucional formal: *«El portal de noticias hecho para vos»*.
+   - **Barra de Acciones y Navegación (`tarea0003` y `tarea0012`):**
+     - **Buscador interactivo:** Botón píldora `🔍 Buscar noticias...` que despliega un diálogo modal a pantalla completa con desenfoque de fondo (*glassmorphism*), indexación instantánea en cliente y resaltado de coincidencias.
+     - **Selector de Categorías:** Menú desplegable `SECCIÓN: Todas ▾` con alineación en línea de base tipográfica (*baseline*).
+     - **Redes Sociales Oficiales:** Bloque *"Seguinos:"* con íconos vectoriales directos a Facebook e Instagram.
+   - **Cabecera Fija Reducida (Modo Scrolled):** Al desplazarse por la página (`scrollY > 200`), el logo se compacta a la izquierda, mientras que a la derecha conviven la lupa interactiva `🔍`, los botones de redes (en pantallas > 820px) y el selector desplegable.
    - Doble pleca azul divisoria (`#0252c5`).
 3. **Noticia de Tapa (Lead):**
    - Fotografía de apertura con relación de aspecto panorámica y badge flotante en `#1e2126` con texto blanco: **TAPA**.
