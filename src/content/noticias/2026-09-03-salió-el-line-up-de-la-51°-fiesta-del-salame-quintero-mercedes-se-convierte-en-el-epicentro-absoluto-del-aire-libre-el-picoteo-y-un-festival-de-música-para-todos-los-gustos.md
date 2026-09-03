@@ -12,27 +12,27 @@ Olvídate de la rutina de la semana y andá armando el grupo de WhatsApp. Si pen
 
 Sí, hay chacinados de primera, pero el verdadero enganche de esta edición 51 es el **Line Up** que armaron, cargado de cumbia, fiesta, folklore y ritmos tropicales para no parar de bailar al lado del río.
 
-### 🟢 **DAY 1: El arranque gratis que necesitás** _(Viernes 11)_
+### **DAY 1: El arranque gratis que necesitás** _(Viernes 11)_
 
 Ideal para salir del laburo o la facu, agarrar el auto y meter previa en la ruta. La entrada es **totalmente gratuita**.
 
 - **La Ezze Band** & **La Soberana Cumbia** abren la pista con todo el ritmo local.
 - **ANTONIO RÍOS:** El legendario "Maestro" aterriza en el escenario principal para poner a todo el mundo a cantar _"Nunca me faltes"_ bajo las estrellas.
 
-### 🟢 **DAY 2: La noche de cumbia masiva** _(Sábado 12)_
+### **DAY 2: La noche de cumbia masiva** _(Sábado 12)_
 
 El día fuerte para ir en banda, llevar la reposera, el mate o clavarte una buena cerveza artesanal en el patio gastronómico.
 
 - Tarde de sonidos de la casa y ritmos emergentes con **Semilla Agreste**, **China en Mercedes**, **Genaro Cobuccio**, **Los López Heredia** y **Menta y Limón**.
 - **LOS PALMERAS:** Cierre estelar a pura cumbia santafesina. Si no metés pogo con _"El Parrandero"_ o _"Aparato"_, estás haciendo las cosas mal.
 
-### 🟢 **DAY 3: Cierre de clásico & premiación** _(Domingo 13)_
+### **DAY 3: Cierre de clásico & premiación** _(Domingo 13)_
 
 Para bajar un cambio, disfrutar del solcito de la tarde y ver quién se lleva el premio al mejor salame del año.
 
 - **LOS FRONTERIZOS:** El folclore tradicional le pone el broche de oro a tres días de pura tradición y fiesta popular.
 
-### 💡 **Tips para no quedarte afuera**
+### **Tips para no quedarte afuera**
 
 - **El Vibe:** Patios cerveceros, carpas de degustación, food trucks, feria de artesanos y hectáreas de verde para tirarte a descansar con amigos.
 - **Location:** Parque Municipal Independencia (Mercedes, a poco más de una hora de CABA por Acceso Oeste/Ruta 5).
