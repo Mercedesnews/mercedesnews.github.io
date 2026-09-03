@@ -25,8 +25,8 @@ El diario utiliza la paleta institucional definida en el manual de marca:
 
 | Color | HEX | RGB | Uso / Justificación |
 | :--- | :--- | :--- | :--- |
-| **Azul Institucional** | `#0252c5` | `R: 2, G: 82, B: 197` | Color de identidad, divisores principales, acentos y llamados a la acción. |
-| **Negro / Carbón** | `#1e2126` | `R: 30, G: 33, B: 38` | Color principal para titulares, logo, textos y elementos de alto contraste. |
+| **Azul Institucional** | `#0252c5` | `R: 2, G: 82, B: 197` | Logotipo principal, identidad, divisores primarios, acentos y llamados a la acción. |
+| **Negro / Carbón** | `#1e2126` | `R: 30, G: 33, B: 38` | Color principal para titulares, textos de lectura y elementos de alto contraste. |
 | **Gris Claro de Apoyo** | `#d5d9da` | `R: 213, G: 217, B: 218` | Divisores secundarios suaves, bordes sutiles y fondos de soporte. |
 | **Fondo General** | `#ffffff` | `R: 255, G: 255, B: 255` | Blanco puro, máxima legibilidad y limpieza visual. |
 | **Texto de Bajada / Metadatos** | `#555555` / `#888888` | — | Gris neutro para fechas, autores y extractos secundarios. |
@@ -35,8 +35,9 @@ El diario utiliza la paleta institucional definida en el manual de marca:
 Para lograr distinción y sutileza sin recargar la pantalla, el color azul institucional `#0252c5` se modula según su importancia:
 
 - **Doble Pleca Principal (Cabecera y Pie):**
-  - Línea primaria: `3px solid #0252c5` (trazo firme de cierre editorial).
-  - Línea secundaria: `1px solid rgba(2, 82, 197, 0.4)` (trazo fino acompañante).
+  - Línea primaria: `4px solid #0252c5` (trazo superior firme de identidad).
+  - Espacio de separación: `7px` de aire blanco intermedio.
+  - Línea secundaria: `1.5px solid rgba(2, 82, 197, 0.45)` (trazo fino inferior acompañante).
 - **Barra Superior de Metadatos:** `1px solid rgba(2, 82, 197, 0.35)`.
 - **Línea de Título de Secciones:** `height: 1px; background: rgba(2, 82, 197, 0.35);`.
 - **Divisores entre Artículos (Separación de notas):**
@@ -93,7 +94,7 @@ El portal utiliza tipografías de Google Fonts con roles bien diferenciados:
    - Etiqueta "Edición Digital".
    - Localidad: "Mercedes, Buenos Aires".
 2. **Cabecera del Diario (Masthead):**
-   - Marca principal: **MERCEDES NEWS** en `Archivo Expanded Black Italic` (4.5rem en desktop) en color azul institucional (`#0252c5`).
+   - Marca principal: **MERCEDES NEWS** en `Archivo Expanded Black Italic` a ancho completo (`clamp(2.8rem, 8vw, 6.2rem)`) en color azul institucional (`#0252c5`).
    - Lema institucional formal: *«El portal de noticias hecho para vos»*.
    - Doble pleca azul divisoria (`#0252c5`).
 3. **Noticia de Tapa (Lead):**
