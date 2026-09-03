@@ -24,6 +24,9 @@ collections:
           widget: "select",
           options: [
             { label: "Actualidad Local", value: "actualidad-local" },
+            { label: "Actualidad Provincial", value: "actualidad-provincial" },
+            { label: "Actualidad Nacional", value: "actualidad-nacional" },
+            { label: "Deportes", value: "deportes" },
             { label: "Crónicas & Particularidades", value: "cronicas" },
             { label: "Mano a Mano", value: "entrevistas" },
             { label: "Opinión & Ensayos", value: "opinion" }

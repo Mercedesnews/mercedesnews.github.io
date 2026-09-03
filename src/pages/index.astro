@@ -5,6 +5,9 @@ const rawNotas = Object.values(import.meta.glob('../content/noticias/*.md', { ea
 // Mapa de categorías oficiales
 const CATEGORIAS: Record<string, string> = {
   'actualidad-local': 'Actualidad Local',
+  'actualidad-provincial': 'Actualidad Provincial',
+  'actualidad-nacional': 'Actualidad Nacional',
+  'deportes': 'Deportes',
   'cronicas': 'Crónicas & Particularidades',
   'entrevistas': 'Mano a Mano',
   'opinion': 'Opinión & Ensayos'
@@ -147,6 +150,9 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
                 <ul class="dropdown-list" id="cat-dropdown-list">
                   <li data-cat="todas" class="dropdown-item is-selected">Todas las secciones</li>
                   <li data-cat="actualidad-local" class="dropdown-item">Actualidad Local</li>
+                  <li data-cat="actualidad-provincial" class="dropdown-item">Actualidad Provincial</li>
+                  <li data-cat="actualidad-nacional" class="dropdown-item">Actualidad Nacional</li>
+                  <li data-cat="deportes" class="dropdown-item">Deportes</li>
                   <li data-cat="cronicas" class="dropdown-item">Crónicas &amp; Particularidades</li>
                   <li data-cat="entrevistas" class="dropdown-item">Mano a Mano</li>
                   <li data-cat="opinion" class="dropdown-item">Opinión &amp; Ensayos</li>
@@ -496,6 +502,9 @@ const fechaHoy = today.toLocaleDateString('es-AR', {
         const CATEGORIAS = {
           'todas': 'Todas',
           'actualidad-local': 'Actualidad Local',
+          'actualidad-provincial': 'Actualidad Provincial',
+          'actualidad-nacional': 'Actualidad Nacional',
+          'deportes': 'Deportes',
           'cronicas': 'Crónicas & Particularidades',
           'entrevistas': 'Mano a Mano',
           'opinion': 'Opinión & Ensayos'

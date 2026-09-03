@@ -4,7 +4,7 @@ title: |-
 
   Este encuentro reúne a referentes de toda la provincia para discutir cercanía, modernización y el rol social del Poder Judicial.
 date: 2026-09-03T12:20:00
-categoria: actualidad-local
+categoria: actualidad-provincial
 thumbnail: /assets/img/WhatsApp Image 2026-09-03 at 12.16.29 PM.jpeg
 ---
 

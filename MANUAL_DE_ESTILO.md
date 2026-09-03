@@ -173,11 +173,14 @@ Todos los elementos multimedia respetan la regla `break-inside: avoid;` para nun
 ## 🗂️ 7. Organización Temática y Navegación Interactiva
 
 ### A. Categorías Oficiales
-El portal organiza sus notas en 4 secciones fijas:
+El portal organiza sus notas en 7 secciones fijas:
 1. **Actualidad Local** (`actualidad-local`)
-2. **Crónicas & Particularidades** (`cronicas`)
-3. **Mano a Mano** (`entrevistas`)
-4. **Opinión & Ensayos** (`opinion`)
+2. **Actualidad Provincial** (`actualidad-provincial`)
+3. **Actualidad Nacional** (`actualidad-nacional`)
+4. **Deportes** (`deportes`)
+5. **Crónicas & Particularidades** (`cronicas`)
+6. **Mano a Mano** (`entrevistas`)
+7. **Opinión & Ensayos** (`opinion`)
 
 ### B. Header Interactivo (Sticky-Shrink)
 - **Modo Superior:** El encabezado se muestra en su escala completa, con la fecha/edición arriba, el logo `MERCEDES NEWS` a ancho completo en azul `#0252c5`, el lema oficial y el selector desplegable de secciones.
