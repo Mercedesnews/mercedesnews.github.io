@@ -2384,6 +2384,57 @@ const searchIndex = notas.map((n) => {
   }
 
   @media (max-width: 680px) {
+    /* Header Scrolled en móviles: Ajustes para evitar desbordes y que el dropdown no quede fuera de pantalla */
+    .periodico-header.is-scrolled .header-container {
+      padding: 6px 14px 0 14px;
+    }
+
+    .periodico-header.is-scrolled .masthead-area {
+      gap: 8px;
+      padding: 4px 0;
+    }
+
+    .periodico-header.is-scrolled .diario-title {
+      font-size: clamp(1.05rem, 3.8vw, 1.35rem);
+      letter-spacing: -0.6px;
+    }
+
+    .periodico-header.is-scrolled .category-filter-box {
+      gap: 6px;
+    }
+
+    .periodico-header.is-scrolled .sticky-search-btn {
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+
+    .periodico-header.is-scrolled .dropdown-trigger-btn {
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      gap: 5px;
+    }
+
+    .periodico-header.is-scrolled .trigger-label {
+      display: none; /* En móvil colapsado dejamos solo el nombre de la sección y la flecha */
+    }
+
+    .periodico-header.is-scrolled .trigger-value {
+      max-width: 95px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 0.8rem;
+    }
+
+    .periodico-header.is-scrolled .dropdown-list {
+      min-width: 230px;
+      max-width: calc(100vw - 28px);
+      right: 0;
+      left: auto;
+    }
 
     .publicidades-grid {
       flex-direction: column;
