@@ -222,8 +222,10 @@ const searchIndex = notas.map((n) => {
                     id="cat-dropdown-btn" 
                     aria-expanded="false"
                   >
-                    <span class="trigger-label">SECCIÓN:</span>
-                    <span class="trigger-value" id="current-cat-name">Todas</span>
+                    <span class="trigger-text-group">
+                      <span class="trigger-label">SECCIÓN:</span>
+                      <span class="trigger-value" id="current-cat-name">Todas</span>
+                    </span>
                     <span class="trigger-arrow">▾</span>
                   </button>
                   
@@ -1153,7 +1155,7 @@ const searchIndex = notas.map((n) => {
   /* Barra Superior de Metadatos (Opción 3: Grid 3 columnas con Fecha, Edición y Clima) */
   .top-bar {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
     border-bottom: 1px solid rgba(2, 82, 197, 0.35);
     padding-bottom: 6px;
@@ -1168,10 +1170,12 @@ const searchIndex = notas.map((n) => {
 
   .top-date {
     text-align: left;
+    justify-self: start;
   }
 
   .top-edition {
     text-align: center;
+    justify-self: center;
   }
 
   .top-location-weather {
@@ -1411,20 +1415,22 @@ const searchIndex = notas.map((n) => {
      BARRA DE ACCIONES Y NAVEGACIÓN (Opción 3)
      ======================================================== */
   .masthead-action-bar {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    justify-content: space-between;
     width: 100%;
-    gap: 15px;
     margin-top: 6px;
   }
 
   /* Botón de apertura del Buscador Interactivo (tarea0003) */
   .search-trigger-btn {
+    justify-self: start;
+    height: 38px;
+    box-sizing: border-box;
     background: #f8fafc;
     border: 1.5px solid #d5d9da;
     border-radius: 22px;
-    padding: 7px 18px;
+    padding: 0 18px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -1452,6 +1458,7 @@ const searchIndex = notas.map((n) => {
 
   .search-trigger-text {
     letter-spacing: 0.02em;
+    line-height: 1;
   }
 
   .search-kbd-badge {
@@ -1490,18 +1497,22 @@ const searchIndex = notas.map((n) => {
 
   /* Redes sociales en la barra de acción (Reposo) */
   .masthead-social-bar {
-    display: flex;
+    justify-self: end;
+    height: 38px;
+    box-sizing: border-box;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
   }
 
   .masthead-social-label {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     font-weight: 700;
     color: #777777;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+    line-height: 1;
     margin-right: 2px;
   }
 
@@ -1509,6 +1520,7 @@ const searchIndex = notas.map((n) => {
      SELECTOR DESPLEGABLE DE CATEGORÍAS (DROPDOWN)
      ======================================================== */
   .category-filter-box {
+    justify-self: center;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1525,16 +1537,15 @@ const searchIndex = notas.map((n) => {
   }
 
   .dropdown-trigger-btn {
+    height: 38px;
+    box-sizing: border-box;
     background: #ffffff;
     border: 1.5px solid #0252c5;
     border-radius: 22px;
-    padding: 7px 20px;
+    padding: 0 20px;
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.84rem;
-    font-weight: 700;
-    color: #1e2126;
     display: inline-flex;
-    align-items: baseline;
+    align-items: center;
     gap: 8px;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(2, 82, 197, 0.08);
@@ -1548,8 +1559,14 @@ const searchIndex = notas.map((n) => {
     box-shadow: 0 4px 10px rgba(2, 82, 197, 0.16);
   }
 
+  .trigger-text-group {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
   .trigger-label {
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     font-weight: 900;
     color: #0252c5;
     text-transform: uppercase;
@@ -1558,7 +1575,7 @@ const searchIndex = notas.map((n) => {
   }
 
   .trigger-value {
-    font-size: 0.86rem;
+    font-size: 0.84rem;
     font-weight: 700;
     color: #1e2126;
     line-height: 1;
@@ -1674,6 +1691,8 @@ const searchIndex = notas.map((n) => {
   }
 
   .periodico-header.is-scrolled .masthead-action-bar {
+    display: flex;
+    align-items: center;
     margin-top: 0;
     width: auto;
     justify-content: flex-end;
@@ -2316,9 +2335,34 @@ const searchIndex = notas.map((n) => {
     }
 
     .masthead-action-bar {
+      display: flex;
       flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-trigger-btn {
+      order: 1;
+      width: 100%;
       justify-content: center;
-      gap: 14px;
+    }
+
+    .category-filter-box {
+      order: 2;
+      justify-self: auto;
+    }
+
+    .dropdown-list {
+      left: 0;
+      right: auto;
+      transform: none;
+      max-width: calc(100vw - 32px);
+    }
+
+    .masthead-social-bar {
+      order: 3;
+      justify-self: auto;
     }
 
     .publicidades-grid {
