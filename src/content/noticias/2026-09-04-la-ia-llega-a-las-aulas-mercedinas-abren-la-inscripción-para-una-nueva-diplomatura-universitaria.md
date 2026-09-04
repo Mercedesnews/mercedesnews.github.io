@@ -1,8 +1,8 @@
 ---
 title: |-
-  La IA llega a las aulas mercedinas
+  Amplían la oferta universitaria en Mercedes 
 
-  Abren la inscripción para una nueva diplomatura universitaria
+  Abren la inscripción para una nueva diplomatura
 date: 2026-09-04T14:23:00
 categoria: actualidad-local
 thumbnail: /assets/img/WhatsApp Image 2026-09-04 at 2.22.17 PM.jpeg
