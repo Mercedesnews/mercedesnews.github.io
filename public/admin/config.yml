@@ -35,6 +35,25 @@ collections:
         }
       - { label: "Imagen Destacada", name: "thumbnail", widget: "image", required: false }
       - { label: "Cuerpo de la Noticia", name: "body", widget: "markdown" }
+      - { label: "Fijar nota en portada (Pin)", name: "pin", widget: "boolean", default: false, required: false, hint: "Mantiene esta nota en la grilla principal y evita que pase automáticamente a 'Lo que tenés que saber' después de 3 días." }
+      - { label: "Orden de prioridad en grilla reciente", name: "orden", widget: "number", value_type: "int", required: false, hint: "Opcional. 1 para primer lugar en secundarias, 2 para segundo, etc. Las notas sin número se ordenan por fecha debajo de las numeradas." }
+
+  - name: "configuracion"
+    label: "Configuración de Portada"
+    files:
+      - name: "portada"
+        label: "Ajustes de Portada"
+        file: "src/content/configuracion/portada.json"
+        fields:
+          - label: "Nota de Tapa Principal"
+            name: "nota_de_tapa"
+            widget: "relation"
+            collection: "noticias"
+            search_fields: ["title"]
+            value_field: "{{slug}}"
+            display_fields: ["title"]
+            required: false
+            hint: "Seleccioná qué noticia querés que encabece la portada como Nota de Tapa. Si lo dejás vacío, la tapa será automáticamente la más reciente."
 
   - name: "publicidades"
     label: "Publicidades"

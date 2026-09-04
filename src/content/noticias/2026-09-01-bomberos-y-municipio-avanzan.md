@@ -5,6 +5,8 @@ title: |-
 date: 2026-08-25T14:30:00
 categoria: actualidad-local
 thumbnail: /assets/img/B2-1024x682.webp
+pin: true
+orden: null
 ---
 
 El intendente Juani Ustarroz firmó el decreto de la segunda entrega de fondos para el avance del nuevo destacamento de los Bomberos Voluntarios en Gowland, un viejo sueño de los vecinos cuya construcción cuenta con el financiamiento de la municipalidad, luego de que la primera etapa de la obra fuera finalizada y rendida.

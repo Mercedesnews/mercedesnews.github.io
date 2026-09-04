@@ -5,6 +5,8 @@ title: |-
 date: 2026-09-04T09:09:00
 categoria: entrevistas
 thumbnail: /assets/img/WhatsApp Image 2026-09-04 at 12.09.13 PM.jpeg
+pin: false
+orden: 1
 ---
 
 Cuando el Indio Solari habla, el rock y la cultura popular argentina se detienen a escuchar. Fiel a su estilo ermitaño y analítico, sus apariciones públicas siempre funcionaron como misivas donde el arte, la política de vida y la condición humana se entrelazan. Su última entrevista en profundidad —en diálogo con Andy Kusnetzoff para Perros de la Calle— no fue la excepción: dejó un testimonio auténtico, lúcido y poético sobre el paso del tiempo, el Parkinson y su vigencia creativa.

@@ -6,6 +6,8 @@ title: |-
 date: 2026-09-04T10:21:00
 categoria: actualidad-nacional
 thumbnail: /assets/img/WhatsApp Image 2026-09-04 at 10.25.43 AM.jpeg
+pin: false
+orden: 2
 ---
 
 Las recientes afirmaciones del presidente estadounidense sobre la capacidad de defensa del Reino Unido y una posible revisión de la neutralidad histórica de la Casa Blanca reencendieron las alarmas en los medios ingleses.

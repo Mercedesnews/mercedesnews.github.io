@@ -31,25 +31,72 @@ function getCalendarDaysDiff(dateString) {
   return Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
 }
 
-// Ordenamos las notas por fecha de forma descendente (la más reciente primero)
+// Cargamos la configuración de portada si existe (tarea0017)
+let notaDeTapaSlug = '';
+try {
+  const modPortada = await import('../content/configuracion/portada.json');
+  notaDeTapaSlug = (modPortada.default?.nota_de_tapa || modPortada.nota_de_tapa || '').trim();
+} catch (e) {
+  // archivo aún no creado
+}
+
+// Mapeamos y procesamos todas las notas con pin y orden
 const notas = rawNotas
-  .map((nota) => {
+  .map((nota: any) => {
     const slug = nota.file.split('/').pop().replace('.md', '');
     const cat = nota.frontmatter.categoria || 'actualidad-local';
     const daysAgo = getCalendarDaysDiff(nota.frontmatter.date);
-    const isOld = daysAgo > 3;
+    const pin = Boolean(nota.frontmatter.pin);
+    const rawOrden = nota.frontmatter.orden;
+    const orden = (rawOrden !== undefined && rawOrden !== null && rawOrden !== '') 
+      ? Number(rawOrden) 
+      : null;
+    // Si tiene pin, NUNCA pasa al archivo automático aunque hayan pasado más de 3 días
+    const isOld = daysAgo > 3 && !pin;
     const timestamp = new Date(nota.frontmatter.date).getTime();
-    return { ...nota, slug, cat, daysAgo, isOld, timestamp };
+    return { ...nota, slug, cat, daysAgo, pin, orden, isOld, timestamp };
   })
   .sort((a, b) => b.timestamp - a.timestamp);
 
-// Partición de notas:
-// - La nota más reciente (notas[0]) siempre lidera la Tapa destacada
-// - Las demás se dividen en secundarias recientes (<= 3 días) y archivo (> 3 días)
-const leadNota = notas[0];
-const restNotas = notas.slice(1);
+// Determinamos la Nota de Tapa (tarea0017)
+// Si el administrador eligió una nota específica en portada.json, esa lidera.
+// Si no, fallback a la nota más reciente por fecha.
+let leadNota: any;
+let restNotas: any[];
+
+const foundIndex = notaDeTapaSlug ? notas.findIndex((n) => n.slug === notaDeTapaSlug) : -1;
+if (foundIndex !== -1) {
+  leadNota = { ...notas[foundIndex], isTapa: true, isOld: false };
+  restNotas = notas.filter((_, idx) => idx !== foundIndex);
+} else {
+  leadNota = { ...notas[0], isTapa: true, isOld: false };
+  restNotas = notas.slice(1);
+}
+
+// Separamos en secundarias recientes (incluye notas con pin) y archivo (> 3 días y sin pin)
 const secundariasRecientes = restNotas.filter((n) => !n.isOld);
 const notasLoQueTenesQueSaber = restNotas.filter((n) => n.isOld);
+
+// Función de ordenamiento para notas secundarias recientes:
+// 1. Las notas con número de orden van primero (orden asc: 1, 2, 3...)
+//    En caso de empate en orden, desempata la más reciente (timestamp desc)
+// 2. Las notas sin número de orden van abajo, ordenadas cronológicamente por fecha (timestamp desc)
+function sortNotasRecientes(a: any, b: any) {
+  const hasA = a.orden !== null && !isNaN(a.orden);
+  const hasB = b.orden !== null && !isNaN(b.orden);
+  if (hasA && hasB) {
+    if (a.orden !== b.orden) return a.orden - b.orden;
+    return b.timestamp - a.timestamp;
+  }
+  if (hasA) return -1;
+  if (hasB) return 1;
+  return b.timestamp - a.timestamp;
+}
+
+secundariasRecientes.sort(sortNotasRecientes);
+
+// En "Lo que tenés que saber" el orden es estricta y puramente cronológico descendente
+notasLoQueTenesQueSaber.sort((a: any, b: any) => b.timestamp - a.timestamp);
 
 // Función para formatear fechas al estilo editorial
 function formatDate(dateString) {
@@ -288,9 +335,13 @@ const searchIndex = notas.map((n) => {
               <article 
                 class="noticia-card is-lead" 
                 id={`card-${leadNota.slug}`}
+                data-slug={leadNota.slug}
                 data-cat={leadNota.cat}
-                data-is-old={leadNota.isOld ? 'true' : 'false'}
+                data-is-old="false"
                 data-timestamp={leadNota.timestamp}
+                data-orden={leadNota.orden !== null ? leadNota.orden : ''}
+                data-pin={leadNota.pin ? 'true' : 'false'}
+                data-is-tapa="true"
               >
                 {leadNota.frontmatter.thumbnail && (
                   <div class="card-media">
@@ -355,9 +406,13 @@ const searchIndex = notas.map((n) => {
                 <article 
                   class="noticia-card is-secondary" 
                   id={`card-${nota.slug}`}
+                  data-slug={nota.slug}
                   data-cat={nota.cat}
                   data-is-old="false"
                   data-timestamp={nota.timestamp}
+                  data-orden={nota.orden !== null ? nota.orden : ''}
+                  data-pin={nota.pin ? 'true' : 'false'}
+                  data-is-tapa="false"
                 >
                   {nota.frontmatter.thumbnail && (
                     <div class="card-media">
@@ -367,6 +422,7 @@ const searchIndex = notas.map((n) => {
                           alt={cleanTitle(nota.frontmatter.title)} 
                           class="card-img" 
                         />
+                        <span class="badge-tapa">Tapa</span>
                       </a>
                     </div>
                   )}
@@ -476,9 +532,13 @@ const searchIndex = notas.map((n) => {
                   <article 
                     class="noticia-card is-compact" 
                     id={`card-${nota.slug}`}
+                    data-slug={nota.slug}
                     data-cat={nota.cat}
                     data-is-old="true"
                     data-timestamp={nota.timestamp}
+                    data-orden={nota.orden !== null ? nota.orden : ''}
+                    data-pin={nota.pin ? 'true' : 'false'}
+                    data-is-tapa="false"
                   >
                     {nota.frontmatter.thumbnail && (
                       <div class="card-media">
@@ -488,6 +548,7 @@ const searchIndex = notas.map((n) => {
                             alt={cleanTitle(nota.frontmatter.title)} 
                             class="card-img" 
                           />
+                          <span class="badge-tapa">Tapa</span>
                         </a>
                       </div>
                     )}
@@ -630,22 +691,56 @@ const searchIndex = notas.map((n) => {
           'opinion': 'Opinión & Ensayos'
         };
 
-        // Guardamos todas las tarjetas en memoria ordenadas por fecha
-        const allCards = Array.from(document.querySelectorAll('.noticia-card'))
-          .sort((a, b) => Number(b.dataset.timestamp || 0) - Number(a.dataset.timestamp || 0));
+        // Guardamos todas las tarjetas en memoria
+        const allCards = Array.from(document.querySelectorAll('.noticia-card'));
 
         // Recalcular dinámicamente la antigüedad (> 3 días calendario) en el navegador del lector en tiempo real
         const now = new Date();
         allCards.forEach((card) => {
           const timestamp = Number(card.dataset.timestamp || 0);
+          const isPinned = card.dataset.pin === 'true';
+          const isTapa = card.dataset.isTapa === 'true';
           if (timestamp) {
             const target = new Date(timestamp);
             const d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             const d2 = new Date(target.getFullYear(), target.getMonth(), target.getDate());
             const diffDays = Math.max(0, Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24)));
-            card.dataset.isOld = diffDays > 3 ? 'true' : 'false';
+            // Si tiene pin o es la tapa oficial, NUNCA va al archivo automático
+            card.dataset.isOld = (diffDays > 3 && !isPinned && !isTapa) ? 'true' : 'false';
           }
         });
+
+        // Funciones auxiliares de ordenamiento:
+        // 1. Para secundarias recientes: con orden numérico asc (1, 2, 3...) primero, desempate por fecha desc; sin orden numérico abajo por fecha desc.
+        function sortCardsRecientes(cards) {
+          return cards.slice().sort((a, b) => {
+            const rawA = a.dataset.orden;
+            const rawB = b.dataset.orden;
+            const ordenA = rawA !== '' && rawA !== undefined ? Number(rawA) : null;
+            const ordenB = rawB !== '' && rawB !== undefined ? Number(rawB) : null;
+            const hasA = ordenA !== null && !isNaN(ordenA);
+            const hasB = ordenB !== null && !isNaN(ordenB);
+            const timeA = Number(a.dataset.timestamp || 0);
+            const timeB = Number(b.dataset.timestamp || 0);
+
+            if (hasA && hasB) {
+              if (ordenA !== ordenB) return ordenA - ordenB;
+              return timeB - timeA;
+            }
+            if (hasA) return -1;
+            if (hasB) return 1;
+            return timeB - timeA;
+          });
+        }
+
+        // 2. Para archivo "Lo que tenés que saber": puramente cronológico descendente
+        function sortCardsArchivo(cards) {
+          return cards.slice().sort((a, b) => {
+            const timeA = Number(a.dataset.timestamp || 0);
+            const timeB = Number(b.dataset.timestamp || 0);
+            return timeB - timeA;
+          });
+        }
 
         // 1. HEADER STICKY-SHRINK: Con posición fija y reserva de altura
         if (headerOuter && header) {
@@ -720,32 +815,42 @@ const searchIndex = notas.map((n) => {
             if (emptyStateBox) emptyStateBox.setAttribute('hidden', '');
             if (articulosWrapper) articulosWrapper.style.display = 'block';
 
-            let countSecundarias = 0;
-            let countArchivo = 0;
+            // Tarjeta de Tapa general: la que tenga data-is-tapa="true" o la más reciente
+            const leadCard = allCards.find((c) => c.dataset.isTapa === 'true') 
+              || allCards.slice().sort((a, b) => Number(b.dataset.timestamp || 0) - Number(a.dataset.timestamp || 0))[0];
 
-            allCards.forEach((card, index) => {
+            const restCards = allCards.filter((c) => c !== leadCard);
+            const secundarias = sortCardsRecientes(restCards.filter((c) => c.dataset.isOld !== 'true'));
+            const archivo = sortCardsArchivo(restCards.filter((c) => c.dataset.isOld === 'true'));
+
+            allCards.forEach((card) => {
               card.style.display = '';
-              if (index === 0) {
-                card.className = 'noticia-card is-lead';
-                if (articulosWrapper && sectionRecientesBar) {
-                  articulosWrapper.insertBefore(card, sectionRecientesBar);
-                }
-              } else if (card.dataset.isOld === 'true') {
-                card.className = 'noticia-card is-compact';
-                if (listaArchivo) listaArchivo.appendChild(card);
-                countArchivo++;
-              } else {
-                card.className = 'noticia-card is-secondary';
-                if (grillaSecundarias) grillaSecundarias.appendChild(card);
-                countSecundarias++;
-              }
             });
 
-            if (sectionRecientesBar) sectionRecientesBar.style.display = countSecundarias > 0 ? '' : 'none';
-            if (sectionRecientesHeading) sectionRecientesHeading.textContent = 'Otras Publicaciones';
-            if (grillaSecundarias) grillaSecundarias.style.display = countSecundarias > 0 ? '' : 'none';
+            leadCard.className = 'noticia-card is-lead';
+            if (articulosWrapper && sectionRecientesBar) {
+              articulosWrapper.insertBefore(leadCard, sectionRecientesBar);
+            }
 
-            if (seccionArchivo) seccionArchivo.style.display = countArchivo > 0 ? '' : 'none';
+            if (grillaSecundarias) {
+              secundarias.forEach((card) => {
+                card.className = 'noticia-card is-secondary';
+                grillaSecundarias.appendChild(card);
+              });
+            }
+
+            if (listaArchivo) {
+              archivo.forEach((card) => {
+                card.className = 'noticia-card is-compact';
+                listaArchivo.appendChild(card);
+              });
+            }
+
+            if (sectionRecientesBar) sectionRecientesBar.style.display = secundarias.length > 0 ? '' : 'none';
+            if (sectionRecientesHeading) sectionRecientesHeading.textContent = 'Otras Publicaciones';
+            if (grillaSecundarias) grillaSecundarias.style.display = secundarias.length > 0 ? '' : 'none';
+
+            if (seccionArchivo) seccionArchivo.style.display = archivo.length > 0 ? '' : 'none';
             if (sectionArchivoHeading) sectionArchivoHeading.textContent = 'Lo que tenés que saber';
             return;
           }
@@ -771,35 +876,42 @@ const searchIndex = notas.map((n) => {
             }
           });
 
-          // La primera nota de la categoría se promueve a NOTA DE TAPA
-          const leadCard = matchingCards[0];
+          // Regla tarea0017:
+          // Si la nota de tapa general pertenece a esta categoría, se mantiene como tapa.
+          // Si no, lidera la de posición más alta (orden menor), o si no están numeradas, la más reciente.
+          let leadCard = matchingCards.find((c) => c.dataset.isTapa === 'true');
+          if (!leadCard) {
+            leadCard = sortCardsRecientes(matchingCards)[0];
+          }
+
           leadCard.className = 'noticia-card is-lead';
           if (articulosWrapper && sectionRecientesBar) {
             articulosWrapper.insertBefore(leadCard, sectionRecientesBar);
           }
 
-          // Las demás se distribuyen según antigüedad (> 3 días)
-          const restCards = matchingCards.slice(1);
-          let countSecundarias = 0;
-          let countArchivo = 0;
+          const restCards = matchingCards.filter((c) => c !== leadCard);
+          const secundarias = sortCardsRecientes(restCards.filter((c) => c.dataset.isOld !== 'true'));
+          const archivo = sortCardsArchivo(restCards.filter((c) => c.dataset.isOld === 'true'));
 
-          restCards.forEach((card) => {
-            if (card.dataset.isOld === 'true') {
-              card.className = 'noticia-card is-compact';
-              if (listaArchivo) listaArchivo.appendChild(card);
-              countArchivo++;
-            } else {
+          if (grillaSecundarias) {
+            secundarias.forEach((card) => {
               card.className = 'noticia-card is-secondary';
-              if (grillaSecundarias) grillaSecundarias.appendChild(card);
-              countSecundarias++;
-            }
-          });
+              grillaSecundarias.appendChild(card);
+            });
+          }
 
-          if (sectionRecientesBar) sectionRecientesBar.style.display = countSecundarias > 0 ? '' : 'none';
+          if (listaArchivo) {
+            archivo.forEach((card) => {
+              card.className = 'noticia-card is-compact';
+              listaArchivo.appendChild(card);
+            });
+          }
+
+          if (sectionRecientesBar) sectionRecientesBar.style.display = secundarias.length > 0 ? '' : 'none';
           if (sectionRecientesHeading) sectionRecientesHeading.textContent = `Más en ${catName}`;
-          if (grillaSecundarias) grillaSecundarias.style.display = countSecundarias > 0 ? '' : 'none';
+          if (grillaSecundarias) grillaSecundarias.style.display = secundarias.length > 0 ? '' : 'none';
 
-          if (seccionArchivo) seccionArchivo.style.display = countArchivo > 0 ? '' : 'none';
+          if (seccionArchivo) seccionArchivo.style.display = archivo.length > 0 ? '' : 'none';
           if (sectionArchivoHeading) sectionArchivoHeading.textContent = `Lo que tenés que saber en ${catName}`;
         }
 
