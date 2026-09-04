@@ -9,5 +9,18 @@ export default defineConfig({
     server: {
       allowedHosts: true,
     },
+    plugins: [
+      {
+        name: 'admin-redirect',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url === '/admin' || req.url === '/admin/') {
+              req.url = '/admin/index.html';
+            }
+            next();
+          });
+        },
+      },
+    ],
   },
 });

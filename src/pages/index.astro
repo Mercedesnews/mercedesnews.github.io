@@ -2,6 +2,13 @@
 // Cargamos todas las noticias de la carpeta content/noticias
 const rawNotas = Object.values(import.meta.glob('../content/noticias/*.md', { eager: true }));
 
+// Cargamos las publicidades activas de content/publicidades
+const rawPublicidades = Object.values(import.meta.glob('../content/publicidades/*.md', { eager: true }));
+const publicidades = rawPublicidades
+  .map((p: any) => p.frontmatter)
+  .filter((p: any) => p && p.activo !== false)
+  .sort((a: any, b: any) => (Number(a.orden) || 99) - (Number(b.orden) || 99));
+
 // Mapa de categorías oficiales
 const CATEGORIAS: Record<string, string> = {
   'actualidad-local': 'Actualidad Local',
@@ -393,90 +400,62 @@ const searchIndex = notas.map((n) => {
               ))}
             </div>
 
-            {/* SECCIÓN PUBLICITARIA / AUSPICIANTES (Opción B: Franja Intermedia) */}
-            <aside class="seccion-publicidades" id="seccion-publicidades" aria-label="Espacio publicitario">
-              <div class="publicidad-divider-bar">
-                <span class="publicidad-badge">Espacio Publicitario</span>
-                <div class="publicidad-divider-line"></div>
-              </div>
-
-              <div class="publicidades-grid">
-                <!-- Publicidad 1: Gastronomía & Tradición local -->
-                <div class="ad-card">
-                  <a href="#" class="ad-link" onclick="return false;" title="Auspiciante: Sabores de Mercedes">
-                    <div class="ad-inner ad-theme-gastronomia">
-                      <span class="ad-micro-label">Auspiciante Oficial</span>
-                      <div class="ad-content-box">
-                        <span class="ad-icon">🥖</span>
-                        <h4 class="ad-brand-name">Sabores de Mercedes</h4>
-                        <p class="ad-brand-tagline">Salame Quintero &amp; Quesos de Campo de elaboración artesanal</p>
-                      </div>
-                      <span class="ad-cta-btn">Conocé Más</span>
-                    </div>
-                  </a>
+            {/* SECCIÓN PUBLICITARIA / AUSPICIANTES (Gestionada desde Sveltia CMS - tarea0013) */}
+            {publicidades.length > 0 && (
+              <aside class="seccion-publicidades" id="seccion-publicidades" aria-label="Espacio publicitario">
+                <div class="publicidad-divider-bar">
+                  <span class="publicidad-badge">Espacio Publicitario</span>
+                  <div class="publicidad-divider-line"></div>
                 </div>
 
-                <!-- Publicidad 2: Café & Punto de Encuentro local -->
-                <div class="ad-card">
-                  <a href="#" class="ad-link" onclick="return false;" title="Auspiciante: Café de la Plaza">
-                    <div class="ad-inner ad-theme-servicios">
-                      <span class="ad-micro-label">Auspiciante Oficial</span>
-                      <div class="ad-content-box">
-                        <span class="ad-icon">☕</span>
-                        <h4 class="ad-brand-name">Café de la Plaza</h4>
-                        <p class="ad-brand-tagline">El tradicional punto de encuentro en el centro de nuestra ciudad</p>
-                      </div>
-                      <span class="ad-cta-btn">Visitanos</span>
-                    </div>
-                  </a>
-                </div>
+                <div class="publicidades-grid">
+                  {publicidades.map((ad: any) => {
+                    const isBanner = ad.formato === 'banner' && ad.imagen;
+                    const hasLink = Boolean(ad.enlace && ad.enlace.trim() !== '');
+                    const hasBtn = Boolean(ad.texto_boton && ad.texto_boton.trim() !== '');
+                    const themeClass = ad.tema ? `ad-theme-${ad.tema}` : 'ad-theme-servicios';
+                    const isPromo = ad.tema === 'promo';
 
-                <!-- Publicidad 3: Llamado Comercial para Anunciar en Mercedes News -->
-                <div class="ad-card ad-card-promo">
-                  <a href="mailto:mercedesnews2026@gmail.com" class="ad-link" title="Anunciá en Mercedes News">
-                    <div class="ad-inner ad-theme-promo">
-                      <span class="ad-micro-label">Mercedes News Comercial</span>
-                      <div class="ad-content-box">
-                        <span class="ad-icon">📢</span>
-                        <h4 class="ad-brand-name">Tu Marca Acá</h4>
-                        <p class="ad-brand-tagline">Llegá a toda la comunidad mercedina con presencia destacada</p>
+                    return (
+                      <div class={`ad-card ${isBanner ? 'ad-card-banner' : ''} ${isPromo ? 'ad-card-promo' : ''}`}>
+                        <a 
+                          href={hasLink ? ad.enlace : '#'} 
+                          class="ad-link" 
+                          target={hasLink && !ad.enlace.startsWith('mailto:') && !ad.enlace.startsWith('#') ? '_blank' : undefined}
+                          rel={hasLink && !ad.enlace.startsWith('mailto:') && !ad.enlace.startsWith('#') ? 'noopener noreferrer' : undefined}
+                          onclick={!hasLink || ad.enlace === '#' ? 'return false;' : undefined}
+                          title={`Auspiciante: ${ad.nombre}`}
+                        >
+                          {isBanner ? (
+                            <div class="ad-inner ad-banner-box">
+                              <img src={ad.imagen} alt={ad.nombre} class="ad-banner-media" loading="lazy" />
+                              {ad.etiqueta && <span class="ad-banner-pill">{ad.etiqueta}</span>}
+                              {hasBtn && (
+                                <div class="ad-banner-overlay-btn">
+                                  <span class="ad-cta-btn ad-cta-highlight">{ad.texto_boton}</span>
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div class={`ad-inner ${themeClass}`}>
+                              {ad.etiqueta && <span class="ad-micro-label">{ad.etiqueta}</span>}
+                              <div class="ad-content-box">
+                                {ad.icono && <span class="ad-icon">{ad.icono}</span>}
+                                <h4 class="ad-brand-name">{ad.nombre}</h4>
+                                {ad.descripcion && <p class="ad-brand-tagline">{ad.descripcion}</p>}
+                              </div>
+                              {hasBtn && (
+                                <span class={`ad-cta-btn ${isPromo ? 'ad-cta-highlight' : ''}`}>{ad.texto_boton}</span>
+                              )}
+                            </div>
+                          )}
+                        </a>
                       </div>
-                      <span class="ad-cta-btn ad-cta-highlight">Anunciá con nosotros</span>
-                    </div>
-                  </a>
+                    );
+                  })}
                 </div>
-
-                <!-- Publicidad 4: Hotelería & Turismo -->
-                <div class="ad-card">
-                  <a href="#" class="ad-link" onclick="return false;" title="Auspiciante: Gran Hotel Mercedes">
-                    <div class="ad-inner ad-theme-turismo">
-                      <span class="ad-micro-label">Auspiciante Oficial</span>
-                      <div class="ad-content-box">
-                        <span class="ad-icon">🏨</span>
-                        <h4 class="ad-brand-name">Gran Hotel Mercedes</h4>
-                        <p class="ad-brand-tagline">Confort, descanso y calidez en pleno casco histórico</p>
-                      </div>
-                      <span class="ad-cta-btn">Reservá Ahora</span>
-                    </div>
-                  </a>
-                </div>
-
-                <!-- Publicidad 5: Agro & Campo Mercedino -->
-                <div class="ad-card">
-                  <a href="#" class="ad-link" onclick="return false;" title="Auspiciante: Agroservicios La Querencia">
-                    <div class="ad-inner ad-theme-agro">
-                      <span class="ad-micro-label">Auspiciante Oficial</span>
-                      <div class="ad-content-box">
-                        <span class="ad-icon">🌾</span>
-                        <h4 class="ad-brand-name">La Querencia</h4>
-                        <p class="ad-brand-tagline">Insumos rurales y soluciones para el productor agropecuario</p>
-                      </div>
-                      <span class="ad-cta-btn">Consultá Catálogo</span>
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </aside>
+              </aside>
+            )}
 
             {/* 3. SECCIÓN: LO QUE TENÉS QUE SABER (Notas de más de 3 días) */}
             <section 
@@ -2230,27 +2209,95 @@ const searchIndex = notas.map((n) => {
     box-sizing: border-box;
   }
 
+  /* Estilos específicos para Formato Banner Gráfico / Flyer (tarea0013) */
+  .ad-card-banner {
+    border-color: #e2e8f0;
+  }
+
+  .ad-banner-box {
+    position: relative;
+    padding: 0 !important;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    background: #f8fafc;
+    overflow: hidden;
+  }
+
+  .ad-banner-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ad-card:hover .ad-banner-media {
+    transform: scale(1.04);
+  }
+
+  .ad-banner-pill {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.60rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    border-radius: 4px;
+    z-index: 2;
+  }
+
+  .ad-banner-overlay-btn {
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .ad-banner-overlay-btn .ad-cta-btn {
+    background: #0252c5;
+    color: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  .ad-card:hover .ad-banner-overlay-btn .ad-cta-btn {
+    background: #013788;
+  }
+
   /* Temas de color sobrios para cada placeholder */
   .ad-theme-gastronomia {
-    background: linear-gradient(180deg, #ffffff 0%, #faf8f5 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #fbf6ee 100%);
   }
 
   .ad-theme-servicios {
-    background: linear-gradient(180deg, #ffffff 0%, #f6f9fc 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5fa 100%);
   }
 
   .ad-theme-promo {
-    background: linear-gradient(180deg, #ffffff 0%, #f0f5ff 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #edf3fc 100%);
     border: 1.5px dashed rgba(2, 82, 197, 0.4);
     border-radius: 6px;
   }
 
   .ad-theme-turismo {
-    background: linear-gradient(180deg, #ffffff 0%, #f5fbf8 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #eef6f3 100%);
   }
 
   .ad-theme-agro {
-    background: linear-gradient(180deg, #ffffff 0%, #fdf9f2 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #faf4e6 100%);
   }
 
   .ad-micro-label {

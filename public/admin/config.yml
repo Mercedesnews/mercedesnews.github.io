@@ -35,3 +35,54 @@ collections:
         }
       - { label: "Imagen Destacada", name: "thumbnail", widget: "image", required: false }
       - { label: "Cuerpo de la Noticia", name: "body", widget: "markdown" }
+
+  - name: "publicidades"
+    label: "Publicidades"
+    label_singular: "Publicidad"
+    folder: "src/content/publicidades"
+    create: true
+    slug: "{{nombre}}"
+    summary: "{{nombre}} ({{formato}} - Orden: {{orden}})"
+    fields:
+      - { label: "Nombre del Comercio / Anunciante", name: "nombre", widget: "string", hint: "Identifica el aviso en el panel y sirve de texto alternativo (alt) para la imagen." }
+      - {
+          label: "Formato del Espacio",
+          name: "formato",
+          widget: "select",
+          options: [
+            { label: "Banner Gráfico / Imagen (Flyer completo)", value: "banner" },
+            { label: "Tarjeta Editorial Limpia (Texto, Ícono y Botón)", value: "editorial" }
+          ],
+          default: "editorial",
+          hint: "Elegí si el anunciante entregó un flyer diseñado (.jpg/.png) o si querés armar una tarjeta tipográfica limpia."
+        }
+      - { label: "Imagen del Banner / Flyer", name: "imagen", widget: "image", required: false, hint: "Obligatorio si el formato es 'Banner Gráfico'. Recomendado: proporción 4:3, 1:1 o 3:2." }
+      - { 
+          label: "Ícono o Emoji representativo", 
+          name: "icono", 
+          widget: "string", 
+          required: false, 
+          default: "📢", 
+          hint: "Podés copiar y pegar cualquiera de estos según el rubro: 🥖 🥩 ☕ 🍕 🍷 🍦 (Gastronomía) | 🏨 🌳 🏊 (Turismo) | 🌾 🚜 🐎 (Agro) | 🚗 🔧 ⛽ (Mecánica) | 💊 🩺 👓 (Salud) | ⚖️ 🏢 💼 (Profesional) | 🛒 👔 📱 📚 (Comercio) | 📢 (General). O buscá en emojipedia.org o hacé clic derecho > 'Emojis'." 
+        }
+      - { label: "Descripción o Bajada", name: "descripcion", widget: "string", required: false, hint: "Texto breve bajo el nombre (usado en Tarjeta Editorial)." }
+      - { label: "Etiqueta Superior", name: "etiqueta", widget: "string", required: false, default: "Auspiciante Oficial", hint: "Texto pequeño arriba de todo (ej: 'Auspiciante Oficial', 'Comercio Amigo', 'Mercedes News Comercial'). Dejalo vacío si no querés ninguna etiqueta." }
+      - { label: "Enlace de Destino (URL)", name: "enlace", widget: "string", required: false, hint: "Link al tocar el aviso. Puede ser WhatsApp (https://wa.me/...), Instagram, Facebook o web. Si se deja vacío, no será cliqueable." }
+      - { label: "Texto del Botón de Acción", name: "texto_boton", widget: "string", required: false, hint: "Ej: 'Conocé Más', 'Visitanos', 'Reservá Ahora', 'Pedir por WhatsApp'. ¡Dejalo vacío si NO querés ningún botón sobre la imagen!" }
+      - {
+          label: "Paleta de Color Temática",
+          name: "tema",
+          widget: "select",
+          options: [
+            { label: "⚪ Azul Institucional / Servicios (Fondo blanco a gris frío, sobrio)", value: "servicios" },
+            { label: "🥖 Gastronomía / Tradición (Fondo blanco a trigo cálido artesanal)", value: "gastronomia" },
+            { label: "🏨 Hotelería & Turismo (Fondo blanco a verde menta fresco)", value: "turismo" },
+            { label: "🌾 Agro & Campo (Fondo blanco a dorado / arena campestre)", value: "agro" },
+            { label: "⭐ Destacado Comercial Mercedes News (Borde punteado azul y botón destacado)", value: "promo" }
+          ],
+          default: "servicios",
+          required: false,
+          hint: "Aplica sutiles tonos de fondo en la tarjeta editorial."
+        }
+      - { label: "Orden de Aparición", name: "orden", widget: "number", value_type: "int", default: 1, hint: "1 para primera posición a la izquierda, 2 para segunda, etc." }
+      - { label: "Pauta Activa (Visible en el sitio)", name: "activo", widget: "boolean", default: true, hint: "Desmarcar para pausar temporalmente este anuncio sin borrarlo." }
