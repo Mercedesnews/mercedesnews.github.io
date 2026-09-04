@@ -1,13 +1,13 @@
 ---
-nombre: Brave Browser
+nombre: Fiesta Nacional del Salame Quintero
 formato: banner
-imagen: /assets/img/pasted-image-1788495900092.png
+imagen: /assets/img/WhatsApp Image 2026-09-04 at 2.50.11 PM (1).jpeg
 icono: ''
-descripcion: El browser más seguro
+descripcion: ''
 etiqueta: Auspiciante Oficial
-enlace: https://brave.com/
-texto_boton: Bajalo acá
+enlace: ''
+texto_boton: ''
 tema: ''
-orden: -4
+orden: 1
 activo: true
 ---
