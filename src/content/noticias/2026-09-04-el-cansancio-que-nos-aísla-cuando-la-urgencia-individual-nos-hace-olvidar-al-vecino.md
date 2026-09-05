@@ -7,7 +7,9 @@ date: 2026-09-04T11:41:00
 categoria: opinion
 thumbnail_original: /assets/img/WhatsApp Image 2026-09-04 at 11.46.16 AM.jpeg
 thumbnail_tapa: /assets/img/2026-09-04-el-cansancio-que-nos-aísla-cuando-la-ur-tapa.webp
-thumbnail: /assets/img/2026-09-04-el-cansancio-que-nos-aísla-cuando-la-ur-cuadrada.webp
+thumbnail: /assets/img/pasted-image-1788574847725.png
+pin: false
+orden: null
 ---
 
 Hay gestos y decisiones cotidianas que dicen mucho sobre la salud invisible de una comunidad. El auto estacionado a mitad de cuadra tapando una rampa; los frentes o veredas donde se rompe el asfalto para hacer conexiones domiciliarias y la rotura queda abierta semanas sin reparar; los camiones que cortan una calle de golpe y sin permiso previo para descargar materiales de construcción; o esas montañas de ramas que se tiran a la calle ocupando medio carril de tránsito y obstruyendo el paso. Ninguno de estos episodios, por sí solo, constituye un delito grave. Sin embargo, al multiplicarse en la rutina diaria de Mercedes, dejan al descubierto una grieta silenciosa: la paulatina erosión de la empatía y la pérdida del sentido de bien común entre mercedinos.
