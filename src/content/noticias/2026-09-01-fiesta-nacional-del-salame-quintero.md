@@ -6,7 +6,7 @@ date: 2026-09-05T11:42:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/WhatsApp Image 2026-09-01 at 3.32.34 PM.jpeg
 thumbnail_tapa: /assets/img/2026-09-01-fiesta-nacional-del-salame-quintero-tapa.webp
-thumbnail: /assets/img/2026-09-01-fiesta-nacional-del-salame-quintero-tapa.webp
+thumbnail: /assets/img/WhatsApp Image 2026-09-04 at 2.50.11 PM (1).jpeg
 pin: true
 orden: null
 ---
