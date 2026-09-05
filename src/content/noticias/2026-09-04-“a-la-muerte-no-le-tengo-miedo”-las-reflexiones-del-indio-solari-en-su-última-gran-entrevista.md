@@ -5,7 +5,7 @@ title: |-
 date: 2026-09-04T09:09:00
 categoria: entrevistas
 thumbnail_original: /assets/img/pasted-image-1788569488039.png
-thumbnail_tapa: /assets/img/pasted-image-1788570550189.png
+thumbnail_tapa: /assets/img/2026-09-04-“a-la-muerte-no-le-tengo-miedo”-las-ref-tapa.webp
 thumbnail: /assets/img/pasted-image-1788570579830.png
 pin: false
 orden: 1

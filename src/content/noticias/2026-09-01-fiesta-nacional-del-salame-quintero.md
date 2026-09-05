@@ -4,9 +4,11 @@ title: |-
   Este 11, 12 y 13 de septiembre en el Parque Municipal Independencia.
 date: 2026-09-02T19:54:00
 categoria: actualidad-local
-thumbnail_original: /assets/img/WhatsApp Image 2026-09-01 at 3.32.34 PM.jpeg
-thumbnail_tapa: /assets/img/2026-09-01-fiesta-nacional-del-salame-quintero-tapa.webp
-thumbnail: /assets/img/2026-09-01-fiesta-nacional-del-salame-quintero-cuadrada.webp
+thumbnail_original: /assets/img/pasted-image-1788572848818.png
+thumbnail_tapa: /assets/img/pasted-image-1788572857623.png
+thumbnail: /assets/img/pasted-image-1788573566917.png
+pin: false
+orden: null
 ---
 
 Mercedes ultima los detalles para una nueva edición de la **Fiesta Nacional del Salame Quintero**, que se realizará el **viernes 11, sábado 12 y domingo 13 de septiembre** en el **Parque Municipal Independencia**.

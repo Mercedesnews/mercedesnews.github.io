@@ -468,6 +468,7 @@
               <p style="font-size: 0.82rem; opacity: 0.8;">o pegala desde el portapapeles (Ctrl+V)</p>
               <span class="mn-select-btn">Seleccionar de tu equipo</span>
               <input type="file" id="mn-file-input" accept="image/*" style="display: none;" />
+              <input type="file" id="mn-direct-field-input" accept="image/*" style="display: none;" />
             </div>
 
             <div class="mn-cropper-container" id="mn-cropper-container">
@@ -481,7 +482,7 @@
               <span class="mn-section-label">1. Proporción del Recorte</span>
               <div class="mn-locked-ratio-badge" id="mn-locked-ratio-badge" style="background: #eff6ff; border: 1.5px solid #bfdbfe; color: #0252c5; padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between;">
                 <span id="mn-ratio-title">Foto de Tapa</span>
-                <span class="mn-preset-badge" id="mn-ratio-badge" style="background: #0252c5; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem;">16:9 Alargada</span>
+                <span class="mn-preset-badge" id="mn-ratio-badge" style="background: #0252c5; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem;">2.4:1 Panorámica</span>
               </div>
             </div>
 
@@ -503,7 +504,7 @@
             <div class="mn-sidebar-section">
               <span class="mn-section-label">3. Previsualización</span>
               <div class="mn-preview-box">
-                <div class="mn-preview-live" id="mn-preview-live" style="width: 140px; height: 100px;"></div>
+                <div class="mn-preview-live" id="mn-preview-live" style="width: 144px; height: 60px;"></div>
               </div>
               <div class="mn-dimensions-badge" id="mn-dimensions-badge">Resolución estimada: --</div>
             </div>
@@ -514,7 +515,7 @@
               <!-- Opción 1: Asignación directa a la noticia -->
               <div class="mn-direct-actions">
                 <button type="button" id="mn-assign-btn" class="mn-action-btn mn-btn-tapa" disabled title="Asigna el recorte directamente al campo correspondiente">
-                  <span>✨</span> <span id="mn-assign-btn-text">Asignar a Foto de Tapa (16:9)</span>
+                  <span>✨</span> <span id="mn-assign-btn-text">Asignar a Foto de Tapa (2.4:1)</span>
                 </button>
               </div>
 
@@ -704,14 +705,20 @@
         const ratioBadge = document.getElementById('mn-ratio-badge');
         const toastEl = document.getElementById('mn-toast');
         const workspace = document.getElementById('mn-cropper-workspace');
+        const directFieldInput = document.getElementById('mn-direct-field-input');
 
         let cropper = null;
         let baseFilename = 'foto-noticia';
         let currentSuffix = 'tapa';
-        let currentRatio = 16 / 9;
-        let currentFieldLabel = 'Foto de Tapa (16:9)';
+        let currentRatio = 2.4;
+        let currentFieldLabel = 'Foto de Tapa (2.4:1)';
         let toastTimer = null;
         let activeTargetKey = 'thumbnail_tapa';
+        let isAssigningProgrammatically = false;
+        let pendingDirectField = null;
+        let lastInteractedImageField = null;
+        let lastOriginalRawFile = null;
+        const originalFileCache = new Map();
 
         const showToast = (message) => {
           if (!toastEl) return;
@@ -729,32 +736,51 @@
           downloadBtn?.removeAttribute('disabled');
         };
 
-        // Obtener la URL de la imagen del campo Foto Original
-        const getOriginalImageUrl = () => {
+        // Obtener la fuente de máxima resolución del campo Foto Original
+        const getOriginalSource = () => {
           const origSec = document.querySelector('section[data-key-path="thumbnail_original"]');
-          if (origSec) {
-            const img = origSec.querySelector('img');
-            if (img && (img.src || img.getAttribute('src')) && !img.src.endsWith('/') && !img.src.endsWith('#')) {
-              return img.src;
-            }
+          if (!origSec) return null;
+
+          // 1. Extraer nombre de archivo en Sveltia CMS (.name, .filename, bdi, input)
+          let fileName = null;
+          const nameEl = origSec.querySelector('.name, .filename, bdi');
+          if (nameEl && nameEl.textContent && nameEl.textContent.trim() !== '') {
+            fileName = nameEl.textContent.trim();
+          }
+          if (!fileName) {
             const input = origSec.querySelector('input[type="text"]');
             if (input && input.value && input.value.trim() !== '') {
-              const val = input.value.trim();
-              return val.startsWith('http') || val.startsWith('blob:') ? val : `/assets/img/${val.replace(/^\/assets\/img\//, '')}`;
-            }
-            const nameEl = origSec.querySelector('.name, .filename, bdi');
-            if (nameEl && nameEl.textContent && nameEl.textContent.trim() !== '') {
-              const fileName = nameEl.textContent.trim();
-              if (!fileName.startsWith('http') && !fileName.startsWith('blob:')) {
-                return `/assets/img/${fileName.replace(/^\/assets\/img\//, '')}`;
-              }
-              return fileName;
-            }
-            const link = origSec.querySelector('a[href]');
-            if (link && link.href && (link.href.match(/\.(jpe?g|png|webp|gif)$/i) || link.href.startsWith('blob:'))) {
-              return link.href;
+              fileName = input.value.trim();
             }
           }
+          if (!fileName) {
+            const link = origSec.querySelector('a[href]');
+            if (link && link.href && link.href.match(/\.(jpe?g|png|webp|gif)$/i)) {
+              fileName = link.href.split('/').pop();
+            }
+          }
+
+          // 2. Si tenemos un archivo raw capturado en memoria durante esta sesión, usarlo para 100% calidad nativa
+          if (lastOriginalRawFile) {
+            return { type: 'file', file: lastOriginalRawFile };
+          }
+          if (fileName && originalFileCache.has(fileName)) {
+            return { type: 'file', file: originalFileCache.get(fileName) };
+          }
+
+          // 3. Si tenemos nombre de archivo, construir ruta directa a /assets/img/ (alta resolución en disco/servidor)
+          if (fileName) {
+            const cleanName = fileName.replace(/^\/assets\/img\//, '').split('?')[0].split('#')[0];
+            const url = cleanName.startsWith('http') ? cleanName : `/assets/img/${cleanName}`;
+            return { type: 'url', url, fileName: cleanName };
+          }
+
+          // 4. Último recurso si no hay nombre de archivo
+          const img = origSec.querySelector('img');
+          if (img && img.src && !img.src.endsWith('/') && !img.src.endsWith('#')) {
+            return { type: 'url', url: img.src, fileName: 'foto-original' };
+          }
+
           return null;
         };
 
@@ -846,7 +872,7 @@
 
           const tapaSection = document.querySelector('section[data-key-path="thumbnail_tapa"]');
           if (tapaSection) {
-            updateFieldButton(tapaSection, 'thumbnail_tapa', 'tapa', 16 / 9, 'Foto de Tapa (16:9)', 'Recortar para Tapa (16:9)');
+            updateFieldButton(tapaSection, 'thumbnail_tapa', 'tapa', 2.4, 'Foto de Tapa (2.4:1)', 'Recortar para Tapa (2.4:1)');
           }
 
           const cuadSection = document.querySelector('section[data-key-path="thumbnail"]');
@@ -947,7 +973,7 @@
         };
 
         // Abrir modal configurado para un campo específico (Tapa o Cuadrada)
-        const openCropperForField = (fieldKey, suffix, ratio, fieldLabel) => {
+        const openCropperForField = (fieldKey, suffix, ratio, fieldLabel, explicitFile = null) => {
           const targetSec = document.querySelector(`section[data-key-path="${fieldKey}"]`);
           if (targetSec && isSectionFilled(targetSec)) {
             showToast(`🔒 El campo ${fieldLabel} ya tiene una foto asignada. Para reemplazarla, primero eliminala.`);
@@ -963,16 +989,24 @@
           if (suffix === 'tapa') {
             if (ratioTitle) ratioTitle.textContent = 'Foto de Tapa';
             if (ratioBadge) {
-              ratioBadge.textContent = '16:9 Alargada';
+              ratioBadge.textContent = '2.4:1 Panorámica';
               ratioBadge.style.background = '#0252c5';
             }
+            if (previewEl) {
+              previewEl.style.width = '144px';
+              previewEl.style.height = '60px';
+            }
             if (assignBtn) assignBtn.className = 'mn-action-btn mn-btn-tapa';
-            if (assignBtnText) assignBtnText.textContent = 'Asignar a Foto de Tapa (16:9)';
+            if (assignBtnText) assignBtnText.textContent = 'Asignar a Foto de Tapa (2.4:1)';
           } else {
             if (ratioTitle) ratioTitle.textContent = 'Foto Principal / Secciones';
             if (ratioBadge) {
               ratioBadge.textContent = '1:1 Cuadrada';
               ratioBadge.style.background = '#1e2126';
+            }
+            if (previewEl) {
+              previewEl.style.width = '100px';
+              previewEl.style.height = '100px';
             }
             if (assignBtn) assignBtn.className = 'mn-action-btn mn-btn-cuadrada';
             if (assignBtnText) assignBtnText.textContent = 'Asignar a Foto Cuadrada (1:1)';
@@ -981,16 +1015,32 @@
           updateFilename();
           openModal();
 
-          // Buscar imagen original en el formulario
-          const origSrc = getOriginalImageUrl();
-          if (origSrc) {
-            if (cropper && targetImage.src && (targetImage.src === origSrc || targetImage.src.includes(encodeURI(origSrc)) || targetImage.src.includes(origSrc))) {
-              cropper.setAspectRatio(ratio);
-              cropper.reset();
-              showToast('📸 Foto original lista. Encuadrá el recorte.');
-            } else {
-              loadCropperFromUrl(origSrc, suffix === 'tapa' ? 'foto-tapa' : 'foto-cuadrada');
-              showToast('📸 Foto original cargada en resolución nativa. Encuadrá y asigná.');
+          // 1. Si se pasó un archivo explícito (por pegar, arrastrar o seleccionar de la PC)
+          if (explicitFile) {
+            loadFile(explicitFile);
+            return;
+          }
+
+          // 2. Si se pasó explicitFile === false (el usuario quiere cargar otra foto deliberadamente)
+          if (explicitFile === false) {
+            dropzone.style.display = 'block';
+            cropperContainer.style.display = 'none';
+            if (cropper) {
+              cropper.destroy();
+              cropper = null;
+            }
+            return;
+          }
+
+          // 3. Flujo normal con Foto Original (botón azul [ ✂️ Recortar para Tapa ])
+          const origSource = getOriginalSource();
+          if (origSource) {
+            if (origSource.type === 'file') {
+              loadFile(origSource.file);
+              showToast('📸 Foto original cargada en resolución nativa completa (100% calidad).');
+            } else if (origSource.type === 'url') {
+              loadCropperFromUrl(origSource.url, origSource.fileName || (suffix === 'tapa' ? 'foto-tapa' : 'foto-cuadrada'));
+              showToast('📸 Foto original cargada en resolución nativa completa.');
             }
           } else {
             // Si no hay foto original, mostrar dropzone
@@ -1006,10 +1056,15 @@
 
         // Acciones de fuente de imagen dentro del modal
         reloadOrigBtn?.addEventListener('click', () => {
-          const origUrl = getOriginalImageUrl();
-          if (origUrl) {
-            loadCropperFromUrl(origUrl, currentSuffix === 'tapa' ? 'foto-tapa' : 'foto-cuadrada');
-            showToast('📸 Foto original recargada con éxito.');
+          const origSource = getOriginalSource();
+          if (origSource) {
+            if (origSource.type === 'file') {
+              loadFile(origSource.file);
+              showToast('📸 Foto original recargada con éxito.');
+            } else if (origSource.type === 'url') {
+              loadCropperFromUrl(origSource.url, origSource.fileName || (currentSuffix === 'tapa' ? 'foto-tapa' : 'foto-cuadrada'));
+              showToast('📸 Foto original recargada con éxito.');
+            }
           } else {
             showToast('⚠️ No se encontró ninguna imagen en el campo Foto Original.');
           }
@@ -1126,22 +1181,29 @@
               return txt.includes('paste') || txt.includes('pegar');
             });
 
-            if (pasteBtn) {
-              pasteBtn.click();
-              closeModal();
-              showToast(`✅ ¡Asignada a ${currentFieldLabel} en resolución nativa completa!`);
-            } else {
-              const dropzoneEl = section.querySelector('[tabindex="0"]') || section;
-              dropzoneEl.focus();
-              dropzoneEl.dispatchEvent(new KeyboardEvent('keydown', {
-                key: 'v',
-                code: 'KeyV',
-                ctrlKey: true,
-                metaKey: true,
-                bubbles: true
-              }));
-              closeModal();
-              showToast(`✅ ¡Asignada a ${currentFieldLabel}! (Si no se refleja de inmediato, presioná Ctrl + V en el campo)`);
+            isAssigningProgrammatically = true;
+            try {
+              if (pasteBtn) {
+                pasteBtn.click();
+                closeModal();
+                showToast(`✅ ¡Asignada a ${currentFieldLabel} en resolución nativa completa!`);
+              } else {
+                const dropzoneEl = section.querySelector('[tabindex="0"]') || section;
+                dropzoneEl.focus();
+                dropzoneEl.dispatchEvent(new KeyboardEvent('keydown', {
+                  key: 'v',
+                  code: 'KeyV',
+                  ctrlKey: true,
+                  metaKey: true,
+                  bubbles: true
+                }));
+                closeModal();
+                showToast(`✅ ¡Asignada a ${currentFieldLabel}! (Si no se refleja de inmediato, presioná Ctrl + V en el campo)`);
+              }
+            } finally {
+              setTimeout(() => {
+                isAssigningProgrammatically = false;
+              }, 1200);
             }
 
             setTimeout(injectFieldButtons, 250);
@@ -1209,6 +1271,232 @@
             showToast('💾 Archivo .webp descargado en alta resolución.');
           }, 'image/webp', 0.95);
         });
+
+        // ========================================================
+        // INTERCEPTACIÓN TRANSPARENTE EN CAMPOS TAPA Y PRINCIPAL
+        // ========================================================
+
+        // Manejador del selector de archivos directo para campos
+        directFieldInput?.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0] && pendingDirectField) {
+            const file = e.target.files[0];
+            const target = pendingDirectField;
+            openCropperForField(target.key, target.suffix, target.ratio, target.label, file);
+            showToast(`📸 Foto cargada para ${target.label}. Ajustá el encuadre y confirmá.`);
+          }
+          directFieldInput.value = '';
+          pendingDirectField = null;
+        });
+
+        // Función auxiliar para leer portapapeles y abrir editor
+        const readClipboardAndCrop = async (fieldKey, suffix, ratio, label) => {
+          try {
+            const clipItems = await navigator.clipboard.read();
+            let imgBlob = null;
+            for (const item of clipItems) {
+              const imgType = item.types.find((t) => t.startsWith('image/'));
+              if (imgType) {
+                imgBlob = await item.getType(imgType);
+                break;
+              }
+            }
+            if (imgBlob) {
+              const file = new File([imgBlob], `foto-${suffix}-${Date.now()}.png`, { type: imgBlob.type });
+              openCropperForField(fieldKey, suffix, ratio, label, file);
+              showToast(`📸 Foto pegada del portapapeles para ${label}. Ajustá el encuadre y confirmá.`);
+            } else {
+              showToast('⚠️ No se encontró ninguna imagen en el portapapeles para pegar.');
+            }
+          } catch (err) {
+            console.warn('Clipboard read error:', err);
+            openCropperForField(fieldKey, suffix, ratio, label, false);
+            showToast('💡 Presioná Ctrl + V aquí dentro para pegar la foto del portapapeles.');
+          }
+        };
+
+        // 1. Rastrear último campo con foco o interacción
+        document.addEventListener('focusin', (e) => {
+          const tapaSec = e.target.closest('section[data-key-path="thumbnail_tapa"]');
+          const cuadSec = e.target.closest('section[data-key-path="thumbnail"]');
+          if (tapaSec) lastInteractedImageField = 'thumbnail_tapa';
+          else if (cuadSec) lastInteractedImageField = 'thumbnail';
+          else if (e.target.closest('section[data-key-path="thumbnail_original"]')) lastInteractedImageField = null;
+        }, true);
+
+        // Capturar archivo original en máxima resolución cuando se sube o pega en Foto Original
+        document.addEventListener('paste', (e) => {
+          const origSec = e.target.closest('section[data-key-path="thumbnail_original"]');
+          if (origSec) {
+            const items = e.clipboardData?.items;
+            if (items) {
+              for (let i = 0; i < items.length; i++) {
+                if (items[i].type.startsWith('image/')) {
+                  const file = items[i].getAsFile();
+                  if (file) {
+                    lastOriginalRawFile = file;
+                    if (file.name) originalFileCache.set(file.name, file);
+                  }
+                  break;
+                }
+              }
+            }
+          }
+        }, true);
+
+        document.addEventListener('drop', (e) => {
+          const origSec = e.target.closest('section[data-key-path="thumbnail_original"]');
+          if (origSec) {
+            const files = e.dataTransfer?.files;
+            if (files && files.length > 0) {
+              const file = Array.from(files).find((f) => f.type.startsWith('image/'));
+              if (file) {
+                lastOriginalRawFile = file;
+                if (file.name) originalFileCache.set(file.name, file);
+              }
+            }
+          }
+        }, true);
+
+        document.addEventListener('change', (e) => {
+          const origSec = e.target.closest('section[data-key-path="thumbnail_original"]');
+          if (origSec && e.target.tagName === 'INPUT' && e.target.type === 'file') {
+            const file = e.target.files?.[0];
+            if (file) {
+              lastOriginalRawFile = file;
+              if (file.name) originalFileCache.set(file.name, file);
+            }
+          }
+        }, true);
+
+        // 2. Interceptar Pegar (Ctrl + V) sobre los campos
+        document.addEventListener('paste', (e) => {
+          if (isAssigningProgrammatically) return;
+          if (modal.classList.contains('active')) return;
+
+          const tapaSec = e.target.closest('section[data-key-path="thumbnail_tapa"]');
+          const cuadSec = e.target.closest('section[data-key-path="thumbnail"]');
+
+          let targetKey = null;
+          if (tapaSec && !isSectionFilled(tapaSec)) targetKey = 'thumbnail_tapa';
+          else if (cuadSec && !isSectionFilled(cuadSec)) targetKey = 'thumbnail';
+          else if (lastInteractedImageField) {
+            const sec = document.querySelector(`section[data-key-path="${lastInteractedImageField}"]`);
+            if (sec && !isSectionFilled(sec)) targetKey = lastInteractedImageField;
+          }
+
+          if (!targetKey) return;
+
+          const items = e.clipboardData?.items;
+          if (!items) return;
+
+          let imgFile = null;
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.startsWith('image/')) {
+              imgFile = items[i].getAsFile();
+              break;
+            }
+          }
+
+          if (imgFile) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            if (targetKey === 'thumbnail_tapa') {
+              openCropperForField('thumbnail_tapa', 'tapa', 2.4, 'Foto de Tapa (2.4:1)', imgFile);
+            } else {
+              openCropperForField('thumbnail', 'cuadrada', 1, 'Foto Principal (1:1)', imgFile);
+            }
+            showToast('📸 Foto pegada con éxito. Ajustá el encuadre y confirmá.');
+          }
+        }, true);
+
+        // 3. Interceptar Arrastrar y Soltar (Drop)
+        document.addEventListener('dragover', (e) => {
+          const tapaSec = e.target.closest('section[data-key-path="thumbnail_tapa"]');
+          const cuadSec = e.target.closest('section[data-key-path="thumbnail"]');
+          if (tapaSec || cuadSec) {
+            const sec = tapaSec || cuadSec;
+            if (!isSectionFilled(sec)) {
+              e.preventDefault();
+              if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+            }
+          }
+        }, true);
+
+        document.addEventListener('drop', (e) => {
+          if (isAssigningProgrammatically) return;
+          if (modal.classList.contains('active')) return;
+
+          const tapaSec = e.target.closest('section[data-key-path="thumbnail_tapa"]');
+          const cuadSec = e.target.closest('section[data-key-path="thumbnail"]');
+
+          if (!tapaSec && !cuadSec) return;
+
+          const sec = tapaSec || cuadSec;
+          if (isSectionFilled(sec)) return;
+
+          const files = e.dataTransfer?.files;
+          if (files && files.length > 0) {
+            const file = Array.from(files).find((f) => f.type.startsWith('image/'));
+            if (file) {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              if (tapaSec) {
+                openCropperForField('thumbnail_tapa', 'tapa', 2.4, 'Foto de Tapa (2.4:1)', file);
+              } else {
+                openCropperForField('thumbnail', 'cuadrada', 1, 'Foto Principal (1:1)', file);
+              }
+              showToast('📸 Foto arrastrada cargada con éxito. Ajustá el encuadre y confirmá.');
+            }
+          }
+        }, true);
+
+        // 4. Interceptar Clicks en controles de Sveltia (Subir / Explorar o Pegar)
+        document.addEventListener('click', (e) => {
+          if (isAssigningProgrammatically) return;
+          if (modal.classList.contains('active')) return;
+
+          // No intervenir si el click fue en nuestra propia barra de herramientas
+          if (e.target.closest('.mn-field-toolbar')) return;
+
+          const tapaSec = e.target.closest('section[data-key-path="thumbnail_tapa"]');
+          const cuadSec = e.target.closest('section[data-key-path="thumbnail"]');
+
+          if (!tapaSec && !cuadSec) return;
+
+          const sec = tapaSec || cuadSec;
+          // Si la sección ya tiene imagen asignada (y el usuario hace click en el tacho o en la foto), no intervenir
+          if (isSectionFilled(sec)) return;
+
+          // Si el click fue en el header de la sección, no intervenir
+          if (e.target.closest('header')) return;
+
+          const isTapa = !!tapaSec;
+          const fieldKey = isTapa ? 'thumbnail_tapa' : 'thumbnail';
+          const suffix = isTapa ? 'tapa' : 'cuadrada';
+          const ratio = isTapa ? 2.4 : 1;
+          const label = isTapa ? 'Foto de Tapa (2.4:1)' : 'Foto Principal (1:1)';
+
+          lastInteractedImageField = fieldKey;
+
+          // ¿Fue click en el botón de pegar imagen de Sveltia?
+          const clickedBtn = e.target.closest('button');
+          const btnTxt = clickedBtn ? (clickedBtn.textContent || clickedBtn.getAttribute('aria-label') || '').toLowerCase() : '';
+          const isPasteBtn = btnTxt.includes('pegar') || btnTxt.includes('paste');
+
+          if (isPasteBtn) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            readClipboardAndCrop(fieldKey, suffix, ratio, label);
+            return;
+          }
+
+          // Si hizo click en "Explorar", "Subir" o en cualquier parte de la caja de subida vacía:
+          // Abrir selector de archivos nativo de la PC y luego el editor
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          pendingDirectField = { key: fieldKey, suffix, ratio, label };
+          directFieldInput.click();
+        }, true);
       });
   </script>
   </body>

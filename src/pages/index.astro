@@ -748,7 +748,7 @@ const searchIndex = notas.map((n) => {
           });
         }
 
-        // 3. Conmutar imagen entre tapa (16:9) y secundaria/archivo (1:1 cuadrada)
+        // 3. Conmutar imagen entre tapa (2.4:1) y secundaria/archivo (1:1 cuadrada)
         function updateCardImage(card, isLead) {
           const img = card.querySelector('.card-img');
           if (!img) return;
@@ -2026,7 +2026,7 @@ const searchIndex = notas.map((n) => {
 
   .noticia-card.is-lead .card-media {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 2.4 / 1;
     overflow: hidden;
     background: #000000;
   }

@@ -34,7 +34,7 @@ collections:
           default: "actualidad-local"
         }
       - { label: "Foto Original (Archivo / Fuente sin recortar)", name: "thumbnail_original", widget: "image", required: false, hint: "Foto original en alta resolución. Queda preservada para archivo o recortes futuros." }
-      - { label: "Foto de Tapa (Horizontal alargada 16:9)", name: "thumbnail_tapa", widget: "image", required: true, hint: "Proporción 16:9 obligatoria. Se utiliza en la cabecera de la nota y si encabeza la portada como Nota de Tapa." }
+      - { label: "Foto de Tapa (Panorámica 2.4:1)", name: "thumbnail_tapa", widget: "image", required: true, hint: "Proporción alargada 2.4:1 obligatoria. Se utiliza en la cabecera de la nota y si encabeza la portada como Nota de Tapa." }
       - { label: "Foto Principal / Secciones (Cuadrada 1:1)", name: "thumbnail", widget: "image", required: true, hint: "Proporción cuadrada 1:1 obligatoria. Se utiliza en 'Otras publicaciones', archivo 'Lo que tenés que saber' y vistas por categoría." }
       - { label: "Cuerpo de la Noticia", name: "body", widget: "markdown" }
       - { label: "Fijar nota en portada (Pin)", name: "pin", widget: "boolean", default: false, required: false, hint: "Mantiene esta nota en la grilla principal y evita que pase automáticamente a 'Lo que tenés que saber' después de 3 días." }
