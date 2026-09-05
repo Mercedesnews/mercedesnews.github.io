@@ -5,7 +5,9 @@ title: |-
   LA PRENSA BRITÁNICA VUELVE A PONER EL FOCO EN MALVINAS TRAS EL FACTOR TRUMP
 date: 2026-09-04T10:21:00
 categoria: actualidad-nacional
-thumbnail: /assets/img/WhatsApp Image 2026-09-04 at 10.25.43 AM.jpeg
+thumbnail_original: /assets/img/WhatsApp Image 2026-09-04 at 10.25.43 AM.jpeg
+thumbnail_tapa: /assets/img/2026-09-04-¿alerta-en-londres-la-prensa-británica-tapa.webp
+thumbnail: /assets/img/2026-09-04-¿alerta-en-londres-la-prensa-británica-cuadrada.webp
 pin: false
 orden: 2
 ---

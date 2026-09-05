@@ -5,7 +5,9 @@ title: |-
   Abren la inscripción para una nueva diplomatura
 date: 2026-09-04T14:23:00
 categoria: actualidad-local
-thumbnail: /assets/img/WhatsApp Image 2026-09-04 at 2.22.17 PM.jpeg
+thumbnail_original: /assets/img/WhatsApp Image 2026-09-04 at 2.22.17 PM.jpeg
+thumbnail_tapa: /assets/img/2026-09-04-la-ia-llega-a-las-aulas-mercedinas-abre-tapa.webp
+thumbnail: /assets/img/2026-09-04-la-ia-llega-a-las-aulas-mercedinas-abre-cuadrada.webp
 ---
 
 En el marco del trabajo continuo para ampliar la oferta académica en la ciudad, la Municipalidad de Mercedes presentó este viernes una nueva propuesta de formación profesional de posgrado: la diplomatura en "Transformación digital de la escuela en la era de la IA", dictada en conjunto con la Universidad Pedagógica Nacional (UNIPE).

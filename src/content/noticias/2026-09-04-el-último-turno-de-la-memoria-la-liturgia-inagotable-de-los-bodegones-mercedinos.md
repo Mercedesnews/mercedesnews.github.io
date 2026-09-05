@@ -5,7 +5,9 @@ title: |-
   La liturgia inagotable de los bodegones mercedinos
 date: 2026-09-04T09:27:00
 categoria: cronicas
-thumbnail: /assets/img/WhatsApp Image 2026-09-04 at 11.28.55 AM.jpeg
+thumbnail_original: /assets/img/WhatsApp Image 2026-09-04 at 11.28.55 AM.jpeg
+thumbnail_tapa: /assets/img/2026-09-04-el-último-turno-de-la-memoria-la-liturg-tapa.webp
+thumbnail: /assets/img/2026-09-04-el-último-turno-de-la-memoria-la-liturg-cuadrada.webp
 ---
 
 Hay un instante exacto, cerca de las siete de la tarde, en el que Mercedes cambia de frecuencia. Mientras el centro acelera el paso con las persianas comerciales que bajan, en ciertas esquinas de barrio el tiempo decide ablandarse. Se oye el choque metálico de una ficha de truco contra la mesa de madera, el silbido sordo del sifón de vidrio y el murmullo bajo de las conversaciones que arreglan el mundo o, al menos, la semana.

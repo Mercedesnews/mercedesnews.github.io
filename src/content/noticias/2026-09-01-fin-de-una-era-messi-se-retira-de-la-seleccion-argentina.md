@@ -4,7 +4,9 @@ title: |-
   Messi se retira de la Selección Argentina
 date: 2026-09-01T16:01:00
 categoria: deportes
-thumbnail: /assets/img/messi-seleccion.webp
+thumbnail_original: /assets/img/messi-seleccion.webp
+thumbnail_tapa: /assets/img/2026-09-01-fin-de-una-era-messi-se-retira-de-la-se-tapa.webp
+thumbnail: /assets/img/2026-09-01-fin-de-una-era-messi-se-retira-de-la-se-cuadrada.webp
 ---
 
 **Lionel Messi anunció este lunes su retirada de la selección argentina tras más de dos décadas en las que ha roto los récords de partidos y goles de la historia de la Albiceleste.**

@@ -5,7 +5,9 @@ title: |-
   Mercedes se convierte en el epicentro absoluto del aire libre, el picoteo y un festival de música para todos los gustos
 date: 2026-09-03T18:11:00
 categoria: actualidad-local
-thumbnail: /assets/img/WhatsApp Image 2026-09-03 at 6.19.13 PM.jpeg
+thumbnail_original: /assets/img/WhatsApp Image 2026-09-03 at 6.19.13 PM.jpeg
+thumbnail_tapa: /assets/img/2026-09-03-salió-el-line-up-de-la-51°-fiesta-del-s-tapa.webp
+thumbnail: /assets/img/2026-09-03-salió-el-line-up-de-la-51°-fiesta-del-s-cuadrada.webp
 ---
 
 Olvídate de la rutina de la semana y andá armando el grupo de WhatsApp. Si pensabas que septiembre venía tranquilo, la **Fiesta Nacional del Salame Quintero** metió un _drop_ de la grilla que te va a hacer reprogramar el fin de semana largo de escapada. Del **11 al 13 de septiembre**, el Parque Municipal Independencia de Mercedes se convierte en el epicentro absoluto del aire libre, el picoteo y un festival de música para todos los gustos.

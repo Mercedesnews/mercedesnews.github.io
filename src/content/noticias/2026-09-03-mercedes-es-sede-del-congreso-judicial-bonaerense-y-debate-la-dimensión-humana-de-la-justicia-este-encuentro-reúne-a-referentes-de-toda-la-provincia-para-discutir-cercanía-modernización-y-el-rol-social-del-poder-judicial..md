@@ -5,7 +5,9 @@ title: |-
   Este encuentro reúne a referentes de toda la provincia para discutir cercanía, modernización y el rol social del Poder Judicial.
 date: 2026-09-03T12:20:00
 categoria: actualidad-provincial
-thumbnail: /assets/img/WhatsApp Image 2026-09-03 at 12.16.29 PM.jpeg
+thumbnail_original: /assets/img/WhatsApp Image 2026-09-03 at 12.16.29 PM.jpeg
+thumbnail_tapa: /assets/img/2026-09-03-mercedes-es-sede-del-congreso-judicial-tapa.webp
+thumbnail: /assets/img/2026-09-03-mercedes-es-sede-del-congreso-judicial-cuadrada.webp
 ---
 
 El Teatro Argentino "Julio César Gioscio" abrió sus puertas a la XXII edición del encuentro que reúne a referentes de toda la provincia para discutir cercanía, modernización y el rol social del Poder Judicial.

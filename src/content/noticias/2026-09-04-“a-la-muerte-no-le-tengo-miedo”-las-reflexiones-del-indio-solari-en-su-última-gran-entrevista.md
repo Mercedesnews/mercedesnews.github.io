@@ -4,7 +4,9 @@ title: |-
   Las reflexiones del Indio Solari en su última gran entrevista
 date: 2026-09-04T09:09:00
 categoria: entrevistas
-thumbnail: /assets/img/WhatsApp Image 2026-09-04 at 12.09.13 PM.jpeg
+thumbnail_original: /assets/img/pasted-image-1788569488039.png
+thumbnail_tapa: /assets/img/pasted-image-1788570550189.png
+thumbnail: /assets/img/pasted-image-1788570579830.png
 pin: false
 orden: 1
 ---

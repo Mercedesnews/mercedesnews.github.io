@@ -8,9 +8,546 @@
     <link rel="icon" href="/favicon.ico" sizes="any" />
   </head>
   <body>
-    <!-- Carga Sveltia CMS (soporta PAT directo y usa el mismo config.yml) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+      /* Barra y botones de recorte integrados directamente en los campos */
+      .mn-field-toolbar {
+        display: flex !important;
+        align-items: center !important;
+        margin: 6px 0 10px 0 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+
+      .mn-field-crop-btn {
+        background: #eff6ff !important;
+        border: 1.5px solid #0252c5 !important;
+        color: #0252c5 !important;
+        font-family: 'Montserrat', sans-serif !important;
+        font-size: 0.8rem !important;
+        font-weight: 700 !important;
+        padding: 6px 14px !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transition: all 0.15s ease !important;
+        box-shadow: 0 2px 6px rgba(2, 82, 197, 0.12) !important;
+      }
+      .mn-field-crop-btn:hover:not(:disabled) {
+        background: #0252c5 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(2, 82, 197, 0.3) !important;
+      }
+      .mn-field-crop-btn:disabled,
+      .mn-field-crop-btn.is-disabled {
+        background: #f1f5f9 !important;
+        border-color: #cbd5e1 !important;
+        color: #64748b !important;
+        cursor: not-allowed !important;
+        transform: none !important;
+        box-shadow: none !important;
+        opacity: 0.8 !important;
+      }
+
+      /* Modal de Recorte */
+      .mn-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(5px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+      }
+      .mn-modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .mn-modal-card {
+        background: #ffffff;
+        width: 94%;
+        max-width: 1100px;
+        height: 88vh;
+        max-height: 850px;
+        border-radius: 12px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      .mn-modal-header {
+        background: #1e2126;
+        color: #ffffff;
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 3px solid #0252c5;
+      }
+      .mn-modal-title {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .mn-modal-title span.brand-tag {
+        color: #60a5fa;
+        font-size: 0.8rem;
+        font-weight: 900;
+        background: rgba(2, 82, 197, 0.3);
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+      .mn-modal-close-btn {
+        background: none;
+        border: none;
+        color: #94a3b8;
+        font-size: 1.5rem;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.15s ease;
+      }
+      .mn-modal-close-btn:hover {
+        color: #ffffff;
+      }
+
+      .mn-modal-body {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+      }
+
+      /* Lado izquierdo: Lienzo de recorte */
+      .mn-cropper-workspace {
+        flex: 1;
+        background: #0f172a;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .mn-dropzone {
+        border: 2px dashed rgba(255, 255, 255, 0.25);
+        border-radius: 12px;
+        padding: 40px 30px;
+        text-align: center;
+        color: #cbd5e1;
+        max-width: 450px;
+        cursor: pointer;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+      }
+      .mn-dropzone:hover, .mn-dropzone.dragover {
+        border-color: #0252c5;
+        background: rgba(2, 82, 197, 0.1);
+        color: #ffffff;
+      }
+      .mn-dropzone-icon {
+        font-size: 3rem;
+        margin-bottom: 12px;
+        display: block;
+      }
+      .mn-dropzone p {
+        margin: 6px 0;
+        font-size: 0.95rem;
+      }
+      .mn-dropzone .mn-select-btn {
+        margin-top: 15px;
+        display: inline-block;
+        background: #0252c5;
+        color: #ffffff;
+        font-weight: 700;
+        padding: 10px 20px;
+        border-radius: 6px;
+      }
+
+      .mn-cropper-container {
+        width: 100%;
+        height: 100%;
+        display: none;
+      }
+      .mn-cropper-container img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      /* Lado derecho: Panel de control */
+      .mn-cropper-sidebar {
+        width: 320px;
+        background: #f8fafc;
+        border-left: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        gap: 16px;
+        overflow-y: auto;
+      }
+
+      .mn-sidebar-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .mn-section-label {
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #475569;
+      }
+
+      /* Botones de presets */
+      .mn-presets-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .mn-preset-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1e293b;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .mn-preset-btn:hover {
+        border-color: #0252c5;
+        color: #0252c5;
+      }
+      .mn-preset-btn.active {
+        background: #eff6ff;
+        border-color: #0252c5;
+        color: #0252c5;
+        font-weight: 700;
+      }
+      .mn-preset-badge {
+        font-size: 0.72rem;
+        background: #e2e8f0;
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: #475569;
+      }
+      .mn-preset-btn.active .mn-preset-badge {
+        background: #0252c5;
+        color: #ffffff;
+      }
+
+      /* Botones de herramientas */
+      .mn-tools-row {
+        display: flex;
+        gap: 6px;
+      }
+      .mn-tool-btn {
+        flex: 1;
+        padding: 8px 0;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 0.88rem;
+        cursor: pointer;
+        color: #334155;
+        transition: all 0.15s ease;
+      }
+      .mn-tool-btn:hover {
+        border-color: #0252c5;
+        color: #0252c5;
+      }
+
+      /* Previsualización en vivo */
+      .mn-preview-box {
+        width: 100%;
+        height: 140px;
+        background: #0f172a;
+        border-radius: 6px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #cbd5e1;
+      }
+      .mn-preview-live {
+        overflow: hidden;
+      }
+      .mn-dimensions-badge {
+        font-size: 0.75rem;
+        color: #64748b;
+        text-align: center;
+        margin-top: 4px;
+      }
+
+      /* Acciones de exportación y asignación directa */
+      .mn-actions-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: auto;
+      }
+
+      .mn-direct-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .mn-action-btn {
+        width: 100%;
+        padding: 10px 12px;
+        border: none;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 0.84rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.15s ease;
+      }
+
+      .mn-btn-tapa {
+        background: #0252c5;
+        color: #ffffff;
+      }
+      .mn-btn-tapa:hover:not(:disabled) {
+        background: #013ea0;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(2, 82, 197, 0.35);
+      }
+
+      .mn-btn-cuadrada {
+        background: #1e2126;
+        color: #ffffff;
+      }
+      .mn-btn-cuadrada:hover:not(:disabled) {
+        background: #333a45;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      }
+
+      .mn-btn-clipboard {
+        background: #eff6ff;
+        color: #0252c5;
+        border: 1px solid #bfdbfe;
+      }
+      .mn-btn-clipboard:hover:not(:disabled) {
+        background: #dbeafe;
+        border-color: #0252c5;
+      }
+
+      .mn-download-box {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 8px;
+      }
+
+      .mn-filename-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 0.78rem;
+        color: #1e293b;
+      }
+
+      .mn-btn-download {
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+        font-size: 0.8rem;
+        padding: 8px 10px;
+      }
+      .mn-btn-download:hover:not(:disabled) {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+
+      .mn-action-btn:disabled {
+        background: #e2e8f0;
+        color: #94a3b8;
+        border-color: transparent;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .mn-change-photo-btn {
+        background: none;
+        border: 1px dashed #cbd5e1;
+        padding: 6px;
+        font-size: 0.8rem;
+        font-family: inherit;
+        color: #64748b;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 2px;
+      }
+      .mn-change-photo-btn:hover {
+        border-color: #0252c5;
+        color: #0252c5;
+      }
+
+      /* Toast de confirmación flotante */
+      .mn-toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1e2126;
+        color: #ffffff;
+        border-left: 4px solid #0252c5;
+        padding: 14px 24px;
+        border-radius: 8px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        z-index: 100001;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+      }
+      .mn-toast.hidden {
+        opacity: 0;
+        transform: translate(-50%, 15px);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Modal de Recorte Editorial -->
+    <div id="mn-cropper-modal" class="mn-modal-overlay">
+      <div class="mn-modal-card">
+        <div class="mn-modal-header">
+          <h2 class="mn-modal-title">
+            <span>✂️</span> Mercedes News <span class="brand-tag">Editor de Fotos</span>
+          </h2>
+          <button type="button" id="mn-close-cropper-btn" class="mn-modal-close-btn" aria-label="Cerrar modal">&times;</button>
+        </div>
+
+        <div class="mn-modal-body">
+          <!-- Lienzo / Workspace -->
+          <div class="mn-cropper-workspace" id="mn-cropper-workspace">
+            <div class="mn-dropzone" id="mn-dropzone">
+              <span class="mn-dropzone-icon">📷</span>
+              <p><strong>Arrastrá una fotografía aquí</strong></p>
+              <p style="font-size: 0.82rem; opacity: 0.8;">o pegala desde el portapapeles (Ctrl+V)</p>
+              <span class="mn-select-btn">Seleccionar de tu equipo</span>
+              <input type="file" id="mn-file-input" accept="image/*" style="display: none;" />
+            </div>
+
+            <div class="mn-cropper-container" id="mn-cropper-container">
+              <img id="mn-target-image" src="" alt="Imagen a recortar" />
+            </div>
+          </div>
+
+          <!-- Barra lateral de controles -->
+          <div class="mn-cropper-sidebar">
+            <div class="mn-sidebar-section">
+              <span class="mn-section-label">1. Proporción del Recorte</span>
+              <div class="mn-locked-ratio-badge" id="mn-locked-ratio-badge" style="background: #eff6ff; border: 1.5px solid #bfdbfe; color: #0252c5; padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between;">
+                <span id="mn-ratio-title">Foto de Tapa</span>
+                <span class="mn-preset-badge" id="mn-ratio-badge" style="background: #0252c5; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem;">16:9 Alargada</span>
+              </div>
+            </div>
+
+            <div class="mn-sidebar-section">
+              <span class="mn-section-label">2. Ajustes de Imagen</span>
+              <div class="mn-tools-row">
+                <button type="button" class="mn-tool-btn" id="mn-btn-zoom-in" title="Acercar">🔍 +</button>
+                <button type="button" class="mn-tool-btn" id="mn-btn-zoom-out" title="Alejar">🔍 −</button>
+                <button type="button" class="mn-tool-btn" id="mn-btn-rotate-left" title="Girar 90° izquierda">⟲</button>
+                <button type="button" class="mn-tool-btn" id="mn-btn-rotate-right" title="Girar 90° derecha">⟳</button>
+                <button type="button" class="mn-tool-btn" id="mn-btn-reset" title="Restablecer">↺</button>
+              </div>
+              <div class="mn-tools-row" style="margin-top: 8px;">
+                <button type="button" class="mn-tool-btn" id="mn-reload-orig-btn" style="flex: 1; padding: 7px 6px; font-size: 0.76rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;" title="Vuelve a cargar la imagen de 'Foto Original'">📸 Recargar Original</button>
+                <button type="button" class="mn-tool-btn" id="mn-change-photo-btn" style="flex: 1; padding: 7px 6px; font-size: 0.76rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;" title="Elegir otra fotografía de tu computadora">📂 Otra Foto</button>
+              </div>
+            </div>
+
+            <div class="mn-sidebar-section">
+              <span class="mn-section-label">3. Previsualización</span>
+              <div class="mn-preview-box">
+                <div class="mn-preview-live" id="mn-preview-live" style="width: 140px; height: 100px;"></div>
+              </div>
+              <div class="mn-dimensions-badge" id="mn-dimensions-badge">Resolución estimada: --</div>
+            </div>
+
+            <div class="mn-sidebar-section mn-actions-container">
+              <span class="mn-section-label">4. Aplicar o Guardar</span>
+              
+              <!-- Opción 1: Asignación directa a la noticia -->
+              <div class="mn-direct-actions">
+                <button type="button" id="mn-assign-btn" class="mn-action-btn mn-btn-tapa" disabled title="Asigna el recorte directamente al campo correspondiente">
+                  <span>✨</span> <span id="mn-assign-btn-text">Asignar a Foto de Tapa (16:9)</span>
+                </button>
+              </div>
+
+              <!-- Opción 2: Copiar al portapapeles -->
+              <button type="button" id="mn-copy-clipboard-btn" class="mn-action-btn mn-btn-clipboard" disabled title="Copia la imagen al portapapeles para pegarla con Ctrl + V">
+                <span>📋</span> Copiar al Portapapeles
+              </button>
+
+              <!-- Opción 3: Descarga como archivo WebP -->
+              <div class="mn-download-box">
+                <span class="mn-section-label" style="font-size: 0.7rem; color: #64748b;">Guardar en tu computadora</span>
+                <input type="text" id="mn-export-filename" class="mn-filename-input" value="foto-noticia-tapa.webp" />
+                <button type="button" id="mn-download-btn" class="mn-action-btn mn-btn-download" disabled title="Descarga el archivo optimizado .webp">
+                  <span>💾</span> Descargar Archivo (.webp)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notificación Toast Flotante -->
+    <div id="mn-toast" class="mn-toast hidden"></div>
+
+    <!-- Carga Sveltia CMS y scripts auxiliares -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
     <script>
+      // ========================================================
+      // 1. COMPONENTES DEL EDITOR MARKDOWN
+      // ========================================================
+
       // Componente para insertar videos locales (.mp4, .webm, etc.)
       CMS.registerEditorComponent({
         id: "video",
@@ -26,9 +563,7 @@
         ],
         pattern: /<video controls src="([^"]+)"><\/video>/,
         fromBlock: function(match) {
-          return {
-            src: match[1]
-          };
+          return { src: match[1] };
         },
         toBlock: function(data) {
           return `<video controls src="${data.src || ''}"></video>`;
@@ -52,27 +587,629 @@
         ],
         pattern: /<iframe src="https:\/\/www\.youtube(?:-nocookie)?\.com\/embed\/([^"?]+)[^"]*".*?><\/iframe>/,
         fromBlock: function(match) {
-          return {
-            url: `https://www.youtube.com/watch?v=${match[1]}`
-          };
+          return { url: `https://www.youtube.com/watch?v=${match[1]}` };
         },
         toBlock: function(data) {
           let id = data.url || '';
           const match = id.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-          if (match && match[1]) {
-            id = match[1];
-          }
+          if (match && match[1]) id = match[1];
           return `<iframe src="https://www.youtube-nocookie.com/embed/${id}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
         },
         toPreview: function(data) {
           let id = data.url || '';
           const match = id.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-          if (match && match[1]) {
-            id = match[1];
-          }
+          if (match && match[1]) id = match[1];
           return `<iframe src="https://www.youtube-nocookie.com/embed/${id}" style="width:100%; aspect-ratio:16/9; border-radius:8px;" frameborder="0"></iframe>`;
         }
       });
-    </script>
+
+      // Componente para insertar fotografías con epígrafe en el cuerpo de la noticia (tarea0018)
+      CMS.registerEditorComponent({
+        id: "foto-nota",
+        label: "Foto con Epígrafe",
+        icon: "image",
+        fields: [
+          {
+            name: "src",
+            label: "Fotografía",
+            widget: "image",
+            hint: "Seleccioná la foto del repositorio o subí una imagen recortada."
+          },
+          {
+            name: "alt",
+            label: "Descripción / Alt",
+            widget: "string",
+            hint: "Texto descriptivo para lectores de pantalla y buscadores."
+          },
+          {
+            name: "epigrafe",
+            label: "Epígrafe / Pie de foto",
+            widget: "string",
+            required: false,
+            hint: "Texto informativo al pie de la imagen."
+          },
+          {
+            name: "credito",
+            label: "Crédito Fotográfico / Autor",
+            widget: "string",
+            required: false,
+            hint: "Ej: Foto: Prensa Municipio / Archivo Mercedes News"
+          },
+          {
+            name: "formato",
+            label: "Proporción visual",
+            widget: "select",
+            options: [
+              { label: "Horizontal Panorámica (16:9)", value: "16-9" },
+              { label: "Fotografía Clásica (4:3)", value: "4-3" },
+              { label: "Cuadrada (1:1)", value: "1-1" },
+              { label: "Original / Natural", value: "auto" }
+            ],
+            default: "16-9"
+          }
+        ],
+        pattern: /<figure class="foto-editorial(?: formato-(?<formato>[^"]+))?">\s*<img src="(?<src>[^"]+)"(?: alt="(?<alt>[^"]*)")?.*?>\s*(?:<figcaption>(?<epigrafe>.*?)(?: <span class="credito-foto">\((?<credito>.*?)\)<\/span>)?<\/figcaption>)?\s*<\/figure>/s,
+        fromBlock: function(match) {
+          return {
+            src: match.groups?.src || '',
+            alt: match.groups?.alt || '',
+            epigrafe: match.groups?.epigrafe || '',
+            credito: match.groups?.credito || '',
+            formato: match.groups?.formato || '16-9'
+          };
+        },
+        toBlock: function(data) {
+          const src = data.src || '';
+          const alt = data.alt || '';
+          const formato = data.formato || '16-9';
+          let figcaption = '';
+          if (data.epigrafe || data.credito) {
+            figcaption = `<figcaption>${data.epigrafe || ''}${data.credito ? ` <span class="credito-foto">(${data.credito})</span>` : ''}</figcaption>`;
+          }
+          return `<figure class="foto-editorial formato-${formato}"><img src="${src}" alt="${alt}" />${figcaption}</figure>`;
+        },
+        toPreview: function(data) {
+          const src = data.src || '';
+          const alt = data.alt || '';
+          const formato = data.formato || '16-9';
+          const ratioStyle = formato === '16-9' ? '16/9' : formato === '4-3' ? '4/3' : formato === '1-1' ? '1/1' : 'auto';
+          let figcaption = '';
+          if (data.epigrafe || data.credito) {
+            figcaption = `<figcaption style="font-size:0.84rem; color:#555; margin-top:8px; border-left:2px solid #0252c5; padding-left:10px; font-style:italic;">${data.epigrafe || ''}${data.credito ? ` <span style="font-weight:600; font-size:0.78rem; opacity:0.8;">(${data.credito})</span>` : ''}</figcaption>`;
+          }
+          return `<figure style="margin:20px 0; width:100%;"><img src="${src}" alt="${alt}" style="width:100%; border-radius:4px; aspect-ratio:${ratioStyle}; object-fit:cover;" />${figcaption}</figure>`;
+        }
+      });
+
+      // ========================================================
+      // 2. LÓGICA DEL MODAL DE RECORTE (Cropper.js)
+      // ========================================================
+      document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('mn-cropper-modal');
+        const closeBtn = document.getElementById('mn-close-cropper-btn');
+        const dropzone = document.getElementById('mn-dropzone');
+        const fileInput = document.getElementById('mn-file-input');
+        const cropperContainer = document.getElementById('mn-cropper-container');
+        const targetImage = document.getElementById('mn-target-image');
+        const previewEl = document.getElementById('mn-preview-live');
+        const dimensionsBadge = document.getElementById('mn-dimensions-badge');
+        const filenameInput = document.getElementById('mn-export-filename');
+        const assignBtn = document.getElementById('mn-assign-btn');
+        const assignBtnText = document.getElementById('mn-assign-btn-text');
+        const copyClipboardBtn = document.getElementById('mn-copy-clipboard-btn');
+        const downloadBtn = document.getElementById('mn-download-btn');
+        const reloadOrigBtn = document.getElementById('mn-reload-orig-btn');
+        const changePhotoBtn = document.getElementById('mn-change-photo-btn');
+        const ratioTitle = document.getElementById('mn-ratio-title');
+        const ratioBadge = document.getElementById('mn-ratio-badge');
+        const toastEl = document.getElementById('mn-toast');
+        const workspace = document.getElementById('mn-cropper-workspace');
+
+        let cropper = null;
+        let baseFilename = 'foto-noticia';
+        let currentSuffix = 'tapa';
+        let currentRatio = 16 / 9;
+        let currentFieldLabel = 'Foto de Tapa (16:9)';
+        let toastTimer = null;
+        let activeTargetKey = 'thumbnail_tapa';
+
+        const showToast = (message) => {
+          if (!toastEl) return;
+          toastEl.textContent = message;
+          toastEl.classList.remove('hidden');
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => {
+            toastEl.classList.add('hidden');
+          }, 4500);
+        };
+
+        const enableActionButtons = () => {
+          assignBtn?.removeAttribute('disabled');
+          copyClipboardBtn?.removeAttribute('disabled');
+          downloadBtn?.removeAttribute('disabled');
+        };
+
+        // Obtener la URL de la imagen del campo Foto Original
+        const getOriginalImageUrl = () => {
+          const origSec = document.querySelector('section[data-key-path="thumbnail_original"]');
+          if (origSec) {
+            const img = origSec.querySelector('img');
+            if (img && (img.src || img.getAttribute('src')) && !img.src.endsWith('/') && !img.src.endsWith('#')) {
+              return img.src;
+            }
+            const input = origSec.querySelector('input[type="text"]');
+            if (input && input.value && input.value.trim() !== '') {
+              const val = input.value.trim();
+              return val.startsWith('http') || val.startsWith('blob:') ? val : `/assets/img/${val.replace(/^\/assets\/img\//, '')}`;
+            }
+            const nameEl = origSec.querySelector('.name, .filename, bdi');
+            if (nameEl && nameEl.textContent && nameEl.textContent.trim() !== '') {
+              const fileName = nameEl.textContent.trim();
+              if (!fileName.startsWith('http') && !fileName.startsWith('blob:')) {
+                return `/assets/img/${fileName.replace(/^\/assets\/img\//, '')}`;
+              }
+              return fileName;
+            }
+            const link = origSec.querySelector('a[href]');
+            if (link && link.href && (link.href.match(/\.(jpe?g|png|webp|gif)$/i) || link.href.startsWith('blob:'))) {
+              return link.href;
+            }
+          }
+          return null;
+        };
+
+        // Comprobar si un campo de imagen ya tiene una foto asignada (incluso antes de scrollear)
+        const isSectionFilled = (section) => {
+          if (!section) return false;
+          // 1. Elementos estructurales de archivo en Sveltia CMS (existen de inmediato, sin esperar scroll)
+          if (section.querySelector('.file, [role="listitem"], .files:not(:empty)')) {
+            return true;
+          }
+          // 2. Botón de eliminar / quitar archivo (solo existe cuando hay archivo cargado)
+          const removeBtn = Array.from(section.querySelectorAll('button')).find((b) => {
+            const aria = (b.getAttribute('aria-label') || '').toLowerCase();
+            const ctrl = (b.getAttribute('aria-controls') || '').toLowerCase();
+            const txt = (b.textContent || '').toLowerCase();
+            return ctrl.endsWith('-value') || aria.includes('delete') || aria.includes('remove') || aria.includes('quitar') || txt.includes('quitar') || txt.includes('eliminar');
+          });
+          if (removeBtn) {
+            return true;
+          }
+          // 3. Etiqueta img con src
+          const img = section.querySelector('img');
+          if (img && (img.src || img.getAttribute('src')) && !img.src.endsWith('/') && !img.src.endsWith('#')) {
+            return true;
+          }
+          // 4. Input con valor de texto
+          const input = section.querySelector('input[type="text"]');
+          if (input && input.value && input.value.trim() !== '') {
+            return true;
+          }
+          return false;
+        };
+
+        // Inyectar y actualizar barra de recorte para un campo específico
+        const updateFieldButton = (section, fieldKey, suffix, ratio, label, btnActiveText) => {
+          if (!section) return;
+          let toolbar = section.querySelector(`.mn-field-toolbar[data-for="${fieldKey}"]`);
+          let btn = toolbar ? toolbar.querySelector('.mn-field-crop-btn') : null;
+
+          if (!toolbar || !btn) {
+            toolbar = document.createElement('div');
+            toolbar.className = 'mn-field-toolbar';
+            toolbar.dataset.for = fieldKey;
+
+            btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'mn-field-crop-btn';
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              // Verificación defensiva contra clicks antes de renderizado
+              if (isSectionFilled(section)) {
+                showToast(`🔒 Este campo ya tiene una foto asignada. Para reemplazarla, primero eliminala.`);
+                return;
+              }
+              openCropperForField(fieldKey, suffix, ratio, label);
+            });
+
+            toolbar.appendChild(btn);
+
+            const header = section.querySelector('header');
+            if (header && header.nextSibling) {
+              section.insertBefore(toolbar, header.nextSibling);
+            } else if (header) {
+              section.appendChild(toolbar);
+            } else {
+              section.insertBefore(toolbar, section.firstChild);
+            }
+          }
+
+          const filled = isSectionFilled(section);
+          if (filled) {
+            btn.disabled = true;
+            btn.classList.add('is-disabled');
+            btn.innerHTML = '<span>🔒</span> Foto asignada (vaciá el campo para volver a recortar)';
+            btn.title = 'Para reemplazar o cambiar el encuadre, primero eliminá la foto actual tocando el botón de tacho o Quitar en este campo de Sveltia.';
+          } else {
+            btn.disabled = false;
+            btn.classList.remove('is-disabled');
+            btn.innerHTML = `<span>✂️</span> ${btnActiveText}`;
+            btn.title = `Abrir herramienta para recortar desde la Foto Original para ${label}`;
+          }
+        };
+
+        // Monitoreo e inyección periódica de botones
+        const injectFieldButtons = () => {
+          const hash = window.location.hash || '';
+          if (!hash.includes('/collections/noticias/entries/') && !hash.endsWith('/collections/noticias/new')) return;
+
+          const tapaSection = document.querySelector('section[data-key-path="thumbnail_tapa"]');
+          if (tapaSection) {
+            updateFieldButton(tapaSection, 'thumbnail_tapa', 'tapa', 16 / 9, 'Foto de Tapa (16:9)', 'Recortar para Tapa (16:9)');
+          }
+
+          const cuadSection = document.querySelector('section[data-key-path="thumbnail"]');
+          if (cuadSection) {
+            updateFieldButton(cuadSection, 'thumbnail', 'cuadrada', 1, 'Foto Principal (1:1)', 'Recortar para Principal (1:1)');
+          }
+        };
+        setInterval(injectFieldButtons, 300);
+
+        // Abrir y cerrar modal
+        const openModal = () => { modal.classList.add('active'); };
+        const closeModal = () => { modal.classList.remove('active'); };
+
+        closeBtn?.addEventListener('click', closeModal);
+        modal?.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal();
+        });
+
+        const updateFilename = () => {
+          filenameInput.value = `${baseFilename}-${currentSuffix}.webp`;
+        };
+
+        const initCropper = () => {
+          if (cropper) cropper.destroy();
+
+          cropper = new Cropper(targetImage, {
+            aspectRatio: currentRatio,
+            viewMode: 1,
+            autoCropArea: 0.95,
+            responsive: true,
+            preview: previewEl,
+            crop(event) {
+              const data = event.detail;
+              const w = Math.round(data.width);
+              const h = Math.round(data.height);
+              dimensionsBadge.innerHTML = `<strong>${w} × ${h} px</strong> (Calidad Original 100%)`;
+            }
+          });
+        };
+
+        // Manejo de archivo seleccionado
+        const loadFile = (file) => {
+          if (!file || !file.type.startsWith('image/')) {
+            alert('Por favor seleccioná un archivo de imagen válido (.jpg, .png, .webp).');
+            return;
+          }
+
+          if (file.name) {
+            const rawName = file.name.replace(/\.[^/.]+$/, '').toLowerCase().replace(/[^a-z0-9_-]/g, '-').replace(/-+/g, '-');
+            baseFilename = rawName || 'foto-noticia';
+            updateFilename();
+          }
+
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            targetImage.crossOrigin = 'anonymous';
+            targetImage.onload = () => {
+              dropzone.style.display = 'none';
+              cropperContainer.style.display = 'block';
+              enableActionButtons();
+              initCropper();
+            };
+            targetImage.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        };
+
+        // Cargar imagen en Cropper a partir de una URL (local o remota)
+        const loadCropperFromUrl = async (url, fallbackName = 'foto-noticia') => {
+          if (!url) return;
+
+          try {
+            const urlObj = new URL(url, window.location.href);
+            const pathname = urlObj.pathname;
+            const base = pathname.split('/').pop().replace(/\.[^/.]+$/, '').toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+            if (base) baseFilename = base;
+            else baseFilename = fallbackName;
+          } catch (e) {
+            baseFilename = fallbackName;
+          }
+          updateFilename();
+
+          try {
+            const res = await fetch(url);
+            const blob = await res.blob();
+            loadFile(blob);
+          } catch (err) {
+            console.warn('Fetch fallback to direct image loading:', err);
+            targetImage.crossOrigin = 'anonymous';
+            targetImage.onload = () => {
+              dropzone.style.display = 'none';
+              cropperContainer.style.display = 'block';
+              enableActionButtons();
+              initCropper();
+            };
+            targetImage.src = url;
+          }
+        };
+
+        // Abrir modal configurado para un campo específico (Tapa o Cuadrada)
+        const openCropperForField = (fieldKey, suffix, ratio, fieldLabel) => {
+          const targetSec = document.querySelector(`section[data-key-path="${fieldKey}"]`);
+          if (targetSec && isSectionFilled(targetSec)) {
+            showToast(`🔒 El campo ${fieldLabel} ya tiene una foto asignada. Para reemplazarla, primero eliminala.`);
+            return;
+          }
+
+          activeTargetKey = fieldKey;
+          currentSuffix = suffix;
+          currentRatio = ratio;
+          currentFieldLabel = fieldLabel;
+
+          // Adaptar interfaz del modal exclusivamente para este tipo de foto
+          if (suffix === 'tapa') {
+            if (ratioTitle) ratioTitle.textContent = 'Foto de Tapa';
+            if (ratioBadge) {
+              ratioBadge.textContent = '16:9 Alargada';
+              ratioBadge.style.background = '#0252c5';
+            }
+            if (assignBtn) assignBtn.className = 'mn-action-btn mn-btn-tapa';
+            if (assignBtnText) assignBtnText.textContent = 'Asignar a Foto de Tapa (16:9)';
+          } else {
+            if (ratioTitle) ratioTitle.textContent = 'Foto Principal / Secciones';
+            if (ratioBadge) {
+              ratioBadge.textContent = '1:1 Cuadrada';
+              ratioBadge.style.background = '#1e2126';
+            }
+            if (assignBtn) assignBtn.className = 'mn-action-btn mn-btn-cuadrada';
+            if (assignBtnText) assignBtnText.textContent = 'Asignar a Foto Cuadrada (1:1)';
+          }
+
+          updateFilename();
+          openModal();
+
+          // Buscar imagen original en el formulario
+          const origSrc = getOriginalImageUrl();
+          if (origSrc) {
+            if (cropper && targetImage.src && (targetImage.src === origSrc || targetImage.src.includes(encodeURI(origSrc)) || targetImage.src.includes(origSrc))) {
+              cropper.setAspectRatio(ratio);
+              cropper.reset();
+              showToast('📸 Foto original lista. Encuadrá el recorte.');
+            } else {
+              loadCropperFromUrl(origSrc, suffix === 'tapa' ? 'foto-tapa' : 'foto-cuadrada');
+              showToast('📸 Foto original cargada en resolución nativa. Encuadrá y asigná.');
+            }
+          } else {
+            // Si no hay foto original, mostrar dropzone
+            dropzone.style.display = 'block';
+            cropperContainer.style.display = 'none';
+            if (cropper) {
+              cropper.destroy();
+              cropper = null;
+            }
+            showToast("💡 Subí primero la imagen en 'Foto Original' para cargarla automáticamente, o arrastrala aquí.");
+          }
+        };
+
+        // Acciones de fuente de imagen dentro del modal
+        reloadOrigBtn?.addEventListener('click', () => {
+          const origUrl = getOriginalImageUrl();
+          if (origUrl) {
+            loadCropperFromUrl(origUrl, currentSuffix === 'tapa' ? 'foto-tapa' : 'foto-cuadrada');
+            showToast('📸 Foto original recargada con éxito.');
+          } else {
+            showToast('⚠️ No se encontró ninguna imagen en el campo Foto Original.');
+          }
+        });
+
+        changePhotoBtn?.addEventListener('click', () => {
+          fileInput.click();
+        });
+
+        dropzone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) loadFile(e.target.files[0]);
+        });
+
+        // Drag & Drop en el workspace completo
+        if (workspace) {
+          ['dragenter', 'dragover'].forEach((eventName) => {
+            workspace.addEventListener(eventName, (e) => {
+              e.preventDefault();
+              workspace.classList.add('dragover');
+            });
+          });
+          ['dragleave', 'drop'].forEach((eventName) => {
+            workspace.addEventListener(eventName, (e) => {
+              e.preventDefault();
+              workspace.classList.remove('dragover');
+            });
+          });
+          workspace.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+              loadFile(e.dataTransfer.files[0]);
+            }
+          });
+        }
+
+        // Pegar desde el portapapeles (Ctrl+V) dentro del modal
+        window.addEventListener('paste', (e) => {
+          if (!modal.classList.contains('active')) return;
+          const items = e.clipboardData?.items;
+          if (!items) return;
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.startsWith('image/')) {
+              const blob = items[i].getAsFile();
+              loadFile(blob);
+              break;
+            }
+          }
+        });
+
+        // Herramientas (Zoom, Rotar, Reset)
+        document.getElementById('mn-btn-zoom-in')?.addEventListener('click', () => cropper?.zoom(0.1));
+        document.getElementById('mn-btn-zoom-out')?.addEventListener('click', () => cropper?.zoom(-0.1));
+        document.getElementById('mn-btn-rotate-left')?.addEventListener('click', () => cropper?.rotate(-90));
+        document.getElementById('mn-btn-rotate-right')?.addEventListener('click', () => cropper?.rotate(90));
+        document.getElementById('mn-btn-reset')?.addEventListener('click', () => cropper?.reset());
+
+        // ========================================================
+        // ASIGNACIÓN DIRECTA AL CAMPO ABIERTO EN EL CMS
+        // ========================================================
+        const assignToCurrentField = async () => {
+          if (!cropper) return;
+
+          // Máxima resolución nativa completa (hasta 4096px para nitidez absoluta sin degradación)
+          const canvas = cropper.getCroppedCanvas({
+            maxWidth: 4096,
+            maxHeight: 4096,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
+          });
+
+          if (!canvas) {
+            alert('No se pudo generar el recorte. Verificá la imagen.');
+            return;
+          }
+
+          canvas.toBlob(async (pngBlob) => {
+            if (!pngBlob) return;
+
+            // 1. Escribir SIEMPRE al portapapeles del sistema en PNG lossless (sin compresión que degrade)
+            let clipboardWritten = false;
+            try {
+              const item = new ClipboardItem({ 'image/png': pngBlob });
+              await navigator.clipboard.write([item]);
+              clipboardWritten = true;
+            } catch (err) {
+              console.warn('Clipboard write fallback:', err);
+            }
+
+            // 2. Buscar la sección correspondiente en Sveltia CMS
+            let section = document.querySelector(`section[data-key-path="${activeTargetKey}"]`)
+              || document.querySelector(`[data-key-path="${activeTargetKey}"]`);
+
+            if (!section) {
+              const searchTxt = currentSuffix === 'tapa' ? 'foto de tapa' : 'foto principal';
+              const allSections = Array.from(document.querySelectorAll('section, [role="group"]'));
+              section = allSections.find((s) => s.textContent && s.textContent.toLowerCase().includes(searchTxt));
+            }
+
+            if (!section) {
+              if (clipboardWritten) {
+                closeModal();
+                showToast(`📋 ¡Copiada en alta resolución! Pegala con Ctrl + V en ${currentFieldLabel}.`);
+              } else {
+                alert(`No se encontró el campo ${currentFieldLabel} abierto en el panel.`);
+              }
+              return;
+            }
+
+            // Como el botón de recortar SOLO está habilitado si el campo está vacío,
+            // el campo ya está limpio. Buscamos el botón de pegar de Sveltia o despachamos paste
+            const pasteBtn = Array.from(section.querySelectorAll('button')).find((b) => {
+              const txt = (b.textContent || b.getAttribute('aria-label') || '').toLowerCase();
+              return txt.includes('paste') || txt.includes('pegar');
+            });
+
+            if (pasteBtn) {
+              pasteBtn.click();
+              closeModal();
+              showToast(`✅ ¡Asignada a ${currentFieldLabel} en resolución nativa completa!`);
+            } else {
+              const dropzoneEl = section.querySelector('[tabindex="0"]') || section;
+              dropzoneEl.focus();
+              dropzoneEl.dispatchEvent(new KeyboardEvent('keydown', {
+                key: 'v',
+                code: 'KeyV',
+                ctrlKey: true,
+                metaKey: true,
+                bubbles: true
+              }));
+              closeModal();
+              showToast(`✅ ¡Asignada a ${currentFieldLabel}! (Si no se refleja de inmediato, presioná Ctrl + V en el campo)`);
+            }
+
+            setTimeout(injectFieldButtons, 250);
+          }, 'image/png');
+        };
+
+        assignBtn?.addEventListener('click', assignToCurrentField);
+
+        // ========================================================
+        // OPCIÓN 2: COPIAR DIRECTAMENTE AL PORTAPAPELES (ALTA RESOLUCIÓN NATIVA)
+        // ========================================================
+        copyClipboardBtn?.addEventListener('click', () => {
+          if (!cropper) return;
+
+          const canvas = cropper.getCroppedCanvas({
+            maxWidth: 4096,
+            maxHeight: 4096,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
+          });
+
+          if (!canvas) return;
+
+          canvas.toBlob(async (blob) => {
+            if (!blob) return;
+            try {
+              const item = new ClipboardItem({ 'image/png': blob });
+              await navigator.clipboard.write([item]);
+              showToast('📋 ¡Imagen copiada en resolución nativa completa! Pegala con Ctrl + V en el campo deseado.');
+            } catch (err) {
+              console.error(err);
+              alert('Tu navegador bloqueó el acceso al portapapeles. Podés usar la opción de Descargar.');
+            }
+          }, 'image/png');
+        });
+
+        // ========================================================
+        // OPCIÓN 3: DESCARGA OPTIMIZADA EN WEBP (ALTA RESOLUCIÓN NATIVA)
+        // ========================================================
+        downloadBtn?.addEventListener('click', () => {
+          if (!cropper) return;
+
+          const canvas = cropper.getCroppedCanvas({
+            maxWidth: 4096,
+            maxHeight: 4096,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
+          });
+
+          if (!canvas) {
+            alert('No se pudo generar el recorte. Verificá la imagen.');
+            return;
+          }
+
+          canvas.toBlob((blob) => {
+            if (!blob) return;
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filenameInput.value || 'foto-recortada.webp';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            showToast('💾 Archivo .webp descargado en alta resolución.');
+          }, 'image/webp', 0.95);
+        });
+      });
+  </script>
   </body>
 </html>

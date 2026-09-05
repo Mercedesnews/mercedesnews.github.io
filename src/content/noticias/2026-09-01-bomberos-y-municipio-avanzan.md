@@ -4,7 +4,9 @@ title: |-
   Ustarroz firma decreto por nueva entrega de fondos
 date: 2026-08-25T14:30:00
 categoria: actualidad-local
-thumbnail: /assets/img/B2-1024x682.webp
+thumbnail_original: /assets/img/B2-1024x682.webp
+thumbnail_tapa: /assets/img/2026-09-01-bomberos-y-municipio-avanzan-tapa.webp
+thumbnail: /assets/img/2026-09-01-bomberos-y-municipio-avanzan-cuadrada.webp
 pin: true
 orden: null
 ---

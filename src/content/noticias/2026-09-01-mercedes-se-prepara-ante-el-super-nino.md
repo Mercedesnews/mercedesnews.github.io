@@ -4,7 +4,9 @@ title: |-
   El objetivo es prevenir y dar respuestas a las posibles consecuencias que tendrá en el territorio el fenómeno climático conocido como “Super Niño”.
 date: 2026-08-27T11:00:00
 categoria: actualidad-local
-thumbnail: /assets/img/2023_06_07_ak_reunion-intendentes_032-1jpg.jpg
+thumbnail_original: /assets/img/2023_06_07_ak_reunion-intendentes_032-1jpg.jpg
+thumbnail_tapa: /assets/img/2026-09-01-mercedes-se-prepara-ante-el-super-nino-tapa.webp
+thumbnail: /assets/img/2026-09-01-mercedes-se-prepara-ante-el-super-nino-cuadrada.webp
 ---
 
 ![Foto de duraznos](/assets/img/image-163-1024x576.webp)

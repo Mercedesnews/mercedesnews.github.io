@@ -90,9 +90,13 @@ const currentYear = new Date().getFullYear();
       </header>
 
       <!-- Foto de portada con mismos márgenes del contenedor -->
-      {nota.frontmatter.thumbnail && (
+      {(nota.frontmatter.thumbnail_tapa || nota.frontmatter.thumbnail) && (
         <div class="header-section">
-          <img src={nota.frontmatter.thumbnail} alt={tabTitle} class="imagen-portada" />
+          <img 
+            src={nota.frontmatter.thumbnail_tapa || nota.frontmatter.thumbnail} 
+            alt={tabTitle} 
+            class="imagen-portada" 
+          />
         </div>
       )}
 
@@ -298,7 +302,7 @@ const currentYear = new Date().getFullYear();
 
   .imagen-portada {
     width: 100%;
-    max-height: 520px;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
     display: block;
   }
@@ -397,6 +401,53 @@ const currentYear = new Date().getFullYear();
     margin: 20px auto;
     border-radius: 0;
     break-inside: avoid;
+  }
+
+  .cuerpo-texto .foto-editorial {
+    margin: 25px 0;
+    width: 100%;
+    break-inside: avoid;
+  }
+
+  .cuerpo-texto .foto-editorial img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0;
+    border-radius: 4px;
+  }
+
+  .cuerpo-texto .foto-editorial.formato-16-9 img {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  .cuerpo-texto .foto-editorial.formato-4-3 img {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .cuerpo-texto .foto-editorial.formato-1-1 img {
+    aspect-ratio: 1 / 1;
+    max-width: 480px;
+    margin: 0 auto;
+    object-fit: cover;
+  }
+
+  .cuerpo-texto .foto-editorial figcaption {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.84rem;
+    color: #555;
+    margin-top: 8px;
+    line-height: 1.4;
+    border-left: 2px solid #0252c5;
+    padding-left: 10px;
+  }
+
+  .cuerpo-texto .foto-editorial .credito-foto {
+    font-size: 0.78rem;
+    color: #888;
+    font-weight: 600;
   }
 
   .cuerpo-texto .video-reproductor {

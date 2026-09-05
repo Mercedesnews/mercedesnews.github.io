@@ -342,12 +342,14 @@ const searchIndex = notas.map((n) => {
                 data-orden={leadNota.orden !== null ? leadNota.orden : ''}
                 data-pin={leadNota.pin ? 'true' : 'false'}
                 data-is-tapa="true"
+                data-thumb-tapa={leadNota.frontmatter.thumbnail_tapa || ''}
+                data-thumb-cuadrada={leadNota.frontmatter.thumbnail || ''}
               >
-                {leadNota.frontmatter.thumbnail && (
+                {(leadNota.frontmatter.thumbnail_tapa || leadNota.frontmatter.thumbnail) && (
                   <div class="card-media">
                     <a href={`/noticias/${leadNota.slug}`} class="media-link">
                       <img 
-                        src={leadNota.frontmatter.thumbnail} 
+                        src={leadNota.frontmatter.thumbnail_tapa || leadNota.frontmatter.thumbnail} 
                         alt={cleanTitle(leadNota.frontmatter.title)} 
                         class="card-img" 
                       />
@@ -413,12 +415,14 @@ const searchIndex = notas.map((n) => {
                   data-orden={nota.orden !== null ? nota.orden : ''}
                   data-pin={nota.pin ? 'true' : 'false'}
                   data-is-tapa="false"
+                  data-thumb-tapa={nota.frontmatter.thumbnail_tapa || ''}
+                  data-thumb-cuadrada={nota.frontmatter.thumbnail || ''}
                 >
-                  {nota.frontmatter.thumbnail && (
+                  {(nota.frontmatter.thumbnail || nota.frontmatter.thumbnail_tapa) && (
                     <div class="card-media">
                       <a href={`/noticias/${nota.slug}`} class="media-link">
                         <img 
-                          src={nota.frontmatter.thumbnail} 
+                          src={nota.frontmatter.thumbnail || nota.frontmatter.thumbnail_tapa} 
                           alt={cleanTitle(nota.frontmatter.title)} 
                           class="card-img" 
                         />
@@ -539,12 +543,14 @@ const searchIndex = notas.map((n) => {
                     data-orden={nota.orden !== null ? nota.orden : ''}
                     data-pin={nota.pin ? 'true' : 'false'}
                     data-is-tapa="false"
+                    data-thumb-tapa={nota.frontmatter.thumbnail_tapa || ''}
+                    data-thumb-cuadrada={nota.frontmatter.thumbnail || ''}
                   >
-                    {nota.frontmatter.thumbnail && (
+                    {(nota.frontmatter.thumbnail || nota.frontmatter.thumbnail_tapa) && (
                       <div class="card-media">
                         <a href={`/noticias/${nota.slug}`} class="media-link">
                           <img 
-                            src={nota.frontmatter.thumbnail} 
+                            src={nota.frontmatter.thumbnail || nota.frontmatter.thumbnail_tapa} 
                             alt={cleanTitle(nota.frontmatter.title)} 
                             class="card-img" 
                           />
@@ -742,6 +748,19 @@ const searchIndex = notas.map((n) => {
           });
         }
 
+        // 3. Conmutar imagen entre tapa (16:9) y secundaria/archivo (1:1 cuadrada)
+        function updateCardImage(card, isLead) {
+          const img = card.querySelector('.card-img');
+          if (!img) return;
+          const thumbTapa = card.dataset.thumbTapa;
+          const thumbCuadrada = card.dataset.thumbCuadrada;
+          if (isLead && thumbTapa) {
+            img.src = thumbTapa;
+          } else if (thumbCuadrada) {
+            img.src = thumbCuadrada;
+          }
+        }
+
         // 1. HEADER STICKY-SHRINK: Con posición fija y reserva de altura
         if (headerOuter && header) {
           const updateOuterHeight = () => {
@@ -828,6 +847,7 @@ const searchIndex = notas.map((n) => {
             });
 
             leadCard.className = 'noticia-card is-lead';
+            updateCardImage(leadCard, true);
             if (articulosWrapper && sectionRecientesBar) {
               articulosWrapper.insertBefore(leadCard, sectionRecientesBar);
             }
@@ -835,6 +855,7 @@ const searchIndex = notas.map((n) => {
             if (grillaSecundarias) {
               secundarias.forEach((card) => {
                 card.className = 'noticia-card is-secondary';
+                updateCardImage(card, false);
                 grillaSecundarias.appendChild(card);
               });
             }
@@ -842,6 +863,7 @@ const searchIndex = notas.map((n) => {
             if (listaArchivo) {
               archivo.forEach((card) => {
                 card.className = 'noticia-card is-compact';
+                updateCardImage(card, false);
                 listaArchivo.appendChild(card);
               });
             }
@@ -885,6 +907,7 @@ const searchIndex = notas.map((n) => {
           }
 
           leadCard.className = 'noticia-card is-lead';
+          updateCardImage(leadCard, true);
           if (articulosWrapper && sectionRecientesBar) {
             articulosWrapper.insertBefore(leadCard, sectionRecientesBar);
           }
@@ -896,6 +919,7 @@ const searchIndex = notas.map((n) => {
           if (grillaSecundarias) {
             secundarias.forEach((card) => {
               card.className = 'noticia-card is-secondary';
+              updateCardImage(card, false);
               grillaSecundarias.appendChild(card);
             });
           }
@@ -903,6 +927,7 @@ const searchIndex = notas.map((n) => {
           if (listaArchivo) {
             archivo.forEach((card) => {
               card.className = 'noticia-card is-compact';
+              updateCardImage(card, false);
               listaArchivo.appendChild(card);
             });
           }
@@ -1999,8 +2024,17 @@ const searchIndex = notas.map((n) => {
     padding-bottom: 30px;
   }
 
+  .noticia-card.is-lead .card-media {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #000000;
+  }
+
   .noticia-card.is-lead .card-img {
-    max-height: 480px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .noticia-card.is-lead .card-title {
@@ -2080,8 +2114,17 @@ const searchIndex = notas.map((n) => {
     padding-bottom: 20px;
   }
 
+  .noticia-card.is-secondary .card-media {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #000000;
+  }
+
   .noticia-card.is-secondary .card-img {
-    max-height: 220px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .noticia-card.is-secondary .badge-tapa {
@@ -2166,11 +2209,13 @@ const searchIndex = notas.map((n) => {
   }
 
   .noticia-card.is-compact .card-media {
-    flex: 0 0 220px;
-    width: 220px;
-    max-height: 145px;
-    aspect-ratio: 16 / 10;
+    flex: 0 0 200px;
+    width: 200px;
+    height: 200px;
+    aspect-ratio: 1 / 1;
     border-radius: 4px;
+    overflow: hidden;
+    background: #000000;
   }
 
   .noticia-card.is-compact .card-img {
@@ -2225,22 +2270,24 @@ const searchIndex = notas.map((n) => {
     display: none;
   }
 
-  /* Versión Móvil para Lo que tenés que saber (formato vertical apilado) */
+  /* Versión Móvil para Lo que tenés que saber (formato consistente 1:1) */
   @media (max-width: 680px) {
     .noticia-card.is-compact {
-      flex-direction: column;
-      gap: 12px;
+      flex-direction: row;
+      gap: 14px;
+      align-items: center;
     }
 
     .noticia-card.is-compact .card-media {
-      flex: none;
-      width: 100%;
-      max-height: 220px;
-      aspect-ratio: 16 / 9;
+      flex: 0 0 110px;
+      width: 110px;
+      height: 110px;
+      max-height: 110px;
+      aspect-ratio: 1 / 1;
     }
 
     .noticia-card.is-compact .meta-row {
-      margin: 10px 0 6px 0;
+      margin: 0 0 4px 0;
     }
   }
 
@@ -2822,25 +2869,30 @@ const searchIndex = notas.map((n) => {
 
     .grilla-secundarias {
       grid-template-columns: repeat(2, 1fr);
-      gap: 30px;
+      column-gap: 0;
+      row-gap: 35px;
     }
 
     .noticia-card.is-secondary {
       border-bottom: none;
       padding-bottom: 0;
       border-right: 1px solid rgba(2, 82, 197, 0.18);
-      padding-right: 25px;
+      padding-right: 20px;
+      padding-left: 0;
     }
 
     .noticia-card.is-secondary:nth-child(2n) {
       border-right: none;
       padding-right: 0;
+      padding-left: 21px;
     }
 
     .noticia-card.is-compact .card-media {
-      flex: 0 0 240px;
-      width: 240px;
-      max-height: 155px;
+      flex: 0 0 200px;
+      width: 200px;
+      height: 200px;
+      max-height: 200px;
+      aspect-ratio: 1 / 1;
     }
 
     .noticia-card.is-compact .card-title .titulo-principal {
@@ -2995,8 +3047,9 @@ const searchIndex = notas.map((n) => {
   }
 
   .search-result-thumb {
-    width: 64px;
-    height: 48px;
+    width: 54px;
+    height: 54px;
+    aspect-ratio: 1 / 1;
     border-radius: 4px;
     object-fit: cover;
     flex-shrink: 0;
