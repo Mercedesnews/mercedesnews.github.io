@@ -9,7 +9,7 @@ thumbnail_original: /assets/img/WhatsApp Image 2026-09-08 at 10.45.39 AM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-08 at 11.19.14 AM.jpeg
 thumbnail: /assets/img/pasted-image-1788877231521.png
 pin: false
-orden: 3
+orden: 1
 ---
 
 Este próximo jueves 10 de septiembre se concretará un paso clave en el plan de infraestructura y servicios sanitarios de la ciudad. Con un acto oficial convocado para las 17:30 horas en la esquina de calle 58 y 15, quedará formalmente inaugurada la nueva Estación de bombeo y recambio de colector cloacal.
