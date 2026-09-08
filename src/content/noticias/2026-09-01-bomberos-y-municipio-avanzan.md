@@ -7,7 +7,7 @@ categoria: actualidad-local
 thumbnail_original: /assets/img/B2-1024x682.webp
 thumbnail_tapa: /assets/img/2026-09-01-bomberos-y-municipio-avanzan-tapa.webp
 thumbnail: /assets/img/2026-09-01-bomberos-y-municipio-avanzan-cuadrada.webp
-pin: true
+pin: false
 orden: null
 ---
 
