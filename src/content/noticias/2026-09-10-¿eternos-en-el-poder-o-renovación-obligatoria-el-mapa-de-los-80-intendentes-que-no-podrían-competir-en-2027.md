@@ -5,9 +5,9 @@ title: |-
   El mapa de los 80 intendentes que no podrían competir en 2027
 date: 2026-09-10T08:03:00
 categoria: actualidad-provincial
-thumbnail_original: /assets/img/2023_06_07_ak_reunion-intendentes_032-1jpg.jpg
-thumbnail_tapa: /assets/img/pasted-image-1789049319375.png
-thumbnail: /assets/img/pasted-image-1789049487148.png
+thumbnail_original: /assets/img/WhatsApp Image 2026-09-10 at 11.39.20 AM.jpeg
+thumbnail_tapa: /assets/img/pasted-image-1789051187831.png
+thumbnail: /assets/img/pasted-image-1789051196279.png
 pin: true
 orden: 1
 ---
