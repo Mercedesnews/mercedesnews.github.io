@@ -26,6 +26,8 @@ Radiografía de las Reelecciones en la Provincia (2027)
 
 ·         44 Intendentes están habilitados, por ahora, para competir si así lo desean.
 
+![](/assets/img/WhatsApp%20Image%202026-09-10%20at%205.16.57%20PM.jpeg)
+
 El impacto en el Conurbano: De los 40 distritos que lo integran, 28 tienen jefes comunales alcanzados por la prohibición.
 
 Pero, ¿cómo se llegó a este escenario y qué dice la ley que rige el destino político de los municipios?
