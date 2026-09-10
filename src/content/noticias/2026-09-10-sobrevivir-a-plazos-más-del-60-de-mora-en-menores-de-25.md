@@ -5,9 +5,9 @@ title: |-
   Más del 60% de mora en menores de 25
 date: 2026-09-10T09:33:00
 categoria: actualidad-nacional
-thumbnail_original: /assets/img/WhatsApp Image 2026-09-10 at 10.37.53 AM.jpeg
-thumbnail_tapa: /assets/img/pasted-image-1789047530234.png
-thumbnail: /assets/img/WhatsApp Image 2026-09-10 at 10.37.53 AM.jpeg
+thumbnail_original: /assets/img/WhatsApp Image 2026-09-10 at 10.49.51 AM.jpeg
+thumbnail_tapa: /assets/img/pasted-image-1789048262191.png
+thumbnail: /assets/img/WhatsApp Image 2026-09-10 at 10.49.51 AM.jpeg
 pin: true
 orden: 1
 ---
