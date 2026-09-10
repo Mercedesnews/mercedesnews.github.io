@@ -3,7 +3,7 @@ title: |-
   Obras claves para la ciudad
 
   Inauguran la estación de bombeo con la presencia de Katopodis y Ustarroz
-date: 2026-09-08T10:45:00
+date: 2026-09-07T10:45:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/WhatsApp Image 2026-09-08 at 10.45.39 AM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-08 at 11.19.14 AM.jpeg
