@@ -7,7 +7,7 @@ date: 2026-09-11T12:49:00
 categoria: actualidad-nacional
 thumbnail_original: /assets/img/WhatsApp Image 2026-09-11 at 2.39.52 PM.jpeg
 thumbnail_tapa: /assets/img/pasted-image-1789148437150.png
-thumbnail: /assets/img/WhatsApp Image 2026-09-11 at 2.39.52 PM.jpeg
+thumbnail: /assets/img/WhatsApp Image 2026-09-11 at 2.57.33 PM.jpeg
 pin: false
 orden: 1
 ---
