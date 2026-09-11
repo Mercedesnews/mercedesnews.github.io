@@ -12,7 +12,7 @@ pin: false
 orden: 1
 ---
 
-![](/assets/img/pasted-image-1789148437150.png)
+![](/assets/img/WhatsApp%20Image%202026-09-11%20at%202.57.33%20PM.jpeg)
 
 El Instituto Nacional de Estadística y Censos (INDEC) dio a conocer este miércoles el Índice de Precios al Consumidor (IPC), registrando una suba del 1,7% durante el mes de agosto. Si bien desde los despachos oficiales se destacó una desaceleración respecto a los meses previos —ubicando el acumulado anual en el 21,3% y la variación interanual en el 33,5%—, en la calle la sensación generalizada camina por otra vereda.
 
