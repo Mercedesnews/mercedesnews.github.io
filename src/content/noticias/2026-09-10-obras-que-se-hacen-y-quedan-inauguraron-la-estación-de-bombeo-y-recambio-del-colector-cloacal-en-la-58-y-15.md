@@ -9,7 +9,7 @@ thumbnail_original: /assets/img/WhatsApp Image 2026-09-10 at 7.12.13 PM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-10 at 7.12.13 PM.jpeg
 thumbnail: /assets/img/pasted-image-1789080753480.png
 pin: true
-orden: null
+orden: 1
 ---
 
 Esta tarde quedó formalmente inaugurada la nueva Estación de Bombeo y Recambio del Colector Cloacal ubicada en la intersección de las calles 58 y 15. La intervención, de carácter estratégico para el saneamiento urbano, se inscribe dentro de un amplio plan de infraestructura destinado a robustecer los servicios esenciales del distrito.
