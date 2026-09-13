@@ -16,7 +16,7 @@ orden: 1
 
 Con el tradicional pulso de encuentro familiar, la emoción de la labor artesanal premiada y un escenario encendido de música y danza, culminó este domingo en el Parque Municipal Independencia la 51° edición de la Fiesta Nacional del Salame Quintero, cerrando tres días de celebración que volvieron a poner a nuestra ciudad en el centro de la escena cultural de la provincia.
 
-Desde tempranas horas de la mañana, el predio volvió a abrir sus puertas para recibir a vecinos y turistas que se acercaron a recorrer la carpa de productores, disfrutar de las picadas y vivir el momento culminante del concurso de chacinados [cite: 1].
+Desde tempranas horas de la mañana, el predio volvió a abrir sus puertas para recibir a vecinos y turistas que se acercaron a recorrer la carpa de productores, disfrutar de las picadas y vivir el momento culminante del concurso de chacinados.
 
 El podio de los maestros del salame
 
@@ -30,10 +30,10 @@ Asimismo, el esfuerzo estético y comercial de la exposición tuvo su merecido a
 
 Un domingo a pura danza, coros y folklore de raíz
 
-Desde las 10 de la mañana, el escenario principal desplegó una nutrida grilla artística que transitó por la música coral, la orquesta-escuela y las expresiones de danza local [cite: 2]. El color y el movimiento llegaron de la mano del Ballet Folklórico Peumayén, La Popular Compañía de Danzas y el Ballet Municipal de Folklore Estrella del Sur, acompañados por las voces del coro municipal Ars Pulchra, la Orquesta Escuela Municipal y Provincial, y las presentaciones de Max Alexander, La Última Junta, Temprana Acción, Jo Marcel y Bohemios [cite: 2].
+Desde las 10 de la mañana, el escenario principal desplegó una nutrida grilla artística que transitó por la música coral, la orquesta-escuela y las expresiones de danza local. El color y el movimiento llegaron de la mano del Ballet Folklórico Peumayén, La Popular Compañía de Danzas y el Ballet Municipal de Folklore Estrella del Sur, acompañados por las voces del coro municipal Ars Pulchra, la Orquesta Escuela Municipal y Provincial, y las presentaciones de Max Alexander, La Última Junta, Temprana Acción, Jo Marcel y Bohemios.
 
  ![](/assets/img/WhatsApp%20Image%202026-09-13%20at%206.53.58%20PM.jpeg)
 
-Cuando la tarde dio paso a la noche, el broche de oro estuvo a cargo de la mítica agrupación Los Fronterizos, quienes hicieron corear y emocionar a una multitud que despidió el fin de semana a puro sapucai y aplausos [cite: 2].
+Cuando la tarde dio paso a la noche, el broche de oro estuvo a cargo de la mítica agrupación Los Fronterizos, quienes hicieron corear y emocionar a una multitud que despidió el fin de semana a puro sapucai y aplausos.
 
 La 51° Fiesta Nacional del Salame Quintero baja el telón dejando el sabor de lo bien hecho, el orgullo por el trabajo local y la certeza de que las tradiciones populares, cuando se abrazan en comunidad, son el mejor refugio de nuestra identidad.
