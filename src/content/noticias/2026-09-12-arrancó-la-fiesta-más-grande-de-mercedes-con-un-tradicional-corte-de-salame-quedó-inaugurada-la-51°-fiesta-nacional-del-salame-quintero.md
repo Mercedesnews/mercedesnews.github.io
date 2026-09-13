@@ -9,7 +9,7 @@ thumbnail_original: /assets/img/WhatsApp Image 2026-09-12 at 1.11.51 PM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-12 at 1.11.51 PM.jpeg
 thumbnail: /assets/img/pasted-image-1789229563565.png
 pin: false
-orden: null
+orden: 1
 ---
 
 Con el predio colmado de vecinos, visitantes de distintos puntos de la región y un clima festivo que anticipa un fin de semana récord, quedó oficialmente inaugurada este viernes por la noche la 51° edición de la Fiesta Nacional del Salame Quintero en el Parque Municipal Independencia.
