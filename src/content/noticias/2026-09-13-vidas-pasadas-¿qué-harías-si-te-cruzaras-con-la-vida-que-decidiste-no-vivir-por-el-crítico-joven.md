@@ -9,7 +9,7 @@ date: 2026-09-13T10:04:00
 categoria: cronicas
 thumbnail_original: /assets/img/WhatsApp Image 2026-09-13 at 1.08.09 PM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-13 at 1.08.09 PM.jpeg
-thumbnail: /assets/img/WhatsApp Image 2026-09-13 at 1.08.09 PM.jpeg
+thumbnail: /assets/img/WhatsApp Image 2026-09-13 at 1.11.52 PM.jpeg
 pin: false
 orden: 1
 ---
