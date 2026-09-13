@@ -8,7 +8,7 @@ categoria: actualidad-local
 thumbnail_original: /assets/img/WhatsApp Image 2026-09-04 at 2.22.17 PM.jpeg
 thumbnail_tapa: /assets/img/2026-09-04-la-ia-llega-a-las-aulas-mercedinas-abre-tapa.webp
 thumbnail: /assets/img/2026-09-04-la-ia-llega-a-las-aulas-mercedinas-abre-cuadrada.webp
-pin: true
+pin: false
 orden: null
 ---
 
