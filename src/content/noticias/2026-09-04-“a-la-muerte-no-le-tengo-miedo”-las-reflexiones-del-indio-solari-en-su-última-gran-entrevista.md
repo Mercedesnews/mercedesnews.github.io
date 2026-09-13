@@ -7,8 +7,8 @@ categoria: entrevistas
 thumbnail_original: /assets/img/pasted-image-1788569488039.png
 thumbnail_tapa: /assets/img/2026-09-04-“a-la-muerte-no-le-tengo-miedo”-las-ref-tapa.webp
 thumbnail: /assets/img/pasted-image-1788570579830.png
-pin: false
-orden: 1
+pin: true
+orden: 2
 ---
 
 Cuando el Indio Solari habla, el rock y la cultura popular argentina se detienen a escuchar. Fiel a su estilo ermitaño y analítico, sus apariciones públicas siempre funcionaron como misivas donde el arte, la política de vida y la condición humana se entrelazan. Su última entrevista en profundidad —en diálogo con Andy Kusnetzoff para Perros de la Calle— no fue la excepción: dejó un testimonio auténtico, lúcido y poético sobre el paso del tiempo, el Parkinson y su vigencia creativa.
