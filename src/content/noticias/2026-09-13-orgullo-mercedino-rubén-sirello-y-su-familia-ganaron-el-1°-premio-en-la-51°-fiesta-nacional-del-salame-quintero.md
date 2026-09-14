@@ -3,7 +3,7 @@ title: |-
   Orgullo mercedino
 
   Rubén Sirello y su familia ganaron el 1° premio en la 51° Fiesta Nacional del Salame Quintero
-date: 2026-09-13T19:30:00
+date: 2026-09-14T11:43:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/WhatsApp Image 2026-09-13 at 7.36.45 PM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-13 at 7.36.45 PM.jpeg
