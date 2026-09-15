@@ -17,11 +17,11 @@ Al cumplirse medio siglo del golpe de Estado de 1976 y de La Noche de los Lápic
  ![](/assets/img/WhatsApp%20Image%202026-09-15%20at%206.52.45%20PM.jpeg)
 
 La propuesta busca unir el ejercicio activo de la memoria con el presente de las juventudes, revalorizando la participación estudiantil y el compromiso social a través de la expresión artística y el encuentro en el espacio público.
- 
+
 Teatro para las escuelas en el Argentino
 
 El epicentro del escenario teatral estará en el Teatro Argentino "Julio César Gioscio", donde se presentará la obra "El lápiz no se borra". Pensada especialmente para convocar a delegaciones escolares y jóvenes de la ciudad, la propuesta ofrecerá dos funciones gratuitas a las 10:00 hs. y a las 13:30 hs..
- 
+
 La obra plantea una relectura del legado de aquellos jóvenes de 1976 que salieron a defender el boleto estudiantil y sus derechos, conectando su valentía con las demandas y la voz de los estudiantes secundarios de hoy.
 
  ![](/assets/img/WhatsApp%20Image%202026-09-15%20at%206.51.54%20PM.jpeg)
