@@ -5,8 +5,8 @@ title: |-
   Mercedes conmemora el Día de los Estudiantes Secundarios con arte, teatro y memoria en la calle
 date: 2026-09-15T18:53:00
 categoria: actualidad-local
-thumbnail_original: /assets/img/WhatsApp Image 2026-09-15 at 6.49.14 PM.jpeg
-thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-15 at 6.49.14 PM.jpeg
+thumbnail_original: /assets/img/WhatsApp Image 2026-09-15 at 7.01.05 PM.jpeg
+thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-15 at 7.01.05 PM.jpeg
 thumbnail: /assets/img/pasted-image-1789509250760.png
 pin: false
 orden: 1
