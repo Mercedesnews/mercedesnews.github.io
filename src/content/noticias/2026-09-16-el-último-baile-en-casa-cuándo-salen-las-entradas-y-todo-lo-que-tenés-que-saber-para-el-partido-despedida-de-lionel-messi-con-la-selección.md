@@ -3,7 +3,7 @@ title: |-
   El último baile en casa
 
   Cuándo salen las entradas y todo lo que tenés que saber para el partido despedida de Lionel Messi con la Selección
-date: 2026-09-16T16:53:00
+date: 2026-09-16T16:57:00
 categoria: deportes
 thumbnail_original: /assets/img/WhatsApp Image 2026-09-16 at 4.55.30 PM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-16 at 4.55.30 PM.jpeg
