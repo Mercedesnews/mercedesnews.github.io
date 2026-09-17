@@ -12,7 +12,7 @@ pin: false
 orden: 1
 ---
 
-La agenda cultural de la ciudad vivirá este jueves 18 de septiembre a partir de las 19:00 hs. un encuentro imperdible con la literatura local. La histórica Biblioteca Sarmiento será el escenario de una doble presentación literaria que reunirá a dos autores de nuestra ciudad con universos narrativos completamente diferentes pero igual de atrapantes: Nicolás Genovecio Lucía y Catalina Mazzocchi.
+La agenda cultural de la ciudad vivirá este viernes 18 de septiembre a partir de las 19:00 hs. un encuentro imperdible con la literatura local. La histórica Biblioteca Sarmiento será el escenario de una doble presentación literaria que reunirá a dos autores de nuestra ciudad con universos narrativos completamente diferentes pero igual de atrapantes: Nicolás Genovecio Lucía y Catalina Mazzocchi.
 
 La cita, de entrada libre y gratuita, contará además con la presentación a cargo de Juan Ferrandis, prometiendo una charla íntima sobre los procesos de escritura, los mundos creados y el pulso de la literatura contemporánea hecha por talentos locales.
 
