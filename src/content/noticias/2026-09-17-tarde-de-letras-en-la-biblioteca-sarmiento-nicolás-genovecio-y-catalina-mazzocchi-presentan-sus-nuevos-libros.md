@@ -3,7 +3,7 @@ title: |-
   Tarde de letras en la Biblioteca Sarmiento
 
   Nicolás Genovecio y Catalina Mazzocchi presentan sus nuevos libros
-date: 2026-09-16T21:29:00
+date: 2026-09-16T21:40:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/WhatsApp Image 2026-09-16 at 9.37.39 PM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-16 at 9.37.39 PM.jpeg
