@@ -3,7 +3,7 @@ title: |-
   Luz verde en el Senado
 
   De qué se trata la ley de "Inocencia Fiscal II" que aprobó el Gobierno con el apoyo de sus aliados
-date: 2026-09-17T11:16:00
+date: 2026-09-17T20:27:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/ChatGPT Image 17 sept 2026, 20_24_00.png
 thumbnail_tapa: /assets/img/ChatGPT Image 17 sept 2026, 20_24_00.png
