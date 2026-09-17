@@ -5,8 +5,8 @@ title: |-
   Nicolás Genovecio y Catalina Mazzocchi presentan sus nuevos libros
 date: 2026-09-16T21:29:00
 categoria: actualidad-local
-thumbnail_original: /assets/img/WhatsApp Image 2026-09-16 at 9.32.14 PM.jpeg
-thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-16 at 9.32.14 PM.jpeg
+thumbnail_original: /assets/img/WhatsApp Image 2026-09-16 at 9.37.39 PM.jpeg
+thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-16 at 9.37.39 PM.jpeg
 thumbnail: /assets/img/WhatsApp Image 2026-09-16 at 9.30.40 PM.jpeg
 pin: false
 orden: 1
