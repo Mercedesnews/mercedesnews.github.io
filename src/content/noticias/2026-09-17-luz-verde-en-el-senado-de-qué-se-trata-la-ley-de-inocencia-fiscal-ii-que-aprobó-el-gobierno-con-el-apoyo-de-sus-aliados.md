@@ -4,7 +4,7 @@ title: |-
 
   De qué se trata la ley de "Inocencia Fiscal II" que aprobó el Gobierno con el apoyo de sus aliados
 date: 2026-09-17T20:27:00
-categoria: actualidad-local
+categoria: actualidad-nacional
 thumbnail_original: /assets/img/ChatGPT Image 17 sept 2026, 20_24_00.png
 thumbnail_tapa: /assets/img/ChatGPT Image 17 sept 2026, 20_24_00.png
 thumbnail: /assets/img/pasted-image-1789686974882.png
