@@ -14,12 +14,11 @@ orden: 1
 
 La agenda cultural de nuestra ciudad tuvo recientemente un punto de encuentro imperdible con la literatura local. En el marco de la presentación de "Tazos cubiertos de sal", de Nicolás Genovecio, y "Reyes del caos, lazos oscuros", de Catalina Mazzocchi, compartimos una jornada dedicada a la literatura y a quienes encuentran en la escritura una forma de crear, contar y compartir sus historias.
 
- ![](/assets/img/WhatsApp%20Image%202026-09-21%20at%2012.01.56%20PM.jpeg)
+ ![](/assets/img/WhatsApp%20Image%202026-09-21%20at%2012.02.32%20PM.jpeg)
 
 La cita, que tuvo lugar en las instalaciones de la histórica Biblioteca Sarmiento, reunió a vecinos, lectores y amantes de las letras en una charla íntima y enriquecedora que contó con la presentación a cargo de Juan Ferrandis.
 
 ![](/assets/img/WhatsApp%20Image%202026-09-21%20at%2012.00.21%20PM.jpeg)
-
 
 Dos universos narrativos, una misma pasión
 
