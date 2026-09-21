@@ -7,7 +7,7 @@ date: 2026-09-21T10:22:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/ChatGPT Image 21 sept 2026, 10_23_25 a.m..png
 thumbnail_tapa: /assets/img/ChatGPT Image 21 sept 2026, 10_23_25 a.m..png
-thumbnail: /assets/img/pasted-image-1789998898065.png
+thumbnail: /assets/img/WhatsApp Image 2026-09-21 at 10.57.22 AM.jpeg
 pin: false
 orden: 1
 ---
