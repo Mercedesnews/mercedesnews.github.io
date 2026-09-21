@@ -5,8 +5,8 @@ title: |-
   Cuánto recortó el Estado en energía y transporte, y cómo se traduce en el día a día mercedino
 date: 2026-09-21T18:06:00
 categoria: actualidad-nacional
-thumbnail_original: /assets/img/ChatGPT Image 21 sept 2026, 15_35_55.png
-thumbnail_tapa: /assets/img/ChatGPT Image 21 sept 2026, 15_35_55.png
+thumbnail_original: /assets/img/WhatsApp Image 2026-09-21 at 6.13.10 PM.jpeg
+thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-21 at 6.13.10 PM.jpeg
 thumbnail: /assets/img/pasted-image-1790024818162.png
 pin: false
 orden: 1
