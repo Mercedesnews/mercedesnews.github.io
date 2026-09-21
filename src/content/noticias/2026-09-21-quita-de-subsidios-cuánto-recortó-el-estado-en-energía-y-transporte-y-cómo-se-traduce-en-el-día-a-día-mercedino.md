@@ -20,7 +20,9 @@ Del subsidio masivo a pagar el costo real: El salto en los números
 
 Para entender el tamaño del salto, basta con poner frente a frente los valores vigentes en la previa del cambio de gestión (2023) y la realidad actual:
 
-En la luz (Energía eléctrica): En 2023, los hogares mercedinos (incluso los de ingresos medios y altos) recibían una cobertura estatal que licuaba gran parte del costo mayorista de la energía. Una familia tipo que a finales de 2023 abonaba una factura de luz de $3.500 a $5.000 mensuales, hoy se encuentra con boletas que oscilan tranquilamente entre los $35.000 y $70.000 (o cifras muy superiores si superan los topes de consumo subsidiado o si se trata de comercios de barrio). El incremento porcentual interanual acumulado supera ampliamente los desfasajes salariales, representando un salto de más del 1.000% en varios segmentos.
+En la luz (Energía eléctrica): En 2023, los hogares mercedinos (incluso los de ingresos medios y altos) recibían una cobertura estatal que licuaba gran parte del costo mayorista de la energía. Una familia tipo que a finales de 2023 abonaba una factura de luz de $3.500 a $5.000 mensuales, hoy se encuentra con boletas que oscilan tranquilamente entre los $35.000 y $70.000 (o cifras muy superiores si superan los topes de consumo subsidiado o si se trata de comercios de barrio). 
+
+El incremento porcentual interanual acumulado supera ampliamente los desfasajes salariales, representando un salto de más del 1.000% en varios segmentos.
 
 En el gas y los servicios complementarios: El esquema de segmentación actual castigó con dureza a los usuarios residenciales categorizados como N1 (altos ingresos o aquellos que perdieron/no solicitaron subsidios), donde el Estado prácticamente se retiró de la asistencia, haciendo que las facturas invernales pasen de ser un gasto menor a una pesadilla presupuestaria de cientos de miles de pesos.
 
