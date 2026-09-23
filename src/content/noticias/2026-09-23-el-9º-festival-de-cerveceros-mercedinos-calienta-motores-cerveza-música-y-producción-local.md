@@ -6,7 +6,7 @@ title: |-
 date: 2026-09-23T10:28:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/ChatGPT Image 23 sept 2026, 10_28_19.png
-thumbnail_tapa: /assets/img/pasted-image-1790170291741.png
+thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-23 at 10.33.24 AM.jpeg
 thumbnail: /assets/img/pasted-image-1790170177498.png
 pin: false
 orden: 1
@@ -16,7 +16,7 @@ Hay eventos en la agenda de la ciudad que ya son un clásico indiscutible para e
 
 El encuentro llega este año con un fuerte sentido de identidad y novedades que reafirman el trabajo conjunto entre los hacedores de la ciudad.
 
-![](/assets/img/WhatsApp%20Image%202026-09-23%20at%2010.23.21%20AM.jpeg)
+![](/assets/img/WhatsApp%20Image%202026-09-23%20at%2010.33.24%20AM.jpeg)
 
 **Lo principal para tener en cuenta:**
 
