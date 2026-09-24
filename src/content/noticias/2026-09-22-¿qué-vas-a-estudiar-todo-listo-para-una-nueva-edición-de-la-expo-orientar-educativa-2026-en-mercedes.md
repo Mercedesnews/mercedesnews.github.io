@@ -7,7 +7,7 @@ date: 2026-09-22T19:03:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/ChatGPT Image 22 sept 2026, 19_07_52.png
 thumbnail_tapa: /assets/img/ChatGPT Image 22 sept 2026, 19_07_52.png
-thumbnail: /assets/img/pasted-image-1790114912552.png
+thumbnail: /assets/img/DSC05305.JPG
 pin: false
 orden: 1
 ---
