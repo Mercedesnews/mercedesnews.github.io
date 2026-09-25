@@ -20,17 +20,15 @@ Así marcha el Top 5 del Medallero General
 
 Cumplidas las jornadas intensivas de finales y con el grueso de las disciplinas en su etapa definitoria, el cuadro de honor de los Juegos Odesur muestra a los principales animadores continentales disputando cada presea:
 
+Brasil: 106 oros, 85 platas, 72 bronces — Total: 263 preseas
 
-Brasil: 99 oros, 76 platas, 67 bronces — Total: 242 preseas
+Argentina: 65 oros, 68 platas, 107 bronces — Total: 240 preseas
 
-Argentina: 55 oros, 62 platas, 98 bronces — Total: 215 preseas
-
-Colombia: 54 oros, 52 platas, 40 bronces — Total: 146 preseas
+Colombia: 58 oros, 56 platas, 45 bronces — Total: 159 preseas
 
 Venezuela: 41 oros, 38 platas, 42 bronces — Total: 121 preseas
 
 Chile: 35 oros, 44 platas, 49 bronces — Total: 128 preseas
-
 
 Con estos números, Argentina se mantiene con firmeza en el segundo puesto, sosteniendo un reñido mano a mano por la supremacía escolta frente al avance de Colombia y destacándose por el gran caudal de medallas cosechadas.
 
