@@ -9,7 +9,7 @@ thumbnail_original: /assets/img/ChatGPT Image 24 sept 2026, 17_06_52.png
 thumbnail_tapa: /assets/img/ChatGPT Image 24 sept 2026, 17_06_52.png
 thumbnail: /assets/img/pasted-image-1790282507039.png
 pin: false
-orden: 2
+orden: 1
 ---
 
 La provincia de Santa Fe se convirtió en el gran epicentro del deporte continental con el desarrollo de la 13ª edición de los Juegos Suramericanos Santa Fe 2026. Con competencias distribuidas principalmente entre Rosario, la capital provincial y Rafaela —además de subsedes como Mar del Plata y Buenos Aires—, el certamen reúne a más de 4.000 atletas de 15 países que disputan unas 60 disciplinas.
