@@ -9,7 +9,7 @@ thumbnail_original: /assets/img/WhatsApp Image 2026-09-11 at 2.39.52 PM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-11 at 2.39.52 PM.jpeg
 thumbnail: /assets/img/WhatsApp Image 2026-09-11 at 2.57.33 PM.jpeg
 pin: false
-orden: 1
+orden: 2
 ---
 
 ![](/assets/img/WhatsApp%20Image%202026-09-11%20at%202.57.33%20PM.jpeg)
