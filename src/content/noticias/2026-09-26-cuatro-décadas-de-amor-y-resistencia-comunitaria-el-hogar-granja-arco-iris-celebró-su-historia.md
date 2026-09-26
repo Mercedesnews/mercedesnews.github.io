@@ -9,7 +9,7 @@ thumbnail_original: /assets/img/WhatsApp Image 2026-09-25 at 7.49.51 PM.jpeg
 thumbnail_tapa: /assets/img/pasted-image-1790437160170.png
 thumbnail: /assets/img/pasted-image-1790437201587.png
 pin: false
-orden: null
+orden: 1
 ---
 
 Hay instituciones que no se sostienen meramente con balances contables ni con arquitecturas burocráticas, sino con el pulso cotidiano de la empatía, el trabajo silencioso y el compromiso comunitario. El **Hogar Granja Arco Iris** cumplió cuatro décadas de vida y lo celebró con un emotivo encuentro que reunió a sus integrantes, familias y a todos aquellos que, de una u otra manera, edificaron este espacio fundamental para la ciudad de Mercedes.
