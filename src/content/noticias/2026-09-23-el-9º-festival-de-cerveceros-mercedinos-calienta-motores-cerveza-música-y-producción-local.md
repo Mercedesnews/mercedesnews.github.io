@@ -8,7 +8,7 @@ categoria: actualidad-local
 thumbnail_original: /assets/img/ChatGPT Image 23 sept 2026, 10_28_19.png
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-23 at 10.33.24 AM.jpeg
 thumbnail: /assets/img/pasted-image-1790170177498.png
-pin: false
+pin: true
 orden: 1
 ---
 
