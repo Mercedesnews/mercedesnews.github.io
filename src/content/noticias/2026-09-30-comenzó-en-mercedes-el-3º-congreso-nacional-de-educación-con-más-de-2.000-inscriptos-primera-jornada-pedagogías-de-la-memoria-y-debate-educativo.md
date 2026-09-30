@@ -1,6 +1,6 @@
 ---
 title: |-
-  Comenzó en Mercedes el 3º Congreso Nacional de Educación con más de 2.000 inscriptos
+  Comenzó en Mercedes el 3º Congreso Nacional de Educación 
 
   Primera Jornada: Pedagogías de la memoria y debate educativo
 date: 2026-09-30T17:26:00
