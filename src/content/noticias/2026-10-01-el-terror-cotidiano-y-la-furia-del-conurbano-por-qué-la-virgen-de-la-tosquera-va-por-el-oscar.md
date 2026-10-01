@@ -5,8 +5,8 @@ title: |-
   Por qué La Virgen de la Tosquera va por el Oscar
 date: 2026-10-01T10:48:00
 categoria: cronicas
-thumbnail_original: /assets/img/la-virgen-de-la-tosquera-pelicula-14012026-2169484.jpg
-thumbnail_tapa: /assets/img/pasted-image-1790862654126.png
+thumbnail_original: /assets/img/XVWKFKDVINAJBP4ZYCD5A4CJKA.avif
+thumbnail_tapa: /assets/img/XVWKFKDVINAJBP4ZYCD5A4CJKA.avif
 thumbnail: /assets/img/pasted-image-1790862779036.png
 pin: false
 orden: null
