@@ -9,7 +9,7 @@ thumbnail_original: /assets/img/XVWKFKDVINAJBP4ZYCD5A4CJKA.avif
 thumbnail_tapa: /assets/img/XVWKFKDVINAJBP4ZYCD5A4CJKA.avif
 thumbnail: /assets/img/pasted-image-1790862779036.png
 pin: false
-orden: null
+orden: 1
 ---
 
 Hay algo magnético y profundamente incómodo en la forma en que el cine argentino reciente decide mirar sus propios abismos. Cuando la Academia de Cine eligió a **_La Virgen de la Tosquera_** como la representante nacional para los premios Oscar 2027, no hizo más que confirmar lo que los circuitos de festivales internacionales —de Sundance a Sitges— ya venían palpitando: no estamos ante un drama tradicional de exportación, sino ante una pieza de gótico latinoamericano tan afilada como visceral.
