@@ -5,8 +5,8 @@ title: |-
   Evalúan reprogramar para noviembre la segunda jornada del Congreso de Educación
 date: 2026-10-01T11:21:00
 categoria: actualidad-local
-thumbnail_original: /assets/img/ChatGPT Image 1 oct 2026, 11_21_34.png
-thumbnail_tapa: /assets/img/pasted-image-1790864524670.png
+thumbnail_original: /assets/img/ChatGPT Image 1 oct 2026, 11_40_10.png
+thumbnail_tapa: /assets/img/ChatGPT Image 1 oct 2026, 11_40_10.png
 thumbnail: /assets/img/WhatsApp Image 2026-09-30 at 5.27.39 PM.jpeg
 pin: false
 orden: 1
