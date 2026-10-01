@@ -3,7 +3,7 @@ title: |-
   Entre la agenda pedagógica y el pulso gremial
 
   Evalúan reprogramar para noviembre la segunda jornada del Congreso de Educación
-date: 2026-10-01T11:46:00
+date: 2026-10-01T11:47:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/WhatsApp Image 2026-10-01 at 11.44.11 AM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-10-01 at 11.44.11 AM.jpeg
