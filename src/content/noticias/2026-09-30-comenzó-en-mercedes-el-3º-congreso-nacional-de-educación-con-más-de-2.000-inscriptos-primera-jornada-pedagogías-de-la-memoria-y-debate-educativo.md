@@ -9,7 +9,7 @@ thumbnail_original: /assets/img/ChatGPT Image 30 sept 2026, 17_29_46.png
 thumbnail_tapa: /assets/img/pasted-image-1790800219296.png
 thumbnail: /assets/img/pasted-image-1790800234376.png
 pin: false
-orden: 1
+orden: 3
 ---
 
 Con una masiva convocatoria que supera los dos mil inscriptos entre docentes, equipos directivos, auxiliares y trabajadores de la educación, se puso en marcha en nuestra ciudad el **3º Congreso Nacional de Educación**, una iniciativa consolidada como un espacio fundamental de debate pedagógico, político y social en el territorio bonaerense.
