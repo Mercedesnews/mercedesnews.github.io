@@ -9,7 +9,7 @@ thumbnail_original: /assets/img/o_1791170792.jpg
 thumbnail_tapa: /assets/img/pasted-image-1791212422584.png
 thumbnail: /assets/img/pasted-image-1791212453239.png
 pin: false
-orden: null
+orden: 1
 ---
 
 La geopolítica regional pocas veces opera en abstracto; por el contrario, actúa como un potente catalizador y un espejo anticipado para los procesos políticos domésticos. Las recientes y reñidas elecciones en Brasil —que dejaron un escenario de extrema polarización rumbo al balotaje— no representan únicamente un hito para el vecino país, sino un auténtico laboratorio a cielo abierto cuyas ondas expansivas ya comienzan a sentirse en el tablero político argentino.
