@@ -1,6 +1,6 @@
 ---
 title: |-
-  El 9º Festival de Cerveceros Mercedinos calienta motores
+  El 8º Festival de Cerveceros Mercedinos calienta motores
 
   Cerveza, música y producción local
 date: 2026-09-23T10:28:00
@@ -9,7 +9,7 @@ thumbnail_original: /assets/img/ChatGPT Image 23 sept 2026, 10_28_19.png
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-09-23 at 10.33.24 AM.jpeg
 thumbnail: /assets/img/pasted-image-1790170177498.png
 pin: true
-orden: 1
+orden: 2
 ---
 
 Hay eventos en la agenda de la ciudad que ya son un clásico indiscutible para el encuentro al aire libre. La novena edición del **Festival de Cerveceros Mercedinos** ya está en marcha y, tras la presentación oficial realizada junto al municipio, quedaron definidos los detalles de un evento que promete transformar el **sábado 3 y domingo 4 de octubre** al Parque Municipal Independencia en el epicentro de la producción y la cultura local.
