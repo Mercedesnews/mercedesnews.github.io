@@ -3,12 +3,12 @@ title: |-
   Espejo brasileño y polarización
 
   Claves políticas, sociológicas y comunicacionales de un impacto inevitable en nuestro país
-date: 2026-10-05T12:03:00
+date: 2026-10-05T12:13:00
 categoria: opinion
 thumbnail_original: /assets/img/o_1791170792.jpg
 thumbnail_tapa: /assets/img/pasted-image-1791212422584.png
 thumbnail: /assets/img/pasted-image-1791212453239.png
-pin: false
+pin: true
 orden: 1
 ---
 
