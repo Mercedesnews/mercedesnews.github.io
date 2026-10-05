@@ -8,7 +8,7 @@ categoria: cronicas
 thumbnail_original: /assets/img/XVWKFKDVINAJBP4ZYCD5A4CJKA.avif
 thumbnail_tapa: /assets/img/XVWKFKDVINAJBP4ZYCD5A4CJKA.avif
 thumbnail: /assets/img/pasted-image-1790862779036.png
-pin: false
+pin: true
 orden: 1
 ---
 
