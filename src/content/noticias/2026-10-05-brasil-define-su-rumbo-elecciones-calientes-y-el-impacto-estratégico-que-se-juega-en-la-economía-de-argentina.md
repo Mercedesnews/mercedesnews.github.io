@@ -5,8 +5,8 @@ title: |-
   Elecciones calientes y el impacto estratégico que se juega en la economía de Argentina
 date: 2026-10-05T11:24:00
 categoria: actualidad-nacional
-thumbnail_original: /assets/img/images.jpg
-thumbnail_tapa: /assets/img/pasted-image-1791210641600.png
+thumbnail_original: /assets/img/imagen-de-chatgpt-28-sept-2026-14_04_24.png
+thumbnail_tapa: /assets/img/imagen-de-chatgpt-28-sept-2026-14_04_24.png
 thumbnail: /assets/img/pasted-image-1791210713564.png
 pin: false
 orden: 1
