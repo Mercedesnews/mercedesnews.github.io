@@ -3,7 +3,7 @@ title: |-
   El fin de una era dorada
 
   Todos los récords, los detalles de la gran fiesta y el legado eterno de Lionel Messi en la Selección Argentina
-date: 2026-10-06T09:31:00
+date: 2026-10-06T09:34:00
 categoria: deportes
 thumbnail_original: /assets/img/000_334P84K-1024x683.jpg
 thumbnail_tapa: /assets/img/pasted-image-1791289903752.png
