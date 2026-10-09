@@ -3,7 +3,7 @@ title: |-
   Voces jóvenes en el recinto
 
   El Parlamento Juvenil Bonaerense sesionó en el Honorable Concejo Deliberante de Mercedes
-date: 2026-10-09T10:25:00
+date: 2026-10-09T11:33:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/WhatsApp Image 2026-10-08 at 11.58.31 AM.jpeg
 thumbnail_tapa: /assets/img/pasted-image-1791552476716.png
