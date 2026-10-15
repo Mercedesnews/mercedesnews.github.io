@@ -4,7 +4,7 @@ title: |-
 
   LA SALUD DEL PAPA LEÓN XIV PONE EN VILO SU ESPERADA GIRA POR LA ARGENTINA
 date: 2026-10-15T10:06:00
-categoria: actualidad-local
+categoria: actualidad-nacional
 thumbnail_original: /assets/img/WhatsApp Image 2026-10-15 at 11.07.35 AM.jpeg
 thumbnail_tapa: /assets/img/pasted-image-1792073289582.png
 thumbnail: /assets/img/pasted-image-1792073302495.png
