@@ -3,7 +3,7 @@ title: |-
   La gran apuesta colectiva
 
   Así se prepara la histórica jornada de paro y movilización en defensa de la educación pública
-date: 2026-10-15T11:45:00
+date: 2026-10-15T11:59:00
 categoria: actualidad-nacional
 thumbnail_original: /assets/img/WhatsApp Image 2026-10-15 at 11.44.48 AM.jpeg
 thumbnail_tapa: /assets/img/WhatsApp Image 2026-10-15 at 11.44.48 AM.jpeg
