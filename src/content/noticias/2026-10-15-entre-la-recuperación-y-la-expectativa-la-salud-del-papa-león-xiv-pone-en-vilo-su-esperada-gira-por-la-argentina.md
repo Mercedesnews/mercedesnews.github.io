@@ -3,7 +3,7 @@ title: |-
   ENTRE LA RECUPERACIÓN Y LA EXPECTATIVA
 
   LA SALUD DEL PAPA LEÓN XIV PONE EN VILO SU ESPERADA GIRA POR LA ARGENTINA
-date: 2026-10-15T11:06:00
+date: 2026-10-15T10:06:00
 categoria: actualidad-local
 thumbnail_original: /assets/img/WhatsApp Image 2026-10-15 at 11.07.35 AM.jpeg
 thumbnail_tapa: /assets/img/pasted-image-1792073289582.png
