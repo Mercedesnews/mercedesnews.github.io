@@ -4,7 +4,7 @@ title: |-
 
   Así se prepara la histórica jornada de paro y movilización en defensa de la educación pública
 date: 2026-10-15T11:45:00
-categoria: actualidad-local
+categoria: actualidad-nacional
 thumbnail_original: /assets/img/WhatsApp Image 2026-10-15 at 11.45.11 AM.jpeg
 thumbnail_tapa: /assets/img/pasted-image-1792075550600.png
 thumbnail: /assets/img/pasted-image-1792075555643.png
